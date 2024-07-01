@@ -1,5 +1,7 @@
+using api.Business.Utils;
 using api.Persistence.Context;
 using api.Persistence.Utils;
+using api.Services.Utils;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -10,6 +12,11 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
+
+RegisterPersistence.Register(builder);
+RegisterBusiness.Register(builder);
+RegisterService.Register(builder);
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,7 +25,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-RegisterPersistence.Register(builder);
+app.MapControllers();
 
 app.Run();

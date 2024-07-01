@@ -1,6 +1,6 @@
 using api.Persistence.Context;
 
-namespace api.Persistence.UnitOfWork.Interfaces;
+namespace api.Persistence.UnitOfWorks.Interfaces;
 
 public interface IUnitOfWork
 {

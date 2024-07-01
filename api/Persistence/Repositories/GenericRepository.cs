@@ -5,43 +5,54 @@ using Microsoft.EntityFrameworkCore;
 namespace api.Persistence.Repositories;
 
 public class GenericRepository<T>(
-    AppDbContext _context
+    AppDbContext context
 ) : IGenericRepository<T> where T : class
 {
     public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return await _context.Set<T>().ToListAsync();
+        return await context.Set<T>().ToListAsync();
     }
 
     public async Task<T?> GetByIdAsync(Guid id)
     {
-        return await _context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
+        return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
+    }
+
+    public async Task<bool> ExistsByCPF(string cpf)
+    {
+        var exists = await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => EF.Property<string>(e, "CPF") == cpf);
+        if (exists is null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public async Task<bool> AddAsync(T t)
     {
-        await _context.Set<T>().AddAsync(t);
+        await context.Set<T>().AddAsync(t);
 
         return true;
     }
 
     public bool Update(T t)
     {
-        _context.Set<T>().Update(t);
+        context.Set<T>().Update(t);
 
         return true;
     }
 
     public bool Remove(T t)
     {
-        _context.Set<T>().Remove(t);
+        context.Set<T>().Remove(t);
 
         return true;
     }
 
     public bool RemoveRange(IEnumerable<T> t)
     {
-        _context.Set<T>().RemoveRange(t);
+        context.Set<T>().RemoveRange(t);
 
         return true;
     }
