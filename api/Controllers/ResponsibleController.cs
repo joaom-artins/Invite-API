@@ -42,6 +42,18 @@ public class ResponsibleController(
         return NoContent();
     }
 
+    [HttpPut("{id}")]
+    public async Task<IActionResult> Update(Guid id, ResponsibleUpdateRequest request)
+    {
+        var result = await _responsibleService.UpdateAsync(id, request);
+        if (!result)
+        {
+            return NotFound();
+        }
+
+        return NoContent();
+    }
+
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {

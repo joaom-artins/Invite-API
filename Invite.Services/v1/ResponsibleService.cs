@@ -31,6 +31,7 @@ public class ResponsibleService(
 
         return record;
     }
+
     public async Task<bool> CreateAsync(ResponsibleCreateRequest request)
     {
         var test = await _responsibleBusiness.ValidateForCreateAsync(request);
@@ -46,6 +47,23 @@ public class ResponsibleService(
             CPF = CleanString.OnlyNumber(request.CPF),
         };
         await _responsibleRepository.AddAsync(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateAsync(Guid id, ResponsibleUpdateRequest request)
+    {
+        var record = await _responsibleRepository.GetByIdAsync(id);
+        if (record is null)
+        {
+            return false;
+        }
+
+        record.Name = request.Name;
+        record.CPF = request.CPF;
+        record.PersonsInFamily = request.PersonInFamily;
+        _responsibleRepository.Update(record);
         await _unitOfWork.CommitAsync();
 
         return true;
