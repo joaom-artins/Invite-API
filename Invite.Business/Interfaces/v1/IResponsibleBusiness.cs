@@ -1,6 +1,6 @@
-using api.Entities.Request;
+using Invite.Entities.Requests;
 
-namespace api.Business.Interfaces;
+namespace Invite.Business.Interfaces.v1;
 
 public interface IResponsibleBusiness
 {

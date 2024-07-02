@@ -1,9 +1,10 @@
+using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
-using Invite.Persistence.Repositories.Interfaces;
+using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
-using Invite.Services.Interfaces;
+using Invite.Services.Interfaces.v1;
 
 namespace Invite.Services.v1;
 

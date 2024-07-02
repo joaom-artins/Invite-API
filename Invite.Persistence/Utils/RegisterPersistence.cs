@@ -1,5 +1,4 @@
 ﻿using Invite.Persistence.Context;
-using Invite.Persistence.Repositories.Interfaces;
 using Invite.Persistence.Repositories.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Persistence.UnitOfWorks;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Invite.Persistence.Repositories.Interfaces.v1;
 
 namespace Invite.Persistence.Utils;
 

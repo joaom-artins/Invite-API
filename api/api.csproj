@@ -22,6 +22,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Invite.Business\Invite.Business.csproj" />
     <ProjectReference Include="..\Invite.Entities\Invite.Entities.csproj" />
     <ProjectReference Include="..\Invite.Persistence\Invite.Persistence.csproj" />
     <ProjectReference Include="..\Invite.Services\Invite.Services.csproj" />

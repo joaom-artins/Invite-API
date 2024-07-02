@@ -1,7 +1,7 @@
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
 
-namespace Invite.Services.Interfaces;
+namespace Invite.Services.Interfaces.v1;
 
 public interface IResponsibleService
 {

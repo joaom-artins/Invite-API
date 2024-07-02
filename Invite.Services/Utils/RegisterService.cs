@@ -1,4 +1,4 @@
-using Invite.Services.Interfaces;
+using Invite.Services.Interfaces.v1;
 using Invite.Services.v1;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;

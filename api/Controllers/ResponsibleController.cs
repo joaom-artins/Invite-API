@@ -1,5 +1,5 @@
 using Invite.Entities.Requests;
-using Invite.Services.Interfaces;
+using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers;

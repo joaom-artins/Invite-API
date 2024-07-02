@@ -1,4 +1,4 @@
-using api.Business.Utils;
+using Invite.Business.Utils;
 using Invite.Persistence.Utils;
 using Invite.Services.Utils;
 

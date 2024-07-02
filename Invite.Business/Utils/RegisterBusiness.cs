@@ -1,7 +1,9 @@
-using api.Business.Business;
-using api.Business.Interfaces;
+using Invite.Business.Interfaces.v1;
+using Invite.Business.v1;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace api.Business.Utils;
+namespace Invite.Business.Utils;
 
 public class RegisterBusiness
 {
