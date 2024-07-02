@@ -1,15 +1,19 @@
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
+using Invite.Commons.Notifications;
+using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
+using Microsoft.AspNetCore.Http;
 
 namespace Invite.Services.v1;
 
 public class ResponsibleService(
     IUnitOfWork _unitOfWork,
+    INotificationContext _notificationContext,
     IResponsibleRepository _responsibleRepository,
     IResponsibleBusiness _responsibleBusiness
 ) : IResponsibleService
@@ -26,6 +30,11 @@ public class ResponsibleService(
         var record = await _responsibleRepository.GetByIdAsync(id);
         if (record is null)
         {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
             return default!;
         }
 
@@ -34,8 +43,8 @@ public class ResponsibleService(
 
     public async Task<bool> CreateAsync(ResponsibleCreateRequest request)
     {
-        var test = await _responsibleBusiness.ValidateForCreateAsync(request);
-        if (test is false)
+        await _responsibleBusiness.ValidateForCreateAsync(request);
+        if (_notificationContext.HasNotifications)
         {
             return false;
         }
@@ -57,6 +66,11 @@ public class ResponsibleService(
         var record = await _responsibleRepository.GetByIdAsync(id);
         if (record is null)
         {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
             return false;
         }
 
@@ -74,7 +88,12 @@ public class ResponsibleService(
         var record = await _responsibleRepository.GetByIdAsync(id);
         if (record is null)
         {
-            return false;
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
+            return default!;
         }
 
         _responsibleRepository.Remove(record);

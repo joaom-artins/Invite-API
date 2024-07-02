@@ -22,10 +22,6 @@ public class ResponsibleController(
     public async Task<IActionResult> GetById(Guid id)
     {
         var result = await _responsibleService.GetById(id);
-        if (result is null)
-        {
-            return NotFound("Corno não encontrado");
-        }
 
         return Ok(result);
     }
