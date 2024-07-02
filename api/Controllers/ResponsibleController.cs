@@ -2,56 +2,55 @@ using api.Entities.Request;
 using api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Controllers
+namespace api.Controllers;
+
+[ApiController]
+[Route("v1/responsible")]
+public class ResponsibleController(
+    IResponsibleService _responsibleService
+) : ControllerBase
 {
-    [ApiController]
-    [Route("v1/responsible")]
-    public class ResponsibleController(
-        IResponsibleService _responsibleService
-    ) : ControllerBase
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
     {
-        [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var result = await _responsibleService.GetAll();
+        var result = await _responsibleService.GetAll();
 
-            return Ok(result);
+        return Ok(result);
+    }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetById(Guid id)
+    {
+        var result = await _responsibleService.GetById(id);
+        if (result is null)
+        {
+            return NotFound("Corno não encontrado");
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(Guid id)
-        {
-            var result = await _responsibleService.GetById(id);
-            if (result is null)
-            {
-                return NotFound("Corno não encontrado");
-            }
+        return Ok(result);
+    }
 
-            return Ok(result);
+    [HttpPost]
+    public async Task<IActionResult> Create(ResponsibleCreateRequest request)
+    {
+        var result = await _responsibleService.CreateAsync(request);
+        if (!result)
+        {
+            return BadRequest("Corno não deu certo!!");
         }
 
-        [HttpPost]
-        public async Task<IActionResult> Create(ResponsibleCreateRequest request)
-        {
-            var result = await _responsibleService.CreateAsync(request);
-            if (!result)
-            {
-                return BadRequest("Corno não deu certo!!");
-            }
+        return NoContent();
+    }
 
-            return NoContent();
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> Delete(Guid id)
+    {
+        var result = await _responsibleService.DeleteAsync(id);
+        if (!result)
+        {
+            return NotFound("Responsável não encontrado!");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var result = await _responsibleService.DeleteAsync(id);
-            if (!result)
-            {
-                return NotFound("Responsável não encontrado!");
-            }
-
-            return NoContent();
-        }
+        return NoContent();
     }
 }
