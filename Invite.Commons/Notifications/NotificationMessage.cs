@@ -12,5 +12,6 @@ public class NotificationMessage
     public static class Responsible
     {
         public static readonly string NotFound = "Responsável não encontrado";
+        public static readonly string PersonsInRequestInvalid = "O número de pessoas informadas no campo pessoas na família é diferente do número de pessoas informado!";
     }
 }

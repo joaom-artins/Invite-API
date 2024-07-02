@@ -4,4 +4,5 @@ namespace Invite.Persistence.Repositories.Interfaces.v1;
 
 public interface IPersonsRepository : IGenericRepository<PersonModel>
 {
+    Task<bool> ExistsByCPF(string cpf);
 }

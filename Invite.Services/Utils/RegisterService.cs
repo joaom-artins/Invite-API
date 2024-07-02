@@ -20,5 +20,6 @@ public class RegisterService
         builder.Services.AddSingleton(jsonSerializerOptions);
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();
+        builder.Services.AddScoped<IPersonService, PersonService>();
     }
 }
