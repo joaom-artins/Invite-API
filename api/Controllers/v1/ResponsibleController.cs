@@ -2,7 +2,7 @@ using Invite.Entities.Requests;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Mvc;
 
-namespace api.Controllers;
+namespace api.Controllers.v1;
 
 [ApiController]
 [Route("v1/responsible")]
