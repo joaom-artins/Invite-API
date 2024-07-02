@@ -1,6 +1,6 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.Entities.Models;
+namespace Invite.Entities.Models;
 
 public class ResponsibleModel
 {

@@ -1,9 +1,10 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace api.Entities.Models;
+namespace Invite.Entities.Models;
 
 public class PersonModel
 {
+    [Key]
     public Guid Id { get; set; }
     [MaxLength(80)]
     public string Name { get; set; } = default!;

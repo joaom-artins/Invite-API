@@ -1,8 +1,8 @@
-namespace api.Entities.Request;
+﻿namespace Invite.Entities.Requests;
 
 public class ResponsibleCreateRequest
 {
     public string Name { get; set; } = default!;
-    public byte PersonsInFamily { get; set; }
     public string CPF { get; set; } = default!;
+    public byte PersonInFamily { get; set; }
 }
