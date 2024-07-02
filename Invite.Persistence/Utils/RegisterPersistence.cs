@@ -1,11 +1,14 @@
-using api.Persistence.Context;
-using api.Persistence.Repositories.Interfaces;
-using api.Persistence.Repositories.Repository;
-using api.Persistence.UnitOfWorks;
-using api.Persistence.UnitOfWorks.Interfaces;
+﻿using Invite.Persistence.Context;
+using Invite.Persistence.Repositories.Interfaces;
+using Invite.Persistence.Repositories.v1;
+using Invite.Persistence.UnitOfWorks.Interfaces;
+using Invite.Persistence.UnitOfWorks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
-namespace api.Persistence.Utils;
+namespace Invite.Persistence.Utils;
 
 public class RegisterPersistence
 {

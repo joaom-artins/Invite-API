@@ -1,10 +1,9 @@
-using api.Entities.Models;
-using api.Persistence.Context;
-using api.Persistence.Repositories.Interfaces;
 using Invite.Entities.Models;
+using Invite.Persistence.Context;
+using Invite.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Persistence.Repositories.Repository;
+namespace Invite.Persistence.Repositories.v1;
 
 public class ResponsibleRepository(
     AppDbContext context

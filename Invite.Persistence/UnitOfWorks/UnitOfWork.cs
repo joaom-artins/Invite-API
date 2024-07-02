@@ -1,8 +1,8 @@
-using api.Persistence.Context;
-using api.Persistence.UnitOfWorks.Interfaces;
+using Invite.Persistence.Context;
+using Invite.Persistence.UnitOfWorks.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Persistence.UnitOfWorks;
+namespace Invite.Persistence.UnitOfWorks;
 
 public class UnitOfWork(
     AppDbContext _context

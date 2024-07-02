@@ -1,6 +1,6 @@
-using api.Entities.Models;
+using Invite.Entities.Models;
 
-namespace api.Persistence.Repositories.Interfaces;
+namespace Invite.Persistence.Repositories.Interfaces;
 
 public interface IResponsibleRepository : IGenericRepository<ResponsibleModel>
 {

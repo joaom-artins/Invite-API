@@ -1,4 +1,4 @@
-namespace api.Persistence.Repositories.Interfaces;
+namespace Invite.Persistence.Repositories.Interfaces;
 
 public interface IGenericRepository<T> where T : class
 {

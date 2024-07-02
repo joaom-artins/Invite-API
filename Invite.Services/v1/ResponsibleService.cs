@@ -1,6 +1,8 @@
 using Invite.Commons;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Persistence.Repositories.Interfaces;
+using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces;
 
 namespace Invite.Services.v1;

@@ -1,7 +1,7 @@
-using api.Entities.Models;
+using Invite.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Persistence.Context;
+namespace Invite.Persistence.Context;
 
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {

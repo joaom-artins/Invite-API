@@ -1,6 +1,4 @@
-using api.Persistence.Context;
-
-namespace api.Persistence.UnitOfWorks.Interfaces;
+namespace Invite.Persistence.UnitOfWorks.Interfaces;
 
 public interface IUnitOfWork
 {

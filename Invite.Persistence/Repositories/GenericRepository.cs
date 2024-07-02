@@ -1,8 +1,8 @@
-using api.Persistence.Context;
-using api.Persistence.Repositories.Interfaces;
+using Invite.Persistence.Context;
+using Invite.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace api.Persistence.Repositories;
+namespace Invite.Persistence.Repositories;
 
 public class GenericRepository<T>(
     AppDbContext context
@@ -17,7 +17,6 @@ public class GenericRepository<T>(
     {
         return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
     }
-
 
     public async Task<bool> AddAsync(T t)
     {

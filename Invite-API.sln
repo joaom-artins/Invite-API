@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invite.Commons", "Invite.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invite.Entities", "Invite.Entities\Invite.Entities.csproj", "{42DC6695-BDC7-430B-A645-E612C22C1687}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invite.Services", "Invite.Services\Invite.Services.csproj", "{E8425470-A752-4734-8D2E-4DAC85DF0805}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Invite.Services", "Invite.Services\Invite.Services.csproj", "{E8425470-A752-4734-8D2E-4DAC85DF0805}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Invite.Persistence", "Invite.Persistence\Invite.Persistence.csproj", "{28F544A7-1220-40B3-B4E1-A487EFCD992F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{E8425470-A752-4734-8D2E-4DAC85DF0805}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E8425470-A752-4734-8D2E-4DAC85DF0805}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E8425470-A752-4734-8D2E-4DAC85DF0805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28F544A7-1220-40B3-B4E1-A487EFCD992F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28F544A7-1220-40B3-B4E1-A487EFCD992F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28F544A7-1220-40B3-B4E1-A487EFCD992F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28F544A7-1220-40B3-B4E1-A487EFCD992F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

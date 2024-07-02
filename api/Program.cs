@@ -1,9 +1,6 @@
 using api.Business.Utils;
-using api.Persistence.Context;
-using api.Persistence.Utils;
-using api.Services.Utils;
+using Invite.Persistence.Utils;
 using Invite.Services.Utils;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
