@@ -21,4 +21,11 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Invite.Business\Invite.Business.csproj" />
+    <ProjectReference Include="..\Invite.Entities\Invite.Entities.csproj" />
+    <ProjectReference Include="..\Invite.Persistence\Invite.Persistence.csproj" />
+    <ProjectReference Include="..\Invite.Services\Invite.Services.csproj" />
+  </ItemGroup>
+
 </Project>
