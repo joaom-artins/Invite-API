@@ -1,6 +1,7 @@
 using api.Entities.Models;
 using api.Persistence.Context;
 using api.Persistence.Repositories.Interfaces;
+using Invite.Entities.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace api.Persistence.Repositories.Repository;

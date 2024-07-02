@@ -1,12 +1,9 @@
-using api.Business.Interfaces;
-using api.Common;
-using api.Entities.Models;
-using api.Entities.Request;
-using api.Persistence.Repositories.Interfaces;
-using api.Persistence.UnitOfWorks.Interfaces;
-using api.Services.Interfaces;
+using Invite.Commons;
+using Invite.Entities.Models;
+using Invite.Entities.Requests;
+using Invite.Services.Interfaces;
 
-namespace api.Services.Services;
+namespace Invite.Services.v1;
 
 public class ResponsibleService(
     IUnitOfWork _unitOfWork,
@@ -42,7 +39,7 @@ public class ResponsibleService(
         var record = new ResponsibleModel
         {
             Name = request.Name,
-            PersonsInFamily = request.PersonsInFamily,
+            PersonsInFamily = request.PersonInFamily,
             CPF = CleanString.OnlyNumber(request.CPF),
         };
         await _responsibleRepository.AddAsync(record);

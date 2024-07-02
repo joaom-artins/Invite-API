@@ -2,6 +2,7 @@ using api.Business.Interfaces;
 using api.Common;
 using api.Entities.Request;
 using api.Persistence.Repositories.Interfaces;
+using Invite.Entities.Requests;
 
 namespace api.Business.Business;
 

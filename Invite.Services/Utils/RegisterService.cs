@@ -1,7 +1,9 @@
-using api.Services.Interfaces;
-using api.Services.Services;
+using Invite.Services.Interfaces;
+using Invite.Services.v1;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace api.Services.Utils;
+namespace Invite.Services.Utils;
 
 public class RegisterService
 {
