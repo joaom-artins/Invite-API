@@ -4,7 +4,6 @@ public interface IGenericRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();
     Task<T?> GetByIdAsync(Guid id);
-    Task<bool> ExistsByCPF(string cpf);
     Task<bool> AddAsync(T t);
     bool Update(T t);
     bool Remove(T t);

@@ -4,4 +4,5 @@ namespace api.Persistence.Repositories.Interfaces;
 
 public interface IResponsibleRepository : IGenericRepository<ResponsibleModel>
 {
+    Task<bool> ExistsByCpf(string cpf);
 }

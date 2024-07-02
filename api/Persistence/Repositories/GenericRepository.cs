@@ -18,16 +18,6 @@ public class GenericRepository<T>(
         return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
     }
 
-    public async Task<bool> ExistsByCPF(string cpf)
-    {
-        var exists = await context.Set<T>().AsNoTracking().FirstOrDefaultAsync(e => EF.Property<string>(e, "CPF") == cpf);
-        if (exists is null)
-        {
-            return false;
-        }
-
-        return true;
-    }
 
     public async Task<bool> AddAsync(T t)
     {
