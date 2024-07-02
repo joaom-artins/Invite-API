@@ -1,15 +1,16 @@
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace api.Common;
+namespace Invite.Commons;
 
 public class ValidateCPF
 {
     public static bool IsValidCpf(string cpf)
     {
-        // Remove qualquer pontuação do CPF
         cpf = cpf.Replace(".", "").Replace("-", "");
 
-        // Verifica se o CPF tem 11 dígitos
         if (cpf.Length != 11)
         {
             return false;
@@ -75,5 +76,4 @@ public class ValidateCPF
         string pattern = @"^\d{3}\.\d{3}\.\d{3}-\d{2}$|^\d{11}$";
         return Regex.IsMatch(cpf, pattern);
     }
-
 }

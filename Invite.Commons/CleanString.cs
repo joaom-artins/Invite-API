@@ -1,6 +1,4 @@
-using System.Text.RegularExpressions;
-
-namespace api.Common;
+﻿namespace Invite.Commons;
 
 public static class CleanString
 {
