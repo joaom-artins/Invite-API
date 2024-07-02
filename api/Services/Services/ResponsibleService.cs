@@ -1,4 +1,5 @@
 using api.Business.Interfaces;
+using api.Common;
 using api.Entities.Models;
 using api.Entities.Request;
 using api.Persistence.Repositories.Interfaces;
@@ -37,11 +38,12 @@ public class ResponsibleService(
         {
             return false;
         }
+
         var record = new ResponsibleModel
         {
             Name = request.Name,
             PersonsInFamily = request.PersonsInFamily,
-            CPF = request.CPF,
+            CPF = CleanString.OnlyNumber(request.CPF),
         };
         await _responsibleRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
