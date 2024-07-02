@@ -33,10 +33,22 @@ namespace api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ResponsibleCreateRequest request)
         {
-            var valid = await _responsibleService.CreateAsync(request);
-            if (!valid)
+            var result = await _responsibleService.CreateAsync(request);
+            if (!result)
             {
                 return BadRequest("Corno não deu certo!!");
+            }
+
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _responsibleService.DeleteAsync(id);
+            if (!result)
+            {
+                return NotFound("Responsável não encontrado!");
             }
 
             return NoContent();

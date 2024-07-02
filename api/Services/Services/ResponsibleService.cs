@@ -50,4 +50,18 @@ public class ResponsibleService(
 
         return true;
     }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var record = await _responsibleRepository.GetByIdAsync(id);
+        if (record is null)
+        {
+            return false;
+        }
+
+        _responsibleRepository.Remove(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
 }
