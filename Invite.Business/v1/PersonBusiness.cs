@@ -8,23 +8,13 @@ using Microsoft.AspNetCore.Http;
 
 namespace Invite.Business.v1;
 
-public class ResponsibleBusiness(
+public class PersonBusiness(
     INotificationContext _notificationContext,
-    IResponsibleRepository _responsibleRepository
-) : IResponsibleBusiness
+    IPersonsRepository _personsRepository
+) : IPersonBusiness
 {
-    public async Task<bool> ValidateForCreateAsync(ResponsibleCreateRequest request)
+    public async Task<bool> ValidateForCreate(PersonCreateRequest request)
     {
-        if (request.Persons.Count() != request.PersonInFamily)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.Responsible.PersonsInRequestInvalid
-            );
-            return false;
-        }
-
         var cpfIsValid = ValidateCPF.IsValidCpf(request.CPF);
         if (!cpfIsValid)
         {
@@ -47,7 +37,7 @@ public class ResponsibleBusiness(
             return false;
         }
 
-        var exists = await _responsibleRepository.ExistsByCpf(request.CPF);
+        var exists = await _personsRepository.ExistsByCPF(CleanString.OnlyNumber(request.CPF));
         if (exists)
         {
             _notificationContext.SetDetails(

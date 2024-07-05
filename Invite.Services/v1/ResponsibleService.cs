@@ -15,7 +15,8 @@ public class ResponsibleService(
     IUnitOfWork _unitOfWork,
     INotificationContext _notificationContext,
     IResponsibleRepository _responsibleRepository,
-    IResponsibleBusiness _responsibleBusiness
+    IResponsibleBusiness _responsibleBusiness,
+    IPersonService _personService
 ) : IResponsibleService
 {
     public async Task<IEnumerable<ResponsibleModel>> GetAll()
@@ -49,6 +50,8 @@ public class ResponsibleService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         var record = new ResponsibleModel
         {
             Name = request.Name,
@@ -57,6 +60,17 @@ public class ResponsibleService(
         };
         await _responsibleRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
+
+        foreach (var person in request.Persons)
+        {
+            await _personService.CreateAsync(record.Id, person);
+            if (_notificationContext.HasNotifications)
+            {
+                return false;
+            }
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
