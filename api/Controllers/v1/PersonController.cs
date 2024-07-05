@@ -33,4 +33,12 @@ public class PersonController(
 
         return NoContent();
     }
+
+    [HttpDelete("responsible/{responsibleId}/remove-all")]
+    public async Task<IActionResult> RemoveAll(Guid responsibleId)
+    {
+        await _personService.RemoveAll(responsibleId);
+
+        return NoContent();
+    }
 }

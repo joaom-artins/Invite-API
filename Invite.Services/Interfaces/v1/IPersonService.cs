@@ -9,4 +9,5 @@ public interface IPersonService
     Task<bool> CreateAsync(Guid responsibleId, PersonCreateRequest request);
     Task<bool> AddToResponsibleAsync(Guid id, PersonCreateRequest request);
     Task<bool> RemoveFromResponsibleAsync(Guid responsibleId, Guid id);
+    Task<bool> RemoveAll(Guid responsibleId);
 }

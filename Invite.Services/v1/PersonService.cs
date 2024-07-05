@@ -94,4 +94,23 @@ public class PersonService(
 
         return true;
     }
+
+    public async Task<bool> RemoveAll(Guid responsibleId)
+    {
+        var records = await _personsRepository.GetByResponsible(responsibleId);
+        if (!records.Any())
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Person.PersonsEmpty
+            );
+            return false;
+        }
+
+        _personsRepository.RemoveRange(records);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
 }

@@ -17,6 +17,7 @@ public class NotificationMessage
 
     public static class Person
     {
-        public static readonly string NotFound = "Pessoas não encontrado";
+        public static readonly string NotFound = "Pessoa não encontrado";
+        public static readonly string PersonsEmpty = "Não existe nenhuma pessoa relacionada a esse responsável";
     }
 }
