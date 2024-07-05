@@ -6,6 +6,7 @@ using Invite.Commons.Middlewares;
 using Invite.Persistence.Utils;
 using Invite.Services.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,7 @@ app.UseMiddleware(typeof(ExceptionMiddleware));
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c => c.DocExpansion(DocExpansion.None));
 }
 app.MapControllers();
 

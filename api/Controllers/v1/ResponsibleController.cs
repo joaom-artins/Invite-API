@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers.v1;
 
 [ApiController]
-[Route("v1/responsible")]
+[Route("v1/responsibles")]
 public class ResponsibleController(
     IResponsibleService _responsibleService
 ) : ControllerBase
@@ -29,11 +29,7 @@ public class ResponsibleController(
     [HttpPost]
     public async Task<IActionResult> Create(ResponsibleCreateRequest request)
     {
-        var result = await _responsibleService.CreateAsync(request);
-        if (!result)
-        {
-            return BadRequest("Corno não deu certo!!");
-        }
+        await _responsibleService.CreateAsync(request);
 
         return NoContent();
     }
@@ -41,11 +37,7 @@ public class ResponsibleController(
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, ResponsibleUpdateRequest request)
     {
-        var result = await _responsibleService.UpdateAsync(id, request);
-        if (!result)
-        {
-            return NotFound();
-        }
+        await _responsibleService.UpdateAsync(id, request);
 
         return NoContent();
     }
@@ -53,11 +45,7 @@ public class ResponsibleController(
     [HttpDelete("{id}")]
     public async Task<IActionResult> Delete(Guid id)
     {
-        var result = await _responsibleService.DeleteAsync(id);
-        if (!result)
-        {
-            return NotFound("Responsável não encontrado!");
-        }
+        await _responsibleService.DeleteAsync(id);
 
         return NoContent();
     }

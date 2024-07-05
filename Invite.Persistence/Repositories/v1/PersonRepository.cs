@@ -12,6 +12,13 @@ public class PersonRepository(
 {
     private readonly AppDbContext _context = context;
 
+    public async Task<IEnumerable<PersonModel>> GetByResponsible(Guid responsibleId)
+    {
+        var records = await _context.Persons.Where(x => x.ResponsibleId == responsibleId).ToListAsync();
+
+        return records;
+    }
+
     public async Task<bool> ExistsByCPF(string cpf)
     {
         var exists = await _context.Persons.SingleOrDefaultAsync(x => x.CPF == cpf);

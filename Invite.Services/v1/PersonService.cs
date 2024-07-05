@@ -1,11 +1,14 @@
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
+using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 
 namespace Invite.Services.v1;
 
@@ -16,6 +19,12 @@ public class PersonService(
     IPersonBusiness _personBusiness
 ) : IPersonService
 {
+    public async Task<IEnumerable<PersonModel>> FindByResponsible(Guid responsibleId)
+    {
+        var records = await _personsRepository.GetByResponsible(responsibleId);
+
+        return records;
+    }
     public async Task<bool> CreateAsync(Guid responsibleId, PersonCreateRequest request)
     {
         await _personBusiness.ValidateForCreate(request);
