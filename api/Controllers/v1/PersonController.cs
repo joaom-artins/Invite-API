@@ -25,4 +25,12 @@ public class PersonController(
 
         return NoContent();
     }
+
+    [HttpDelete("{id}/responsible/{responsibleId}/remove")]
+    public async Task<IActionResult> RemoveFromResponbile(Guid id, Guid responsibleId)
+    {
+        await _personService.RemoveFromResponsibleAsync(responsibleId, id);
+
+        return NoContent();
+    }
 }

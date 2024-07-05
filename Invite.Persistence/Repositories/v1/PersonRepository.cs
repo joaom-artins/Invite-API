@@ -19,6 +19,17 @@ public class PersonRepository(
         return records;
     }
 
+    public async Task<PersonModel> GetByIdAndResponsible(Guid id, Guid responsibleId)
+    {
+        var record = await _context.Persons.SingleOrDefaultAsync(x => x.Id == id && x.ResponsibleId == responsibleId);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<bool> ExistsByCPF(string cpf)
     {
         var exists = await _context.Persons.SingleOrDefaultAsync(x => x.CPF == cpf);
