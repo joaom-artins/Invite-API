@@ -1,3 +1,4 @@
+using Invite.Entities.Requests;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,5 +16,13 @@ public class PersonController(
         var result = await _personService.FindByResponsible(responsibleId);
 
         return Ok(result);
+    }
+
+    [HttpPost("{responsibleId}/add")]
+    public async Task<IActionResult> AddToResponsible(Guid responsibleId, PersonCreateRequest request)
+    {
+        await _personService.AddToResponsibleAsync(responsibleId, request);
+
+        return NoContent();
     }
 }

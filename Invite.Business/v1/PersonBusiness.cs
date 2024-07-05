@@ -37,7 +37,7 @@ public class PersonBusiness(
             return false;
         }
 
-        var exists = await _personsRepository.ExistsByCPF(request.CPF);
+        var exists = await _personsRepository.ExistsByCPF(CleanString.OnlyNumber(request.CPF));
         if (exists)
         {
             _notificationContext.SetDetails(
