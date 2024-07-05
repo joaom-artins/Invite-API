@@ -18,19 +18,19 @@ public class ResponsibleBusiness(
         if (request.Persons.Count() != request.PersonInFamily)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
                 detail: NotificationMessage.Responsible.PersonsInRequestInvalid
             );
             return false;
         }
 
-        var cpfIsValid = ValidateCPF.IsValidCpf(request.CPF);
+        var cpfIsValid = ValidateCPF.IsValidCpf(CleanString.OnlyNumber(request.CPF));
         if (!cpfIsValid)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
                 detail: NotificationMessage.Common.InvalidCPF
             );
             return false;
@@ -40,8 +40,8 @@ public class ResponsibleBusiness(
         if (!cpfIsValid)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
                 detail: NotificationMessage.Common.InvalidCPF
             );
             return false;
@@ -51,9 +51,9 @@ public class ResponsibleBusiness(
         if (exists)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.Common.ExistsCPF
+                statusCode: StatusCodes.Status409Conflict,
+                title: NotificationTitle.Conflict,
+                detail: NotificationMessage.Responsible.ExistsCPF
             );
             return false;
         }

@@ -4,5 +4,5 @@ namespace Invite.Business.Interfaces.v1;
 
 public interface IPersonBusiness
 {
-    Task<bool> ValidateForCreate(PersonCreateRequest request);
+    Task<bool> ValidateForCreateAsync(PersonCreateRequest request);
 }

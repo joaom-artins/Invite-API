@@ -28,7 +28,7 @@ public class PersonService(
 
     public async Task<bool> CreateAsync(Guid responsibleId, PersonCreateRequest request)
     {
-        await _personBusiness.ValidateForCreate(request);
+        await _personBusiness.ValidateForCreateAsync(request);
         if (_notificationContext.HasNotifications)
         {
             return false;
