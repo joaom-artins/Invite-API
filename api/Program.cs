@@ -33,6 +33,9 @@ builder.Services
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
+ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+builder.Services.AddHttpContextAccessor();
+
 RegisterPersistence.Register(builder);
 RegisterBusiness.Register(builder);
 RegisterService.Register(builder);

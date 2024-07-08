@@ -21,7 +21,7 @@ public class ValidationFilter : IAsyncActionFilter
                 continue;
             }
 
-            if (argument is IEnumerable enumerableArgument && !(argument is string))
+            if (argument is IEnumerable enumerableArgument && argument is not string)
             {
                 var index = 0;
                 bool isEmpty = true;
@@ -57,7 +57,7 @@ public class ValidationFilter : IAsyncActionFilter
             else
             {
                 var validator = GetValidatorForArgument(context, argument);
-                if (validator != null)
+                if (validator is not null)
                 {
                     var validationResult = await validator.ValidateAsync(new ValidationContext<object>(argument));
                     if (!validationResult.IsValid)
@@ -83,13 +83,13 @@ public class ValidationFilter : IAsyncActionFilter
 
             foreach (var failure in validationErrors)
             {
-                if (result.Errors.ContainsKey(failure.PropertyName))
+                if (result.Errors.TryGetValue(failure.PropertyName, out string[]? value))
                 {
-                    result.Errors[failure.PropertyName] = result.Errors[failure.PropertyName].Concat(new[] { failure.ErrorMessage }).ToArray();
+                    result.Errors[failure.PropertyName] = value.Concat([failure.ErrorMessage]).ToArray();
                 }
                 else
                 {
-                    result.Errors.Add(failure.PropertyName, new[] { failure.ErrorMessage });
+                    result.Errors.Add(failure.PropertyName, [failure.ErrorMessage]);
                 }
             }
 
