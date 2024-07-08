@@ -13,14 +13,14 @@ public class PersonBusiness(
     IPersonsRepository _personsRepository
 ) : IPersonBusiness
 {
-    public async Task<bool> ValidateForCreate(PersonCreateRequest request)
+    public async Task<bool> ValidateForCreateAsync(PersonCreateRequest request)
     {
         var cpfIsValid = ValidateCPF.IsValidCpf(request.CPF);
         if (!cpfIsValid)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
                 detail: NotificationMessage.Common.InvalidCPF
             );
             return false;
@@ -30,8 +30,8 @@ public class PersonBusiness(
         if (!cpfIsValid)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
                 detail: NotificationMessage.Common.InvalidCPF
             );
             return false;
@@ -41,9 +41,9 @@ public class PersonBusiness(
         if (exists)
         {
             _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.Common.ExistsCPF
+                statusCode: StatusCodes.Status409Conflict,
+                title: NotificationTitle.Conflict,
+                detail: NotificationMessage.Person.ExistsCPF
             );
             return false;
         }
