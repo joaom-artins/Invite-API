@@ -4,6 +4,7 @@ using api.Utils;
 using FluentValidation;
 using Invite.Business.Utils;
 using Invite.Commons.Middlewares;
+using Invite.Entities.Validators;
 using Invite.Persistence.Utils;
 using Invite.Services.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,8 @@ builder.Services
 });
 
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+builder.Services.AddValidatorsFromAssemblyContaining<ResponsibleCreateRequestValidator>();
+
 builder.Services.AddHttpContextAccessor();
 
 RegisterPersistence.Register(builder);
