@@ -475,3 +475,12 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Ignorar todos os arquivos .yml
+*.yml
+
+# Ignorar todos os arquivos .sh
+*.sh
+
+# Ignorar todos os arquivos .sql
+*.sql
