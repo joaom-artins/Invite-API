@@ -6,4 +6,5 @@ public interface IUserRepository : IGenericRepository<UserModel>
 {
     Task<bool> ExistsByCPFAsync(string cpf);
     Task<bool> ExistsByEmail(string email);
+    Task<UserModel> GetByEmail(string email);
 }

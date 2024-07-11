@@ -35,4 +35,14 @@ public class UserRepository(
         return true;
     }
 
+    public async Task<UserModel> GetByEmail(string email)
+    {
+        var record = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
 }

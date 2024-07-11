@@ -4,24 +4,40 @@ using System.Text.Json.Serialization;
 using api.Utils;
 using FluentValidation;
 using Invite.Business.Utils;
+using Invite.Commons;
 using Invite.Commons.Middlewares;
 using Invite.Entities.Models;
-using Invite.Entities.Validators;
+using Invite.Entities.Requests;
 using Invite.Persistence.Context;
 using Invite.Persistence.Utils;
 using Invite.Services.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
+var appSettingsSection = builder.Configuration.GetRequiredSection("AppSettings");
+builder.Services.Configure<AppSettings>(appSettingsSection);
+var appSettings = appSettingsSection.Get<AppSettings>();
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "INVITE API",
+        Description = "API para envio de convites",
+        Version = "v1"
+    });
+});
+
 builder.Services.AddControllers();
 
 builder.Services
@@ -40,31 +56,8 @@ builder.Services
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
-builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
-
-// Configurar autenticação JWT
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters
-    {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = true,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        ValidAudience = builder.Configuration["Jwt:Audience"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]!))
-    };
-});
-
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
-builder.Services.AddValidatorsFromAssemblyContaining<ResponsibleCreateRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequest>();
 
 builder.Services.AddHttpContextAccessor();
 
@@ -72,10 +65,27 @@ RegisterPersistence.Register(builder);
 RegisterBusiness.Register(builder);
 RegisterService.Register(builder);
 
+builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
 
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.RequireHttpsMetadata = true; // Altere para true em produção, se necessário
+        options.SaveToken = true;
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings!.Jwt.Key)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+    });
 var app = builder.Build();
 
 app.UseMiddleware(typeof(ExceptionMiddleware));
+//app.UseMiddleware(typeof(AuthorizationMiddleware));
 
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 // Configure the HTTP request pipeline.
@@ -89,5 +99,11 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
+{
+    var dbContext = serviceScope.ServiceProvider.GetService<AppDbContext>();
+    dbContext!.Database.Migrate();
+}
 
 app.Run();

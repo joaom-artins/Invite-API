@@ -32,5 +32,6 @@ public class NotificationMessage
         public static readonly string ErrorInCreate = "Ocorreu um erro inesperado ao criar o usuário,tente novamente por favor!";
         public static readonly string NotFound = "Usuário não encontrado!";
         public static readonly string ErrorInAddRole = "Erro ao adicionar Role em usuário!";
+        public static readonly string InvaliData = "Dados incorretos!";
     }
 }
