@@ -235,6 +235,20 @@ namespace Invite.Persistence.Migrations
                 name: "IX_UsersRoles_RoleId",
                 table: "UsersRoles",
                 column: "RoleId");
+            
+            migrationBuilder.InsertData("Roles",
+            columns:
+            [
+                "Id",
+                "Name",
+                "NormalizedName",
+                "ConcurrencyStamp"
+            ],
+            values: new object[,]
+            {
+                { "f7771ebc-5209-43e9-b9d5-a476671965db", "Admin", "ADMIN", "380fd023-5172-4630-b9bd-7d4c8834cd1d"},
+                { "83cee705-c19f-4044-a603-68e4789ae893", "User", "USER", "51e5d77a-39dc-4489-beab-e6a9e848ecf9" },
+            });
         }
 
         /// <inheritdoc />

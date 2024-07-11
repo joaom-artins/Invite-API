@@ -21,5 +21,6 @@ public class RegisterService
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();
         builder.Services.AddScoped<IPersonService, PersonService>();
+        builder.Services.AddScoped<IUserService, UserService>();
     }
 }
