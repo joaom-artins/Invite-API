@@ -23,4 +23,15 @@ public class NotificationMessage
         public static readonly string PersonsEmpty = "Não existe nenhuma pessoa relacionada a esse responsável";
         public static readonly string ExistsCPF = "CPF já cadastrado!";
     }
+
+    public static class User
+    {
+        public static readonly string EmailExists = "Esse email já está cadastrado!";
+        public static readonly string ExistsCPF = "CPF já cadastrado!";
+        public static readonly string DifferentPasswords = "As senhas informadas são diferentes!";
+        public static readonly string ErrorInCreate = "Ocorreu um erro inesperado ao criar o usuário,tente novamente por favor!";
+        public static readonly string NotFound = "Usuário não encontrado!";
+        public static readonly string ErrorInAddRole = "Erro ao adicionar Role em usuário!";
+        public static readonly string InvaliData = "Dados incorretos!";
+    }
 }

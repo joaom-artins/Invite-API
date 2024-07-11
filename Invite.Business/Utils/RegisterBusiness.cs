@@ -14,5 +14,6 @@ public class RegisterBusiness
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
         builder.Services.AddScoped<IResponsibleBusiness, ResponsibleBusiness>();
         builder.Services.AddScoped<IPersonBusiness, PersonBusiness>();
+        builder.Services.AddScoped<IUserBusiness, UserBusiness>();
     }
 }
