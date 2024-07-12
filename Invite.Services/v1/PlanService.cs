@@ -17,21 +17,20 @@ public class PlanService(
     IPlanRepository _planRepository
 ) : IPlanService
 {
-    public async Task<PlanModel> GetByName(string name)
+    public async Task<IEnumerable<PlanModel>> GetAllAsync()
     {
-        var record = await _planRepository.GetByNameAsync(name);
-        if (record is null)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.Plan.NotFound
-            );
-            return default!;
-        }
+        var records = await _planRepository.GetAllAsync();
 
-        return record;
+        return records;
     }
+
+    public async Task<IEnumerable<PlanModel>> GetByNameAsync(string name)
+    {
+        var records = await _planRepository.GetByNameAsync(name);
+
+        return records;
+    }
+
     public async Task<bool> CreateAsync(PlanCreateRequest request)
     {
         await _planBusiness.ExistsNameAsync(request.Name);
@@ -74,6 +73,25 @@ public class PlanService(
         record.Name = request.Name;
         record.Price = request.Price;
         _planRepository.Update(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> DeleteAync(Guid id)
+    {
+        var record = await _planRepository.GetByIdAsync(id);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Plan.NotFound
+            );
+            return false;
+        }
+
+        _planRepository.Remove(record);
         await _unitOfWork.CommitAsync();
 
         return true;

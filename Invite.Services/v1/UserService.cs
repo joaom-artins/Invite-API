@@ -1,4 +1,5 @@
 using Invite.Business.Interfaces.v1;
+using Invite.Commons;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
@@ -32,7 +33,7 @@ public class UserService(
             FullName = request.FullName,
             Email = request.Email,
             UserName = request.Email.ToUpper(),
-            CPFOrCNPJ = request.CPFOrCNPJ,
+            CPFOrCNPJ = CleanString.OnlyNumber(request.CPFOrCNPJ),
         }, request.Password);
         await _unitOfWork.CommitAsync();
 

@@ -12,15 +12,11 @@ public class PlanRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<PlanModel> GetByNameAsync(string name)
+    public async Task<IEnumerable<PlanModel>> GetByNameAsync(string name)
     {
-        var record = await _context.Plans.SingleOrDefaultAsync(x => x.Name == name);
-        if (record is null)
-        {
-            return default!;
-        }
+        var records = await _context.Plans.Where(x => x.Name.Contains(name)).ToListAsync();
 
-        return record;
+        return records;
     }
     public async Task<bool> ExistsByNameAsync(string name)
     {
