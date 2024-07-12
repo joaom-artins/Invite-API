@@ -32,7 +32,7 @@ public class UserService(
             FullName = request.FullName,
             Email = request.Email,
             UserName = request.Email.ToUpper(),
-            CPF = request.CPF,
+            CPFOrCNPJ = request.CPFOrCNPJ,
         }, request.Password);
         await _unitOfWork.CommitAsync();
 
