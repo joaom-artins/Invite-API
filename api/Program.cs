@@ -6,6 +6,7 @@ using FluentValidation;
 using Invite.Business.Utils;
 using Invite.Commons;
 using Invite.Commons.Middlewares;
+using Invite.Commons.Utils;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
 using Invite.Persistence.Context;
@@ -63,6 +64,7 @@ builder.Services.AddHttpContextAccessor();
 
 RegisterPersistence.Register(builder);
 RegisterBusiness.Register(builder);
+RegisterCommons.Register(builder);
 RegisterService.Register(builder);
 
 builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
@@ -72,7 +74,7 @@ builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = true; // Altere para true em produção, se necessário
+        options.RequireHttpsMetadata = true;
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
@@ -82,10 +84,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             ValidateAudience = false
         };
     });
+
 var app = builder.Build();
 
 app.UseMiddleware(typeof(ExceptionMiddleware));
-//app.UseMiddleware(typeof(AuthorizationMiddleware));
+app.UseMiddleware(typeof(AuthorizationMiddleware));
 
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
 // Configure the HTTP request pipeline.
@@ -96,8 +99,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthentication();
 app.UseAuthorization();
+app.UseAuthentication();
 app.MapControllers();
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
