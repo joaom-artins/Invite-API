@@ -72,12 +72,15 @@ builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
-        options.RequireHttpsMetadata = true; // Altere para true em produção, se necessário
+        options.RequireHttpsMetadata = false;
         options.SaveToken = true;
         options.TokenValidationParameters = new TokenValidationParameters
         {
+            ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings!.Jwt.Key)),
+            ValidAudience = appSettings!.Jwt.Audience,
+            ValidIssuer = appSettings!.Jwt.Issuer,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings!.Jwt.SecretKey)),
             ValidateIssuer = false,
             ValidateAudience = false
         };

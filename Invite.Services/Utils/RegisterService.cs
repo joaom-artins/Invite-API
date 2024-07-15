@@ -25,6 +25,7 @@ public class RegisterService
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();
         builder.Services.AddScoped<IPersonService, PersonService>();
         builder.Services.AddScoped<IUserService, UserService>();
+        builder.Services.AddScoped<ITokenService, TokenService>();
 
         var appSettings = builder.Configuration.GetSection("AppSettings");
         builder.Services.Configure<AppSettings>(appSettings);
