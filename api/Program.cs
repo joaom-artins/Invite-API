@@ -78,19 +78,18 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         {
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidAudience = appSettings!.Jwt.Audience,
-            ValidIssuer = appSettings!.Jwt.Issuer,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings!.Jwt.SecretKey)),
-            ValidateIssuer = false,
-            ValidateAudience = false
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings!.Jwt.SecretKey)),
+            ValidateIssuer = true,
+            ValidIssuer = appSettings.Jwt.Issuer,
+            ValidateAudience = true,
+            ValidAudience = appSettings.Jwt.Audience
         };
     });
+
 var app = builder.Build();
 
-app.UseMiddleware(typeof(ExceptionMiddleware));
-//app.UseMiddleware(typeof(AuthorizationMiddleware));
-
 ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -102,6 +101,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+app.UseMiddleware(typeof(ExceptionMiddleware));
+app.UseMiddleware(typeof(AuthorizationMiddleware));
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {

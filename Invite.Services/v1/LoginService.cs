@@ -17,7 +17,6 @@ namespace Invite.Services.v1;
 
 public class LoginService(
     INotificationContext _notificationContext,
-    AppSettings _appSettings,
     IUserRepository _userRepository,
     SignInManager<UserModel> _signInManager,
     UserManager<UserModel> _userManager,
@@ -74,7 +73,7 @@ public class LoginService(
         }
 
         var tokenHandle = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Jwt.SecretKey);
+
         var claims = new List<Claim>
         {
             new("userId", user!.Id.ToString()),
