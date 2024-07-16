@@ -102,13 +102,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization();
-<<<<<<< HEAD
 app.UseAuthentication();
-app.MapControllers();
-=======
+app.UseAuthorization();
 app.MapControllers().RequireAuthorization();
->>>>>>> main
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {
