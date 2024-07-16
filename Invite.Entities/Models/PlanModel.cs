@@ -11,5 +11,6 @@ public class PlanModel
     public string Name { get; set; } = default!;
     [Precision(6, 2)]
     public decimal Price { get; set; }
-    public TypePlanEnum Type { get; set; }
+    public PlanTypeEnum Type { get; set; }
+    public int MaxGuest { get; set; }
 }

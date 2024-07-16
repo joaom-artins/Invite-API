@@ -10,5 +10,5 @@ public class UserModel : IdentityUser<Guid>
     public string FullName { get; set; } = default!;
     [MaxLength(14)]
     public string CPFOrCNPJ { get; set; } = default!;
-    public TypeClientEnum TypeClient { get; set; }
+    public ClientTypeEnum TypeClient { get; set; }
 }

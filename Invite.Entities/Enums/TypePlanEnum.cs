@@ -1,6 +1,6 @@
 namespace Invite.Entities.Enums;
 
-public enum TypePlanEnum
+public enum PlanTypeEnum
 {
     Buffet = 1,
     Person = 2
