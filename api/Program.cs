@@ -7,6 +7,7 @@ using FluentValidation;
 using Invite.Business.Utils;
 using Invite.Commons;
 using Invite.Commons.Middlewares;
+using Invite.Commons.Utils;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
 using Invite.Persistence.Context;
@@ -64,6 +65,7 @@ builder.Services.AddHttpContextAccessor();
 
 RegisterPersistence.Register(builder);
 RegisterBusiness.Register(builder);
+RegisterCommons.Register(builder);
 RegisterService.Register(builder);
 
 builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()

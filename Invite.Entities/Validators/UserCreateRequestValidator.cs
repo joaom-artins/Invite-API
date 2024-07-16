@@ -18,7 +18,7 @@ public class UserCreateRequestValidator : AbstractValidator<UserCreateRequest>
             .MinimumLength(5).WithMessage("Nome completo deve conter no mínimo 5 caracteres!")
             .MaximumLength(60).WithMessage("Nome completo deve conter no máximo 60 caracteres");
 
-        RuleFor(x => x.CPF)
+        RuleFor(x => x.CPFOrCNPJ)
             .NotEmpty().WithMessage("CPF é um campo obrigatório!")
             .Must(value => ValidateCPF.IsValidCpf(value) && ValidateCPF.IsValidCpf(value)).WithMessage("CPF Inválido!");
 

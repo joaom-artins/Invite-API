@@ -28,7 +28,7 @@ public class ResponsibleController(
     }
 
     [HttpPost]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> Create(ResponsibleCreateRequest request)
     {
         await _responsibleService.CreateAsync(request);
@@ -37,6 +37,7 @@ public class ResponsibleController(
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> Update(Guid id, ResponsibleUpdateRequest request)
     {
         await _responsibleService.UpdateAsync(id, request);
@@ -45,6 +46,7 @@ public class ResponsibleController(
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "User")]
     public async Task<IActionResult> Delete(Guid id)
     {
         await _responsibleService.DeleteAsync(id);
