@@ -28,6 +28,7 @@ public class NotificationMessage
     {
         public static readonly string NotFound = "Plano não encontrado";
         public static readonly string ExistsName = "Já existe outro plano com esse nome!";
+        public static readonly string TypeError = "O plano selecionado pertence a outro tipo de cliente!";
     }
 
     public static class User
@@ -39,5 +40,12 @@ public class NotificationMessage
         public static readonly string NotFound = "Usuário não encontrado!";
         public static readonly string ErrorInAddRole = "Erro ao adicionar Role em usuário!";
         public static readonly string InvaliData = "Dados incorretos!";
+    }
+
+    public static class Event
+    {
+        public static readonly string GuestIsMoreThanPlan = "Event0 não pode conter mais convidados que o limíte máximo do plano!";
+        public static readonly string ExistsName = "Já existe outro evento com esse nome!";
+        public static readonly string NotFound = "Evento não encontrado!";
     }
 }

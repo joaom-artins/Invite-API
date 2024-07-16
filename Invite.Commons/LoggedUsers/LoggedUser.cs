@@ -8,9 +8,9 @@ public class LoggedUser(
     IHttpContextAccessor _httpContextAccessor
 ) : ILoggedUser
 {
-    public long GetId()
+    public Guid GetId()
     {
-        return long.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue("userId")!);
+        return Guid.Parse(_httpContextAccessor.HttpContext?.User.FindFirstValue("userId")!);
     }
 
     public string GetRole()

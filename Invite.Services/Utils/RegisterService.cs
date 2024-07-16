@@ -19,9 +19,11 @@ public class RegisterService
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase
         };
 
-        builder.Services.AddSingleton(jsonSerializerOptions);
-        builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
+
+        builder.Services.AddSingleton(jsonSerializerOptions);
+        builder.Services.AddScoped<IEventService, EventService>();
+        builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();
         builder.Services.AddScoped<IPersonService, PersonService>();
         builder.Services.AddScoped<IPlanService, PlanService>();

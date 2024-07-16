@@ -9,5 +9,5 @@ public class UserCreateRequest
     public string Email { get; set; } = default!;
     public string Password { get; set; } = default!;
     public string ConfirmPassword { get; set; } = default!;
-    public TypeClientEnum TypeClient { get; set; }
+    public ClientTypeEnum TypeClient { get; set; }
 }

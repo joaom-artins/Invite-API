@@ -12,6 +12,8 @@ public class RegisterBusiness
     public static void Register(WebApplicationBuilder builder)
     {
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
+
+        builder.Services.AddScoped<IEventBusiness, EventBusiness>();
         builder.Services.AddScoped<IResponsibleBusiness, ResponsibleBusiness>();
         builder.Services.AddScoped<IPersonBusiness, PersonBusiness>();
         builder.Services.AddScoped<IPlanBusiness, PlanBusiness>();
