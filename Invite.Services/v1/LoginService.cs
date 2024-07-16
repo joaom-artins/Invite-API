@@ -17,10 +17,10 @@ namespace Invite.Services.v1;
 
 public class LoginService(
     INotificationContext _notificationContext,
-    AppSettings _appSettings,
     IUserRepository _userRepository,
     SignInManager<UserModel> _signInManager,
-    UserManager<UserModel> _userManager
+    UserManager<UserModel> _userManager,
+    AppSettings _appSettings
 ) : ILoginService
 {
     public async Task<LoginResponse> Login(LoginRequest request)
@@ -73,17 +73,19 @@ public class LoginService(
         }
 
         var tokenHandle = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(_appSettings.Jwt.Key);
+
         var claims = new List<Claim>
         {
             new("userId", user!.Id.ToString()),
-            new(ClaimTypes.Role, role.First())
+            new(ClaimTypes.Role, role.First()),
         };
+
+        var key = Encoding.ASCII.GetBytes(_appSettings.Jwt.SecretKey);
 
         var token = tokenHandle.CreateToken(new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.UtcNow.AddSeconds(_appSettings.Jwt.Expiration),
+            Expires = DateTime.Now.AddSeconds(_appSettings.Jwt.Expiration),
             SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
         });
 

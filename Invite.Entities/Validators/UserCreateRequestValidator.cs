@@ -23,6 +23,7 @@ public class UserCreateRequestValidator : AbstractValidator<UserCreateRequest>
             .Must(value => ValidateCPF.IsValidCpf(value) && ValidateCPF.IsValidCpf(value)).WithMessage("CPF Inválido!");
 
         RuleFor(x => x.Password)
-            .NotEmpty().WithMessage("Senha é umcampo obrigatório!");
+            .NotEmpty().WithMessage("Senha é umcampo obrigatório!")
+             .Matches(ValidateStrings.Password).WithMessage("Senha deve ter pelo menos 1 caractere maiúsculo, 1 minúsculo e 1 especial");
     }
 }

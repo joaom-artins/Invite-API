@@ -1,5 +1,6 @@
 using Invite.Entities.Requests;
 using Invite.Services.Interfaces.v1;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.v1;
@@ -27,6 +28,7 @@ public class ResponsibleController(
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Create(ResponsibleCreateRequest request)
     {
         await _responsibleService.CreateAsync(request);
