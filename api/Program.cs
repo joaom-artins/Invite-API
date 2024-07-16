@@ -1,3 +1,4 @@
+using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -69,26 +70,27 @@ builder.Services.AddIdentity<UserModel, IdentityRole<Guid>>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
+builder.Services.AddAuthentication(auth =>
+{
+    auth.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    auth.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(auth =>
+{
+    auth.RequireHttpsMetadata = true;
+    auth.SaveToken = true;
+    auth.TokenValidationParameters = new TokenValidationParameters
     {
-        options.RequireHttpsMetadata = false;
-        options.SaveToken = true;
-        options.TokenValidationParameters = new TokenValidationParameters
-        {
-            ValidateLifetime = true,
-            ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(appSettings!.Jwt.SecretKey)),
-            ValidateIssuer = true,
-            ValidIssuer = appSettings.Jwt.Issuer,
-            ValidateAudience = true,
-            ValidAudience = appSettings.Jwt.Audience
-        };
-    });
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(appSettings!.Jwt.SecretKey)),
+        ValidateIssuer = false,
+        ValidateAudience = false
+    };
+});
 
 var app = builder.Build();
 
-ValidatorOptions.Global.DefaultRuleLevelCascadeMode = CascadeMode.Stop;
+app.UseMiddleware(typeof(ExceptionMiddleware));
+app.UseMiddleware(typeof(AuthorizationMiddleware));
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -100,10 +102,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
-app.MapControllers();
-
-app.UseMiddleware(typeof(ExceptionMiddleware));
-app.UseMiddleware(typeof(AuthorizationMiddleware));
+app.MapControllers().RequireAuthorization();
 
 using (var serviceScope = app.Services.GetRequiredService<IServiceScopeFactory>().CreateScope())
 {

@@ -20,7 +20,7 @@ public class LoginService(
     IUserRepository _userRepository,
     SignInManager<UserModel> _signInManager,
     UserManager<UserModel> _userManager,
-    ITokenService _tokenService
+    AppSettings _appSettings
 ) : ILoginService
 {
     public async Task<LoginResponse> Login(LoginRequest request)
@@ -78,10 +78,16 @@ public class LoginService(
         {
             new("userId", user!.Id.ToString()),
             new(ClaimTypes.Role, role.First()),
-            new(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
 
-        var token = _tokenService.GenerateAccessToken(claims);
+        var key = Encoding.ASCII.GetBytes(_appSettings.Jwt.SecretKey);
+
+        var token = tokenHandle.CreateToken(new SecurityTokenDescriptor
+        {
+            Subject = new ClaimsIdentity(claims),
+            Expires = DateTime.Now.AddSeconds(_appSettings.Jwt.Expiration),
+            SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+        });
 
         return tokenHandle.WriteToken(token);
     }
