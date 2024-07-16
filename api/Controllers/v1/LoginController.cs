@@ -1,6 +1,7 @@
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Requests;
 using Invite.Services.Interfaces.v1;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace api.Controllers.v1;
@@ -13,6 +14,7 @@ public class LoginController(
 ) : ControllerBase
 {
     [HttpPost]
+    [AllowAnonymous]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
         var result = await _loginService.Login(request);
