@@ -14,4 +14,5 @@ public class InviteModel
     [MaxLength(8)]
     public string Reference { get; set; } = default!;
     public DateOnly LimitDate { get; set; }
+    public Guid FutureResponsibleId { get; set; }
 }
