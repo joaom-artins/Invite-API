@@ -13,6 +13,7 @@ public class RegisterBusiness
     {
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
 
+        builder.Services.AddScoped<IInviteBusiness, InviteBusiness>();
         builder.Services.AddScoped<IEventBusiness, EventBusiness>();
         builder.Services.AddScoped<IResponsibleBusiness, ResponsibleBusiness>();
         builder.Services.AddScoped<IPersonBusiness, PersonBusiness>();

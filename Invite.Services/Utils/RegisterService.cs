@@ -22,6 +22,7 @@ public class RegisterService
         builder.Services.AddScoped<INotificationContext, NotificationContext>();
 
         builder.Services.AddSingleton(jsonSerializerOptions);
+        builder.Services.AddScoped<IInviteService, InviteService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();

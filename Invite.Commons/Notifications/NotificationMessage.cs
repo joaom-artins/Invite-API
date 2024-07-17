@@ -50,4 +50,13 @@ public class NotificationMessage
         public static readonly string ExistsName = "Já existe outro evento com esse nome!";
         public static readonly string NotFound = "Evento não encontrado!";
     }
+
+    public static class Invite
+    {
+        public static readonly string InvalidDateInCreate = "O limite de aceite do convite não pode ser maior que a data do evento ou menor que a data de criação do convite!";
+        public static readonly string NotFound = "Convite não encontrado!";
+        public static readonly string InvitationAccepted = "Impossível remover um convite após ele já ter sido aceito!";
+        public static readonly string InvalidDateInDelete = "Após o tempo limite de aceite passar é impossível remover um convite";
+
+    }
 }

@@ -8,6 +8,7 @@ namespace Invite.Persistence.Context;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<UserModel, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<EventModel> Events { get; set; } = default!;
+    public DbSet<InviteModel> Invites { get; set; } = default!;
     public DbSet<InvoiceModel> Invoices { get; set; } = default!;
     public DbSet<InvoiceItemizedModel> InvoiceItemizeds { get; set; } = default!;
     public override DbSet<UserModel> Users { get; set; } = default!;
