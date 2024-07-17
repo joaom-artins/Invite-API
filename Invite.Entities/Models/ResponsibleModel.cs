@@ -11,6 +11,6 @@ public class ResponsibleModel
     public byte PersonsInFamily { get; set; }
     [MaxLength(11)]
     public string CPF { get; set; } = default!;
-    public Guid EventId { get; set; }
-    public EventModel Event { get; set; } = default!;
+    public Guid InviteId { get; set; }
+    public InviteModel Invite { get; set; } = default!;
 }

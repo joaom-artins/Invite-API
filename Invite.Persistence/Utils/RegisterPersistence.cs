@@ -17,6 +17,7 @@ public class RegisterPersistence
         builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         builder.Services.AddScoped<IEventRepository, EventRepository>();
+        builder.Services.AddScoped<IInviteRepository, InviteRepository>();
         builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         builder.Services.AddScoped<IInvoiceItemizedRepository, InvoiceItemizedRepository>();
         builder.Services.AddScoped<IPersonsRepository, PersonRepository>();

@@ -50,4 +50,10 @@ public class NotificationMessage
         public static readonly string ExistsName = "Já existe outro evento com esse nome!";
         public static readonly string NotFound = "Evento não encontrado!";
     }
+
+    public static class Invite
+    {
+        public static readonly string InvalidDate = "O limite de aceite do convite não pode ser maior que a data do evento ou menor que a data de criação do convite!";
+
+    }
 }
