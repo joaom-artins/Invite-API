@@ -7,4 +7,5 @@ public class EventCreateRequest
     public string Name { get; set; } = default!;
     public EventTypeEnum Type { get; set; }
     public int Guests { get; set; }
+    public DateOnly Date { get; set; }
 }
