@@ -57,6 +57,7 @@ public class EventService(
             PlanId = planId,
             UserId = _loggedUser.GetId(),
             Guests = request.Guests,
+            Date = request.Date,
         };
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();

@@ -15,4 +15,5 @@ public class EventModel
     public int Guests { get; set; }
     public Guid UserId { get; set; }
     public UserModel User { get; set; } = default!;
+    public DateOnly Date { get; set; }
 }
