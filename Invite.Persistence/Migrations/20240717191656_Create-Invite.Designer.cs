@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invite.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240717160606_Create-Invite")]
+    [Migration("20240717191656_Create-Invite")]
     partial class CreateInvite
     {
         /// <inheritdoc />
@@ -85,8 +85,8 @@ namespace Invite.Persistence.Migrations
 
                     b.Property<string>("Reference")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
 

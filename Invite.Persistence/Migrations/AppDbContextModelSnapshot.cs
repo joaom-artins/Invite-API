@@ -82,8 +82,8 @@ namespace Invite.Persistence.Migrations
 
                     b.Property<string>("Reference")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .HasMaxLength(8)
+                        .HasColumnType("nvarchar(8)");
 
                     b.HasKey("Id");
 

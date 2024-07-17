@@ -34,7 +34,7 @@ namespace Invite.Persistence.Migrations
                     Message = table.Column<string>(type: "nvarchar(120)", maxLength: 120, nullable: false),
                     Acepted = table.Column<bool>(type: "bit", nullable: false),
                     Active = table.Column<bool>(type: "bit", nullable: false),
-                    Reference = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    Reference = table.Column<string>(type: "nvarchar(8)", maxLength: 8, nullable: false),
                     LimitDate = table.Column<DateOnly>(type: "date", nullable: false)
                 },
                 constraints: table =>
