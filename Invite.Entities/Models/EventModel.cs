@@ -5,6 +5,7 @@ namespace Invite.Entities.Models;
 
 public class EventModel
 {
+    [Key]
     public Guid Id { get; set; }
     [MaxLength(60)]
     public string Name { get; set; } = default!;

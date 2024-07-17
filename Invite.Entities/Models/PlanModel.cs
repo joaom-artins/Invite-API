@@ -6,6 +6,7 @@ namespace Invite.Entities.Models;
 
 public class PlanModel
 {
+    [Key]
     public Guid Id { get; set; }
     [MaxLength(40)]
     public string Name { get; set; } = default!;

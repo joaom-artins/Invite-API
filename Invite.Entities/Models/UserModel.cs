@@ -11,4 +11,6 @@ public class UserModel : IdentityUser<Guid>
     [MaxLength(14)]
     public string CPFOrCNPJ { get; set; } = default!;
     public ClientTypeEnum TypeClient { get; set; }
+    public string? ExternalId { get; set; }
+    public PaymentMethodEnum? PaymentMethod { get; set; }
 }

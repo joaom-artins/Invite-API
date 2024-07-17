@@ -40,6 +40,8 @@ public class NotificationMessage
         public static readonly string NotFound = "Usuário não encontrado!";
         public static readonly string ErrorInAddRole = "Erro ao adicionar Role em usuário!";
         public static readonly string InvaliData = "Dados incorretos!";
+        public static readonly string InvalidCpf = "CPF Inválido!";
+        public static readonly string ErrorInCreateInPaymentService = "Ocorreu um erro durante a criação de usuário,tente novamente mais tarde!";
     }
 
     public static class Event

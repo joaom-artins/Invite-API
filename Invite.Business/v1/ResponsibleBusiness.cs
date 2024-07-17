@@ -25,28 +25,6 @@ public class ResponsibleBusiness(
             return false;
         }
 
-        var cpfIsValid = ValidateCPF.IsValidCpf(CleanString.OnlyNumber(request.CPF));
-        if (!cpfIsValid)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Common.InvalidCPF
-            );
-            return false;
-        }
-
-        cpfIsValid = ValidateCPF.IsCpfFormatValid(request.CPF);
-        if (!cpfIsValid)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Common.InvalidCPF
-            );
-            return false;
-        }
-
         var exists = await _responsibleRepository.ExistsByCpf(request.CPF);
         if (exists)
         {
