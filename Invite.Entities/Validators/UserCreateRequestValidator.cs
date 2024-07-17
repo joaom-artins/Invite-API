@@ -20,7 +20,7 @@ public class UserCreateRequestValidator : AbstractValidator<UserCreateRequest>
 
         RuleFor(x => x.CPFOrCNPJ)
             .NotEmpty().WithMessage("CPF é um campo obrigatório!")
-            .Must(value => ValidateCPF.IsValidCpf(value) && ValidateCPF.IsValidCpf(value)).WithMessage("CPF Inválido!");
+            .Must(ValidateCPF.IsCpfFormatValid).WithMessage("CPF Inválido!");
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Senha é umcampo obrigatório!")

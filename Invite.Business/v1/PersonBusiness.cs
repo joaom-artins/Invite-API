@@ -15,27 +15,6 @@ public class PersonBusiness(
 {
     public async Task<bool> ValidateForCreateAsync(PersonCreateRequest request)
     {
-        var cpfIsValid = ValidateCPF.IsValidCpf(request.CPF);
-        if (!cpfIsValid)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Common.InvalidCPF
-            );
-            return false;
-        }
-
-        cpfIsValid = ValidateCPF.IsCpfFormatValid(request.CPF);
-        if (!cpfIsValid)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Common.InvalidCPF
-            );
-            return false;
-        }
 
         var exists = await _personsRepository.ExistsByCPF(CleanString.OnlyNumber(request.CPF));
         if (exists)
