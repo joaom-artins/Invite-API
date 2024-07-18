@@ -15,6 +15,7 @@ public class ResponsibleService(
     IUnitOfWork _unitOfWork,
     INotificationContext _notificationContext,
     IResponsibleRepository _responsibleRepository,
+    IInviteRepository _inviteRepository,
     IResponsibleBusiness _responsibleBusiness,
     IPersonService _personService
 ) : IResponsibleService
@@ -26,9 +27,9 @@ public class ResponsibleService(
         return records;
     }
 
-    public async Task<ResponsibleModel> GetById(Guid id)
+    public async Task<ResponsibleModel> GetById(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _responsibleRepository.GetByIdAsync(id);
+        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -42,9 +43,9 @@ public class ResponsibleService(
         return record;
     }
 
-    public async Task<bool> CreateAsync(ResponsibleCreateRequest request)
+    public async Task<bool> CreateAsync(Guid eventId, Guid inviteId, ResponsibleCreateRequest request)
     {
-        await _responsibleBusiness.ValidateForCreateAsync(request);
+        var inviteRecord = await _responsibleBusiness.ValidateForCreateAsync(eventId, inviteId, request);
         if (_notificationContext.HasNotifications)
         {
             return false;
@@ -54,9 +55,11 @@ public class ResponsibleService(
 
         var record = new ResponsibleModel
         {
+            Id = inviteRecord.FutureResponsibleId,
             Name = request.Name,
             PersonsInFamily = request.PersonInFamily,
             CPF = CleanString.OnlyNumber(request.CPF),
+            InviteId = inviteRecord.Id
         };
         await _responsibleRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
@@ -70,14 +73,18 @@ public class ResponsibleService(
             }
         }
 
+        inviteRecord.Acepted = true;
+        _inviteRepository.Update(inviteRecord);
+        await _unitOfWork.CommitAsync();
+
         await _unitOfWork.CommitAsync(true);
 
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, ResponsibleUpdateRequest request)
+    public async Task<bool> UpdateAsync(Guid id, Guid eventId, Guid inviteId, ResponsibleUpdateRequest request)
     {
-        var record = await _responsibleRepository.GetByIdAsync(id);
+        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -85,21 +92,20 @@ public class ResponsibleService(
                 title: NotificationTitle.NotFound,
                 detail: NotificationMessage.Responsible.NotFound
             );
-            return false;
+            return default!;
         }
 
         record.Name = request.Name;
         record.CPF = request.CPF;
-        record.PersonsInFamily = request.PersonInFamily;
         _responsibleRepository.Update(record);
         await _unitOfWork.CommitAsync();
 
         return true;
     }
 
-    public async Task<bool> DeleteAsync(Guid id)
+    public async Task<bool> DeleteAsync(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _responsibleRepository.GetByIdAsync(id);
+        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(

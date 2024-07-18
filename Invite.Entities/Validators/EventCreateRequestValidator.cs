@@ -15,5 +15,11 @@ public class EventCreateRequestValidator : AbstractValidator<EventCreateRequest>
         RuleFor(x => x.Type)
             .NotEmpty().WithMessage("Tipo de evento é um campo obrigatório!")
             .IsInEnum().WithMessage("Tipo inválido!");
+
+        RuleFor(x => x.Date)
+            .NotEmpty().WithMessage("Data do evento é um campo obrigatório");
+
+        RuleFor(x => x.Guests)
+            .NotEmpty().WithMessage("Número de convidados do evento é um campo obrigatório");
     }
 }

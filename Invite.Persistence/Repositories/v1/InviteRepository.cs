@@ -19,6 +19,17 @@ public class InviteRepository(
         return records;
     }
 
+    public async Task<InviteModel> GetByEventAndStatusAsync(Guid eventId)
+    {
+        var record = await _context.Invites.FirstOrDefaultAsync(x => x.EventId == eventId && x.Acepted == false);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<InviteModel> GetByIdAndEventAndUserAsync(Guid id, Guid eventId, Guid userId)
     {
         var record = await _context.Invites.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.EventId == eventId && x.Event.UserId == userId);

@@ -64,7 +64,8 @@ public class InviteService(
             EventId = eventId,
             Message = request.Message,
             LimitDate = request.LimitDate,
-            Reference = reference
+            Reference = reference,
+            FutureResponsibleId = Guid.NewGuid(),
         };
         await _inviteRepository.AddAsync(inviteRecord);
         await _unitOfWork.CommitAsync();
