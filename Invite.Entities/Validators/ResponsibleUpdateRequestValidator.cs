@@ -15,8 +15,5 @@ public class ResponsibleUpdateRequestValidator : AbstractValidator<ResponsibleUp
         RuleFor(x => x.CPF)
             .NotEmpty().WithMessage("CPF é um campo obrigatório!")
             .MaximumLength(14).WithMessage("CPF deve ter no máximo 14 caractéres");
-
-        RuleFor(x => x.PersonInFamily)
-            .NotEmpty().WithMessage("Pessoas na família é um campo obrigatório!");
     }
 }

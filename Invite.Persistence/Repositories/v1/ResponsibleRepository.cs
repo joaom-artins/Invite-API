@@ -12,6 +12,17 @@ public class ResponsibleRepository(
 {
     private readonly AppDbContext _context = context;
 
+    public async Task<ResponsibleModel> GetByIdAndEventAndInvite(Guid id, Guid eventId, Guid inviteId)
+    {
+        var record = await _context.Responsibles.Include(x => x.Persons).SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<bool> ExistsByCpf(string cpf)
     {
         var record = await _context.Responsibles.SingleOrDefaultAsync(x => x.CPF == cpf);

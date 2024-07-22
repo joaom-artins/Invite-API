@@ -15,5 +15,11 @@ public class PlanCreateRequestValidator : AbstractValidator<PlanCreateRequest>
         RuleFor(x => x.Type)
             .NotEmpty().WithMessage("Tipo de plano é um campo obrigatório!")
             .IsInEnum().WithMessage("Tipo inválido!");
+
+        RuleFor(x => x.Price)
+            .NotEmpty().WithMessage("Preço é um campo obrigatório!");
+
+        RuleFor(x => x.MaxGuest)
+           .NotEmpty().WithMessage("Número máximo de convidados é um campo obrigatório!");
     }
 }

@@ -1,18 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Invite.Entities.Responses;
+using Invite.Entities.Models;
 
-namespace Invite.Entities.Models;
+namespace Invite.Entities.Responses;
 
-public class ResponsibleModel
+public class ResponsibleResponse
 {
-    [Key]
     public Guid Id { get; set; }
-    [MaxLength(80)]
     public string Name { get; set; } = default!;
     public byte PersonsInFamily { get; set; }
-    [MaxLength(11)]
     public string CPF { get; set; } = default!;
     public Guid InviteId { get; set; }
     public InviteModel Invite { get; set; } = default!;
-    public ICollection<PersonModel> Persons { get; set; } = default!;
+    public ICollection<PersonResponse> Persons { get; set; } = default!;
 }
