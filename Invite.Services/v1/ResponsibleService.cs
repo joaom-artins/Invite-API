@@ -99,7 +99,7 @@ public class ResponsibleService(
         }
 
         record.Name = request.Name;
-        record.CPF = request.CPF;
+        record.CPF = CleanString.OnlyNumber(request.CPF);
         _responsibleRepository.Update(record);
         await _unitOfWork.CommitAsync();
 
