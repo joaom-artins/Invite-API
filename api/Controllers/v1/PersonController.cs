@@ -5,12 +5,12 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers.v1;
 
 [ApiController]
-[Route("v1/persons")]
+[Route("v1/responsibles/{responsibleId}/persons")]
 public class PersonController(
     IPersonService _personService
 ) : ControllerBase
 {
-    [HttpGet("{responsibleId}")]
+    [HttpGet]
     public async Task<IActionResult> FindByResponsible(Guid responsibleId)
     {
         var result = await _personService.FindByResponsible(responsibleId);
@@ -18,7 +18,7 @@ public class PersonController(
         return Ok(result);
     }
 
-    [HttpPost("{responsibleId}/add")]
+    [HttpPost]
     public async Task<IActionResult> AddToResponsible(Guid responsibleId, PersonCreateRequest request)
     {
         await _personService.AddToResponsibleAsync(responsibleId, request);
@@ -26,7 +26,7 @@ public class PersonController(
         return NoContent();
     }
 
-    [HttpDelete("{id}/responsible/{responsibleId}/remove")]
+    [HttpDelete("{id}/remove")]
     public async Task<IActionResult> RemoveFromResponbile(Guid id, Guid responsibleId)
     {
         await _personService.RemoveFromResponsibleAsync(responsibleId, id);
@@ -34,7 +34,7 @@ public class PersonController(
         return NoContent();
     }
 
-    [HttpDelete("responsible/{responsibleId}/remove-all")]
+    [HttpDelete("remove-all")]
     public async Task<IActionResult> RemoveAll(Guid responsibleId)
     {
         await _personService.RemoveAll(responsibleId);
