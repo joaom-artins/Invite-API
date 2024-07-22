@@ -1,9 +1,11 @@
+using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Entities.Responses;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
@@ -13,6 +15,7 @@ namespace Invite.Services.v1;
 
 public class ResponsibleService(
     IUnitOfWork _unitOfWork,
+    IMapper _mapper,
     INotificationContext _notificationContext,
     IResponsibleRepository _responsibleRepository,
     IInviteRepository _inviteRepository,
@@ -27,7 +30,7 @@ public class ResponsibleService(
         return records;
     }
 
-    public async Task<ResponsibleModel> GetById(Guid id, Guid eventId, Guid inviteId)
+    public async Task<ResponsibleResponse> GetById(Guid id, Guid eventId, Guid inviteId)
     {
         var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
         if (record is null)
@@ -40,7 +43,7 @@ public class ResponsibleService(
             return default!;
         }
 
-        return record;
+        return _mapper.Map<ResponsibleResponse>(record);
     }
 
     public async Task<bool> CreateAsync(Guid eventId, Guid inviteId, ResponsibleCreateRequest request)

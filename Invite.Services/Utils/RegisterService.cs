@@ -33,5 +33,7 @@ public class RegisterService
         var appSettings = builder.Configuration.GetSection("AppSettings");
         builder.Services.Configure<AppSettings>(appSettings);
         builder.Services.AddSingleton(serviceProvider => serviceProvider.GetRequiredService<IOptions<AppSettings>>().Value);
+
+        builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
     }
 }
