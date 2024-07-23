@@ -12,9 +12,9 @@ public class ResponsibleController(
 ) : ControllerBase
 {
     [HttpGet]
-    public async Task<IActionResult> GetAll()
+    public async Task<IActionResult> GetAll([FromRoute] Guid eventId)
     {
-        var result = await _responsibleService.GetAll();
+        var result = await _responsibleService.FindByEventAsync(eventId);
 
         return Ok(result);
     }

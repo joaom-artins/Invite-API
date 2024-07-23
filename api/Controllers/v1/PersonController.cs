@@ -5,39 +5,39 @@ using Microsoft.AspNetCore.Mvc;
 namespace api.Controllers.v1;
 
 [ApiController]
-[Route("v1/persons")]
+[Route("v1/events/{eventId}/invites/{inviteId}/responsibles/{responsibleId}/persons")]
 public class PersonController(
     IPersonService _personService
 ) : ControllerBase
 {
-    [HttpGet("{responsibleId}")]
-    public async Task<IActionResult> FindByResponsible(Guid responsibleId)
+    [HttpGet]
+    public async Task<IActionResult> FindByResponsible([FromRoute] Guid eventId, [FromRoute] Guid inviteId, [FromRoute] Guid responsibleId)
     {
-        var result = await _personService.FindByResponsible(responsibleId);
+        var result = await _personService.FindByResponsible(eventId, inviteId, responsibleId);
 
         return Ok(result);
     }
 
-    [HttpPost("{responsibleId}/add")]
-    public async Task<IActionResult> AddToResponsible(Guid responsibleId, PersonCreateRequest request)
+    [HttpPost]
+    public async Task<IActionResult> AddToResponsible([FromRoute] Guid eventId, [FromRoute] Guid inviteId, [FromRoute] Guid responsibleId, [FromBody] PersonCreateRequest request)
     {
-        await _personService.AddToResponsibleAsync(responsibleId, request);
+        await _personService.AddToResponsibleAsync(eventId, inviteId, responsibleId, request);
 
         return NoContent();
     }
 
-    [HttpDelete("{id}/responsible/{responsibleId}/remove")]
-    public async Task<IActionResult> RemoveFromResponbile(Guid id, Guid responsibleId)
+    [HttpDelete("{id}/remove")]
+    public async Task<IActionResult> RemoveFromResponbile([FromRoute] Guid eventId, [FromRoute] Guid inviteId, [FromRoute] Guid id, [FromRoute] Guid responsibleId)
     {
-        await _personService.RemoveFromResponsibleAsync(responsibleId, id);
+        await _personService.RemoveFromResponsibleAsync(eventId, inviteId, responsibleId, id);
 
         return NoContent();
     }
 
-    [HttpDelete("responsible/{responsibleId}/remove-all")]
-    public async Task<IActionResult> RemoveAll(Guid responsibleId)
+    [HttpDelete("remove-all")]
+    public async Task<IActionResult> RemoveAll([FromRoute] Guid eventId, [FromRoute] Guid inviteId, [FromRoute] Guid responsibleId)
     {
-        await _personService.RemoveAll(responsibleId);
+        await _personService.RemoveAll(eventId, inviteId, responsibleId);
 
         return NoContent();
     }

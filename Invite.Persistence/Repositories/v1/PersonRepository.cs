@@ -12,16 +12,21 @@ public class PersonRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IEnumerable<PersonModel>> GetByResponsible(Guid responsibleId)
+    public async Task<IEnumerable<PersonModel>> GetByEventAndInviteAndResponsibleAsync(Guid eventId, Guid inviteId, Guid responsibleId)
     {
-        var records = await _context.Persons.Where(x => x.ResponsibleId == responsibleId).ToListAsync();
+        var records = await _context.Persons.Where(x => x.Responsible.Invite.EventId == eventId &&
+                                                        x.Responsible.InviteId == inviteId &&
+                                                        x.ResponsibleId == responsibleId).ToListAsync();
 
         return records;
     }
 
-    public async Task<PersonModel> GetByIdAndResponsible(Guid id, Guid responsibleId)
+    public async Task<PersonModel> GetByIdAndResponsible(Guid id, Guid eventId, Guid inviteId, Guid responsibleId)
     {
-        var record = await _context.Persons.SingleOrDefaultAsync(x => x.Id == id && x.ResponsibleId == responsibleId);
+        var record = await _context.Persons.SingleOrDefaultAsync(x => x.Id == id &&
+                                                                x.Responsible.Invite.EventId == eventId &&
+                                                                x.Responsible.InviteId == inviteId &&
+                                                                x.ResponsibleId == responsibleId);
         if (record is null)
         {
             return default!;
