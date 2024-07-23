@@ -12,7 +12,13 @@ public class ResponsibleRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<ResponsibleModel> GetByIdAndEventAndInvite(Guid id, Guid eventId, Guid inviteId)
+    public async Task<IEnumerable<ResponsibleModel>> FindByEventAsync(Guid eventId)
+    {
+        var records = await _context.Responsibles.Where(x => x.Invite.EventId == eventId).ToListAsync();
+
+        return records;
+    }
+    public async Task<ResponsibleModel> GetByIdAndEventAndInviteAsync(Guid id, Guid eventId, Guid inviteId)
     {
         var record = await _context.Responsibles.Include(x => x.Persons).SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
         if (record is null)
@@ -23,7 +29,7 @@ public class ResponsibleRepository(
         return record;
     }
 
-    public async Task<bool> ExistsByCpf(string cpf)
+    public async Task<bool> ExistsByCpfAsync(string cpf)
     {
         var record = await _context.Responsibles.SingleOrDefaultAsync(x => x.CPF == cpf);
         if (record is null)

@@ -38,7 +38,7 @@ public class ResponsibleBusiness(
             return default!;
         }
 
-        var exists = await _responsibleRepository.ExistsByCpf(request.CPF);
+        var exists = await _responsibleRepository.ExistsByCpfAsync(request.CPF);
         if (exists)
         {
             _notificationContext.SetDetails(

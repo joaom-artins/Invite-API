@@ -23,16 +23,16 @@ public class ResponsibleService(
     IPersonService _personService
 ) : IResponsibleService
 {
-    public async Task<IEnumerable<ResponsibleModel>> GetAll()
+    public async Task<IEnumerable<ResponsibleModel>> FindByEventAsync(Guid eventId)
     {
-        var records = await _responsibleRepository.GetAllAsync();
+        var records = await _responsibleRepository.FindByEventAsync(eventId);
 
         return records;
     }
 
     public async Task<ResponsibleResponse> GetById(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
+        var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -69,7 +69,7 @@ public class ResponsibleService(
 
         foreach (var person in request.Persons)
         {
-            await _personService.CreateAsync(record.Id, person);
+            await _personService.CreateAsync(eventId, inviteId, record.Id, person);
             if (_notificationContext.HasNotifications)
             {
                 return false;
@@ -87,7 +87,7 @@ public class ResponsibleService(
 
     public async Task<bool> UpdateAsync(Guid id, Guid eventId, Guid inviteId, ResponsibleUpdateRequest request)
     {
-        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
+        var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -108,7 +108,7 @@ public class ResponsibleService(
 
     public async Task<bool> DeleteAsync(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _responsibleRepository.GetByIdAndEventAndInvite(id, eventId, inviteId);
+        var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(id, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(

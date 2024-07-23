@@ -10,11 +10,22 @@ namespace Invite.Business.v1;
 
 public class PersonBusiness(
     INotificationContext _notificationContext,
-    IPersonsRepository _personsRepository
+    IPersonsRepository _personsRepository,
+    IResponsibleRepository _responsibleRepository
 ) : IPersonBusiness
 {
-    public async Task<bool> ValidateForCreateAsync(PersonCreateRequest request)
+    public async Task<bool> ValidateForCreateAsync(Guid eventId, Guid inviteId, Guid responsibleId, PersonCreateRequest request)
     {
+        var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(responsibleId, eventId, inviteId);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
+            return false;
+        }
 
         var exists = await _personsRepository.ExistsByCPF(CleanString.OnlyNumber(request.CPF));
         if (exists)

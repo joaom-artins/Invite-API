@@ -19,16 +19,16 @@ public class PersonService(
     IPersonBusiness _personBusiness
 ) : IPersonService
 {
-    public async Task<IEnumerable<PersonModel>> FindByResponsible(Guid responsibleId)
+    public async Task<IEnumerable<PersonModel>> FindByResponsible(Guid eventId, Guid inviteId, Guid responsibleId)
     {
-        var records = await _personsRepository.GetByResponsible(responsibleId);
+        var records = await _personsRepository.GetByEventAndInviteAndResponsibleAsync(eventId, inviteId, responsibleId);
 
         return records;
     }
 
-    public async Task<bool> CreateAsync(Guid responsibleId, PersonCreateRequest request)
+    public async Task<bool> CreateAsync(Guid eventId, Guid inviteId, Guid responsibleId, PersonCreateRequest request)
     {
-        await _personBusiness.ValidateForCreateAsync(request);
+        await _personBusiness.ValidateForCreateAsync(eventId, inviteId, responsibleId, request);
         if (_notificationContext.HasNotifications)
         {
             return false;
@@ -46,9 +46,9 @@ public class PersonService(
         return true;
     }
 
-    public async Task<bool> AddToResponsibleAsync(Guid id, PersonCreateRequest request)
+    public async Task<bool> AddToResponsibleAsync(Guid eventId, Guid inviteId, Guid responsibleId, PersonCreateRequest request)
     {
-        var record = await _responsibleRepository.GetByIdAsync(id);
+        var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(responsibleId, eventId, inviteId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -65,7 +65,7 @@ public class PersonService(
         _responsibleRepository.Update(record);
         await _unitOfWork.CommitAsync();
 
-        await CreateAsync(record.Id, request);
+        await CreateAsync(eventId, inviteId, record.Id, request);
         if (_notificationContext.HasNotifications)
         {
             return false;
@@ -76,10 +76,21 @@ public class PersonService(
         return true;
     }
 
-    public async Task<bool> RemoveFromResponsibleAsync(Guid responsibleId, Guid id)
+    public async Task<bool> RemoveFromResponsibleAsync(Guid eventId, Guid inviteId, Guid responsibleId, Guid id)
     {
-        var record = await _personsRepository.GetByIdAndResponsible(id, responsibleId);
-        if (record is null)
+        var responsbileRecord = await _responsibleRepository.GetByIdAndEventAndInviteAsync(responsibleId, eventId, inviteId);
+        if (responsbileRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
+            return false;
+        }
+
+        var personrecord = await _personsRepository.GetByIdAndResponsible(id, eventId, inviteId, responsibleId);
+        if (personrecord is null)
         {
             _notificationContext.SetDetails(
                 statusCode: StatusCodes.Status404NotFound,
@@ -89,16 +100,36 @@ public class PersonService(
             return false;
         }
 
-        _personsRepository.Remove(record);
+        _unitOfWork.BeginTransaction();
+
+        responsbileRecord.PersonsInFamily--;
+        _responsibleRepository.Update(responsbileRecord);
         await _unitOfWork.CommitAsync();
+
+
+        _personsRepository.Remove(personrecord);
+        await _unitOfWork.CommitAsync();
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
 
-    public async Task<bool> RemoveAll(Guid responsibleId)
+    public async Task<bool> RemoveAll(Guid eventId, Guid inviteId, Guid responsibleId)
     {
-        var records = await _personsRepository.GetByResponsible(responsibleId);
-        if (!records.Any())
+        var responsbileRecord = await _responsibleRepository.GetByIdAndEventAndInviteAsync(responsibleId, eventId, inviteId);
+        if (responsbileRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Responsible.NotFound
+            );
+            return false;
+        }
+
+        var persons = await _personsRepository.GetByEventAndInviteAndResponsibleAsync(eventId, inviteId, responsibleId);
+        if (!persons.Any())
         {
             _notificationContext.SetDetails(
                 statusCode: StatusCodes.Status404NotFound,
@@ -108,8 +139,16 @@ public class PersonService(
             return false;
         }
 
-        _personsRepository.RemoveRange(records);
+        _unitOfWork.BeginTransaction();
+
+        responsbileRecord.PersonsInFamily = 0;
+        _responsibleRepository.Update(responsbileRecord);
         await _unitOfWork.CommitAsync();
+
+        _personsRepository.RemoveRange(persons);
+        await _unitOfWork.CommitAsync();
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
