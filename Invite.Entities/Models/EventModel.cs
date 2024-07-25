@@ -16,4 +16,8 @@ public class EventModel
     public Guid UserId { get; set; }
     public UserModel User { get; set; } = default!;
     public DateOnly Date { get; set; }
+    public string? Address { get; set; }
+    public bool UseHallRegistred { get; set; }
+    public Guid? HallId { get; set; }
+    public HallModel? Hall { get; set; }
 }
