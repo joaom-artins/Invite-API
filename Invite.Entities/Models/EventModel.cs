@@ -16,4 +16,17 @@ public class EventModel
     public Guid UserId { get; set; }
     public UserModel User { get; set; } = default!;
     public DateOnly Date { get; set; }
+    [MaxLength(40)]
+    public string? City { get; set; }
+    [MaxLength(30)]
+    public string? State { get; set; }
+    [MaxLength(50)]
+    public string? Street { get; set; }
+    [MaxLength(5)]
+    public string? Number { get; set; }
+    [MaxLength(8)]
+    public string? CEP { get; set; }
+    public bool UseHallRegistred { get; set; }
+    public Guid? HallId { get; set; }
+    public HallModel? Hall { get; set; }
 }

@@ -1,4 +1,5 @@
 using Invite.Business.Interfaces.v1;
+using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
@@ -16,7 +17,8 @@ public class EventService(
     IUnitOfWork _unitOfWork,
     ILoggedUser _loggedUser,
     IEventBusiness _eventBusiness,
-    IEventRepository _eventRepository
+    IEventRepository _eventRepository,
+    IHallRepository _hallRepository
 ) : IEventService
 {
     public async Task<IEnumerable<EventModel>> GetAllAsync()
@@ -50,6 +52,30 @@ public class EventService(
             return false;
         }
 
+        if (request.UseHallRegistred && request.HallId is not null)
+        {
+            request.City = null;
+            request.CEP = null;
+            request.State = null;
+            request.Street = null;
+            request.Number = null;
+
+            var hallRecord = await _hallRepository.GetByIdAsync(request.HallId.Value);
+            if (hallRecord is null)
+            {
+                _notificationContext.SetDetails(
+                    statusCode: StatusCodes.Status404NotFound,
+                    title: NotificationTitle.NotFound,
+                    detail: NotificationMessage.Hall.NotFound
+                );
+                return false;
+            }
+        }
+        else
+        {
+            request.HallId = null;
+        }
+
         var record = new EventModel
         {
             Name = request.Name,
@@ -58,6 +84,12 @@ public class EventService(
             UserId = _loggedUser.GetId(),
             Guests = request.Guests,
             Date = request.Date,
+            City = request.City is null ? null : request.City,
+            State = request.City is null ? null : request.State,
+            Street = request.City is null ? null : request.Street,
+            Number = request.City is null ? null : request.Number,
+            CEP = request.City is null ? null : CleanString.OnlyNumber(request.CEP!),
+            HallId = request.City is null ? null : request.HallId,
         };
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
