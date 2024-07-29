@@ -57,6 +57,11 @@ public class NotificationMessage
         public static readonly string NotFound = "Convite não encontrado!";
         public static readonly string InvitationAccepted = "Impossível remover um convite após ele já ter sido aceito!";
         public static readonly string InvalidDateInDelete = "Após o tempo limite de aceite passar é impossível remover um convite";
+    }
 
+    public static class Hall
+    {
+        public static readonly string ExistsName = "Já existe outro salão de festas do mesmo proprietário com esse nome!";
+        public static readonly string NotFound = "Salão de festas não encontrado!";
     }
 }
