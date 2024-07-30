@@ -484,3 +484,5 @@ $RECYCLE.BIN/
 
 # Ignorar todos os arquivos .sql
 *.sql
+
+*.json
