@@ -27,7 +27,6 @@ public class RegisterService
         builder.Services.AddScoped<IHallService, HallService>();
         builder.Services.AddScoped<ILoginService, LoginService>();
         builder.Services.AddScoped<IResponsibleService, ResponsibleService>();
-        builder.Services.AddScoped<IPersonService, PersonService>();
         builder.Services.AddScoped<IPlanService, PlanService>();
         builder.Services.AddScoped<IUserService, UserService>();
 

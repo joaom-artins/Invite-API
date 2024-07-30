@@ -17,7 +17,6 @@ public class RegisterBusiness
         builder.Services.AddScoped<IEventBusiness, EventBusiness>();
         builder.Services.AddScoped<IHallBusiness, HallBusiness>();
         builder.Services.AddScoped<IResponsibleBusiness, ResponsibleBusiness>();
-        builder.Services.AddScoped<IPersonBusiness, PersonBusiness>();
         builder.Services.AddScoped<IPlanBusiness, PlanBusiness>();
         builder.Services.AddScoped<IUserBusiness, UserBusiness>();
     }

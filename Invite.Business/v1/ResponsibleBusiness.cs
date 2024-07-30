@@ -28,16 +28,6 @@ public class ResponsibleBusiness(
             return default!;
         }
 
-        if (request.Persons.Count() != request.PersonInFamily)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Responsible.PersonsInRequestInvalid
-            );
-            return default!;
-        }
-
         var exists = await _responsibleRepository.ExistsByCpfAsync(request.CPF);
         if (exists)
         {

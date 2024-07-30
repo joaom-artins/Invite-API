@@ -20,7 +20,7 @@ public class ResponsibleRepository(
     }
     public async Task<ResponsibleModel> GetByIdAndEventAndInviteAsync(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _context.Responsibles.Include(x => x.Persons).SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
+        var record = await _context.Responsibles.SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
         if (record is null)
         {
             return default!;

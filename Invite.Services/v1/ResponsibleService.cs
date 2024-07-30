@@ -15,12 +15,10 @@ namespace Invite.Services.v1;
 
 public class ResponsibleService(
     IUnitOfWork _unitOfWork,
-    IMapper _mapper,
     INotificationContext _notificationContext,
     IResponsibleRepository _responsibleRepository,
     IInviteRepository _inviteRepository,
-    IResponsibleBusiness _responsibleBusiness,
-    IPersonService _personService
+    IResponsibleBusiness _responsibleBusiness
 ) : IResponsibleService
 {
     public async Task<IEnumerable<ResponsibleModel>> FindByEventAsync(Guid eventId)
@@ -30,7 +28,7 @@ public class ResponsibleService(
         return records;
     }
 
-    public async Task<ResponsibleResponse> GetById(Guid id, Guid eventId, Guid inviteId)
+    public async Task<ResponsibleModel> GetById(Guid id, Guid eventId, Guid inviteId)
     {
         var record = await _responsibleRepository.GetByIdAndEventAndInviteAsync(id, eventId, inviteId);
         if (record is null)
@@ -43,7 +41,7 @@ public class ResponsibleService(
             return default!;
         }
 
-        return _mapper.Map<ResponsibleResponse>(record);
+        return record;
     }
 
     public async Task<bool> CreateAsync(Guid eventId, Guid inviteId, ResponsibleCreateRequest request)
@@ -66,15 +64,6 @@ public class ResponsibleService(
         };
         await _responsibleRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
-
-        foreach (var person in request.Persons)
-        {
-            await _personService.CreateAsync(eventId, inviteId, record.Id, person);
-            if (_notificationContext.HasNotifications)
-            {
-                return false;
-            }
-        }
 
         inviteRecord.Acepted = true;
         _inviteRepository.Update(inviteRecord);

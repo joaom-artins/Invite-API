@@ -14,7 +14,6 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<InvoiceItemizedModel> InvoiceItemizeds { get; set; } = default!;
     public override DbSet<UserModel> Users { get; set; } = default!;
     public DbSet<ResponsibleModel> Responsibles { get; set; } = default!;
-    public DbSet<PersonModel> Persons { get; set; } = default!;
     public DbSet<PlanModel> Plans { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
