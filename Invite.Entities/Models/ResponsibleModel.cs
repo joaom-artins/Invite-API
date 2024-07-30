@@ -14,5 +14,4 @@ public class ResponsibleModel
     public string CPF { get; set; } = default!;
     public Guid InviteId { get; set; }
     public InviteModel Invite { get; set; } = default!;
-    public ICollection<PersonModel> Persons { get; set; } = default!;
 }

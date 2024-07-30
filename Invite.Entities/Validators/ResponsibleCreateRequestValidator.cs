@@ -15,9 +15,5 @@ public class ResponsibleCreateRequestValidator : AbstractValidator<ResponsibleCr
         RuleFor(x => x.CPF)
             .NotEmpty().WithMessage("CPF é um campo obrigatório!")
             .MaximumLength(14).WithMessage("CPF deve ter no máximo 14 caractéres");
-
-        RuleForEach(x => x.Persons)
-            .SetValidator(new PersonCreateRequestValidator())
-            .When(x => x.Persons is not null);
     }
 }

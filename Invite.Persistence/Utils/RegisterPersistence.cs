@@ -21,7 +21,6 @@ public class RegisterPersistence
         builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         builder.Services.AddScoped<IInvoiceItemizedRepository, InvoiceItemizedRepository>();
         builder.Services.AddScoped<IHallRepository, HallRepository>();
-        builder.Services.AddScoped<IPersonsRepository, PersonRepository>();
         builder.Services.AddScoped<IPlanRepository, PlanRepository>();
         builder.Services.AddScoped<IResponsibleRepository, ResponsibleRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
