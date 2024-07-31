@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invite.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240731141702_Create-Buffet")]
+    [Migration("20240731144052_Create-Buffet")]
     partial class CreateBuffet
     {
         /// <inheritdoc />
@@ -61,7 +61,12 @@ namespace Invite.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Buffets");
                 });
@@ -580,6 +585,17 @@ namespace Invite.Persistence.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("UsersTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Invite.Entities.Models.BuffetModel", b =>
+                {
+                    b.HasOne("Invite.Entities.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Invite.Entities.Models.EventModel", b =>

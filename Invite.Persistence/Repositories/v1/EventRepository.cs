@@ -18,15 +18,4 @@ public class EventRepository(
 
         return records;
     }
-
-    public async Task<EventModel> GetByIdAndUserAsync(Guid id, Guid userId)
-    {
-        var record = await _context.Events.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.UserId == userId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
-    }
 }

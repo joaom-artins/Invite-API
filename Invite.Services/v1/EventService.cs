@@ -99,7 +99,7 @@ public class EventService(
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var record = await _eventRepository.GetByIdAsync(id);
+        var record = await _eventRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(

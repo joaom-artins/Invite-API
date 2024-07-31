@@ -41,6 +41,7 @@ namespace Invite.Persistence.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(11)", maxLength: 11, nullable: false),
                     CNPJ = table.Column<string>(type: "nvarchar(14)", maxLength: 14, nullable: false),
@@ -51,7 +52,18 @@ namespace Invite.Persistence.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Buffets", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Buffets_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Buffets_UserId",
+                table: "Buffets",
+                column: "UserId");
         }
 
         /// <inheritdoc />
