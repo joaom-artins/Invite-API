@@ -11,6 +11,7 @@ public class HallModel
     [MaxLength(11)]
     public Guid UserId { get; set; }
     public UserModel User { get; set; } = default!;
+    [MaxLength(11)]
     public string OwnerNumber { get; set; } = default!;
     [MaxLength(40)]
     public string City { get; set; } = default!;

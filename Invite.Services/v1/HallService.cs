@@ -78,7 +78,7 @@ public class HallService(
             return false;
         }
 
-        var record = await _hallRepository.GetByIdAsync(id);
+        var record = await _hallRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -106,7 +106,7 @@ public class HallService(
 
     public async Task<bool> DeleteAsync(Guid id)
     {
-        var record = await _hallRepository.GetByIdAsync(id);
+        var record = await _hallRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(

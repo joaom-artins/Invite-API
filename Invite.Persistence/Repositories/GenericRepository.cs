@@ -18,6 +18,11 @@ public class GenericRepository<T>(
         return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);
     }
 
+    public async Task<T?> GetByIdAndUserAsync(Guid id, Guid userId)
+    {
+        return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id && EF.Property<Guid>(e,"UserId") == userId);
+    }
+
     public async Task<bool> AddAsync(T t)
     {
         await context.Set<T>().AddAsync(t);

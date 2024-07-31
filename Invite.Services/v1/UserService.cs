@@ -37,7 +37,7 @@ public class UserService(
             FullName = request.FullName,
             Email = request.Email,
             UserName = request.Email.ToUpper(),
-            CPFOrCNPJ = CleanString.OnlyNumber(request.CPFOrCNPJ),
+            CPF = CleanString.OnlyNumber(request.CPF),
         }, request.Password);
         await _unitOfWork.CommitAsync();
 
@@ -89,7 +89,7 @@ public class UserService(
         var body = new
         {
             name = user.FullName,
-            cpfCnpj = user.CPFOrCNPJ,
+            cpfCnpj = user.CPF,
             email = user.Email,
             notificationDisabled = true
         };

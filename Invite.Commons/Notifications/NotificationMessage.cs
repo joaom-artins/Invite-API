@@ -64,4 +64,10 @@ public class NotificationMessage
         public static readonly string ExistsName = "Já existe outro salão de festas do mesmo proprietário com esse nome!";
         public static readonly string NotFound = "Salão de festas não encontrado!";
     }
+
+    public static class Buffet
+    {
+        public static readonly string DataExists = "Nome,CNPJ ou número de telefone já estão cadastrados!";
+        public static readonly string NotFound = "Buffet não encontrado!";
+    }
 }
