@@ -38,17 +38,6 @@ public class EventBusiness(
             return false;
         }
 
-        if ((planRecord.Type == PlanTypeEnum.Buffet && userRecord.TypeClient == ClientTypeEnum.Person) ||
-            (planRecord.Type == PlanTypeEnum.Person && userRecord.TypeClient == ClientTypeEnum.Buffet))
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status400BadRequest,
-                title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Plan.TypeError
-            );
-            return false;
-        }
-
         if (guests > planRecord.MaxGuest)
         {
             _notificationContext.SetDetails(

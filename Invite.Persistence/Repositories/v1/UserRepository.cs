@@ -15,7 +15,7 @@ public class UserRepository(
 
     public async Task<bool> ExistsByCPFAsync(string cpf)
     {
-        var record = await _context.Users.SingleOrDefaultAsync(x => x.CPFOrCNPJ == cpf);
+        var record = await _context.Users.SingleOrDefaultAsync(x => x.CPF == cpf);
         if (record == null)
         {
             return false;

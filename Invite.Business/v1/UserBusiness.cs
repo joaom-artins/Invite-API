@@ -37,7 +37,7 @@ public class UserBusiness(
             return false;
         }
 
-        var existsCPF = await _userRepository.ExistsByCPFAsync(request.CPFOrCNPJ);
+        var existsCPF = await _userRepository.ExistsByCPFAsync(request.CPF);
         if (existsCPF)
         {
             _notificationContext.SetDetails(
