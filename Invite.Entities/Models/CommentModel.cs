@@ -16,4 +16,6 @@ public class CommentModel
     public Guid? BuffetId { get; set; }
     [Range(0,5)]
     public int Stars { get; set; }
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
+    public DateTime? UpdatedAt { get; set; }
 }

@@ -42,7 +42,9 @@ namespace Invite.Persistence.Migrations
                     HallId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BuffetId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Stars = table.Column<int>(type: "int", nullable: false)
+                    Stars = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {

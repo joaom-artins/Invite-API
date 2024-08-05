@@ -18,6 +18,7 @@ public class HallService(
     ILoggedUser _loggedUser,
     IInvoiceService _invoiceService,
     IHallRepository _hallRepository,
+    ICommentRepository _commentRepository,
     IHallBusiness _hallBusiness
 ) : IHallService
 {
@@ -110,6 +111,22 @@ public class HallService(
         record.PriceInWeek = request.PriceInWeek;
         record.PriceInWeekend = request.PriceInWeekend;
         _hallRepository.Update(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateRateAsync(HallModel hall)
+    {
+        var comments = await _commentRepository.FindByHallIdAsync(hall.Id);
+        var sum = 0;
+        foreach (var comment in comments)
+        {
+            sum += comment.Stars;
+        }
+
+        hall.Rate = sum / comments.Count();
+        _hallRepository.Update(hall);
         await _unitOfWork.CommitAsync();
 
         return true;
