@@ -17,6 +17,7 @@ public class EventService(
     IUnitOfWork _unitOfWork,
     ILoggedUser _loggedUser,
     IEventBusiness _eventBusiness,
+    IInvoiceService _invoiceService,
     IEventRepository _eventRepository,
     IHallRepository _hallRepository
 ) : IEventService
@@ -51,6 +52,8 @@ public class EventService(
         {
             return false;
         }
+
+        _unitOfWork.BeginTransaction();
 
         if (request.UseHallRegistred && request.HallId is not null)
         {
@@ -93,6 +96,14 @@ public class EventService(
         };
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
+
+        await _invoiceService.CreateAsync(eventModel: record);
+        if (_notificationContext.HasNotifications)
+        {
+            return false;
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }

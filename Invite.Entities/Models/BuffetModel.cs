@@ -19,4 +19,6 @@ public class BuffetModel
     public string State { get; set; } = default!;
     [MaxLength(4)]
     public string ServeInRadius { get; set; } = default!;
+    public bool Paid { get; set; } = false;
+
 }

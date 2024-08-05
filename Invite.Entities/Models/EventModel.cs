@@ -29,4 +29,5 @@ public class EventModel
     public bool UseHallRegistred { get; set; }
     public Guid? HallId { get; set; }
     public HallModel? Hall { get; set; }
+    public bool Paid { get; set; } = false;
 }

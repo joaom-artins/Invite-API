@@ -16,6 +16,7 @@ public class HallService(
     INotificationContext _notificationContext,
     IUnitOfWork _unitOfWork,
     ILoggedUser _loggedUser,
+    IInvoiceService _invoiceService,
     IHallRepository _hallRepository,
     IHallBusiness _hallBusiness
 ) : IHallService
@@ -51,6 +52,8 @@ public class HallService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         var record = new HallModel
         {
             Name = request.Name,
@@ -66,6 +69,14 @@ public class HallService(
         };
         await _hallRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
+
+        await _invoiceService.CreateAsync(hall: record);
+        if (_notificationContext.HasNotifications)
+        {
+            return false;
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }

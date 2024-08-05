@@ -20,7 +20,18 @@ public class GenericRepository<T>(
 
     public async Task<T?> GetByIdAndUserAsync(Guid id, Guid userId)
     {
-        return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id && EF.Property<Guid>(e,"UserId") == userId);
+        return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id && EF.Property<Guid>(e, "UserId") == userId);
+    }
+
+    public async Task<bool> ExistsByReference(string reference)
+    {
+        var exists = await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<string>(e, "Reference") == reference);
+        if (exists is null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public async Task<bool> AddAsync(T t)
