@@ -16,12 +16,12 @@ public class InvoiceModel
     public decimal Discount { get; set; }
     [Precision(6, 2)]
     public decimal Total { get; set; }
-    [MaxLength(6)]
+    [MaxLength(8)]
     public string Reference { get; set; } = default!;
     public string? ExternalId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.Now;
     public DateOnly DueDate { get; set; }
     public DateOnly? PaymentDate { get; set; }
     public InvoiceStatusEnum Status { get; set; }
-    public PaymentMethodEnum PaymentMethod { get; set; }
+    public PaymentMethodEnum? PaymentMethod { get; set; }
 }

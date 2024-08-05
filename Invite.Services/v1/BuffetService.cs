@@ -17,6 +17,7 @@ public class BuffetService(
     ILoggedUser _loggedUser,
     IUnitOfWork _unitOfWork,
     IBuffetBusiness _buffetBusiness,
+    IInvoiceService _invoiceService,
     IBuffetRepository _buffetRepository
 ) : IBuffetService
 {
@@ -51,6 +52,8 @@ public class BuffetService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         var record = new BuffetModel
         {
             UserId = _loggedUser.GetId(),
@@ -63,6 +66,14 @@ public class BuffetService(
         };
         await _buffetRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
+
+        await _invoiceService.CreateAsync(buffet: record);
+        if(_notificationContext.HasNotifications)
+        {
+            return false;
+        }
+        
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }

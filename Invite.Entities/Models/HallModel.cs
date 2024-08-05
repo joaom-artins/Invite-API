@@ -27,4 +27,5 @@ public class HallModel
     public decimal PriceInWeek { get; set; }
     [Precision(6, 2)]
     public decimal PriceInWeekend { get; set; }
+    public bool Paid { get; set; } = false;
 }

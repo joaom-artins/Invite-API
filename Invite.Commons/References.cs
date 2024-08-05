@@ -1,6 +1,6 @@
 namespace Invite.Commons;
 
-public class Reference
+public class References
 {
     private static readonly Random random = new();
     private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/<>";

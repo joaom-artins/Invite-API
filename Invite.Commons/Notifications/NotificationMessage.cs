@@ -70,4 +70,18 @@ public class NotificationMessage
         public static readonly string DataExists = "Nome,CNPJ ou número de telefone já estão cadastrados!";
         public static readonly string NotFound = "Buffet não encontrado!";
     }
+
+    public static class Invoice
+    {
+        public static readonly string FailOnCreateInExternalService = "Ocorreu um erro durante a criação da fatura,tente novamente mais tarde!";
+        public static readonly string UnablePay = "Não foi possível pagar tente novamente mais tarde!";
+        public static readonly string NotFound = "Fatura não encontrada!";
+
+    }
+
+    public static class InvoiceItemized
+    {
+        public static readonly string NotFound = "Item da fatura não encontrada!";
+
+    }
 }
