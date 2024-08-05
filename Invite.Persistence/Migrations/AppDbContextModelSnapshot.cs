@@ -244,13 +244,22 @@ namespace Invite.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("BuffetId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(60)
                         .HasColumnType("nvarchar(60)");
 
+                    b.Property<Guid?>("EventId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateOnly>("FinishDate")
                         .HasColumnType("date");
+
+                    b.Property<Guid?>("HallId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid>("InvoiceId")
                         .HasColumnType("uniqueidentifier");
@@ -268,6 +277,12 @@ namespace Invite.Persistence.Migrations
                         .HasColumnType("nvarchar(30)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("BuffetId");
+
+                    b.HasIndex("EventId");
+
+                    b.HasIndex("HallId");
 
                     b.HasIndex("InvoiceId");
 
@@ -653,11 +668,29 @@ namespace Invite.Persistence.Migrations
 
             modelBuilder.Entity("Invite.Entities.Models.InvoiceItemizedModel", b =>
                 {
+                    b.HasOne("Invite.Entities.Models.BuffetModel", "Buffet")
+                        .WithMany()
+                        .HasForeignKey("BuffetId");
+
+                    b.HasOne("Invite.Entities.Models.EventModel", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId");
+
+                    b.HasOne("Invite.Entities.Models.HallModel", "Hall")
+                        .WithMany()
+                        .HasForeignKey("HallId");
+
                     b.HasOne("Invite.Entities.Models.InvoiceModel", "Invoice")
                         .WithMany()
                         .HasForeignKey("InvoiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Buffet");
+
+                    b.Navigation("Event");
+
+                    b.Navigation("Hall");
 
                     b.Navigation("Invoice");
                 });
