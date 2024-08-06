@@ -8,6 +8,7 @@ namespace Invite.Persistence.Context;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbContext<UserModel, IdentityRole<Guid>, Guid>(options)
 {
     public DbSet<BuffetModel> Buffets { get; set; } = default!;
+    public DbSet<CommentModel> Comments { get; set; } = default!;
     public DbSet<HallModel> Halls { get; set; } = default!;
     public DbSet<EventModel> Events { get; set; } = default!;
     public DbSet<InviteModel> Invites { get; set; } = default!;

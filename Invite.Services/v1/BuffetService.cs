@@ -18,7 +18,8 @@ public class BuffetService(
     IUnitOfWork _unitOfWork,
     IBuffetBusiness _buffetBusiness,
     IInvoiceService _invoiceService,
-    IBuffetRepository _buffetRepository
+    IBuffetRepository _buffetRepository,
+    ICommentRepository _commentRepository
 ) : IBuffetService
 {
     public async Task<IEnumerable<BuffetModel>> GetAllAsync()
@@ -68,12 +69,28 @@ public class BuffetService(
         await _unitOfWork.CommitAsync();
 
         await _invoiceService.CreateAsync(buffet: record);
-        if(_notificationContext.HasNotifications)
+        if (_notificationContext.HasNotifications)
         {
             return false;
         }
-        
+
         await _unitOfWork.CommitAsync(true);
+
+        return true;
+    }
+
+    public async Task<bool> UpdateRateAsync(BuffetModel buffet)
+    {
+        var comments = await _commentRepository.FindByBuffetAsync(buffet.Id);
+        var sum = 0;
+        foreach (var comment in comments)
+        {
+            sum += comment.Stars;
+        }
+
+        buffet.Rate = sum / comments.Count();
+        _buffetRepository.Update(buffet);
+        await _unitOfWork.CommitAsync();
 
         return true;
     }
