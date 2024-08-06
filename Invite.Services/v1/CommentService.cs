@@ -83,6 +83,7 @@ public class CommentService(
         var comment = await CreateAsync(request);
         comment.HallId = hallId;
         _commentRepository.Update(comment);
+        await _unitOfWork.CommitAsync();
 
         await _hallService.UpdateRateAsync(hall);
 
@@ -105,31 +106,9 @@ public class CommentService(
         var comment = await CreateAsync(request);
         comment.BuffetId = buffetId;
         _commentRepository.Update(comment);
+        await _unitOfWork.CommitAsync();
 
         await _buffetService.UpdateRateAsync(buffet);
-
-        return true;
-    }
-
-    public async Task<bool> ReplyCommentAsync(Guid id, CommentCreateRequest request)
-    {
-        var record = await _commentRepository.GetByIdAsync(id);
-        if (record is null)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.Comment.NotFound
-            );
-            return false;
-        }
-
-        var commentReply = await CreateAsync(request);
-        commentReply.CommentId = id;
-        commentReply.BuffetId = record.BuffetId;
-        commentReply.HallId = record.HallId;
-        _commentRepository.Update(commentReply);
-        await _unitOfWork.CommitAsync();
 
         return true;
     }
@@ -181,6 +160,7 @@ public class CommentService(
         {
             Content = request.Content,
             Stars = request.Stars,
+            UserId = _loggedUser.GetId(),
         };
         await _commentRepository.AddAsync(comment);
         await _unitOfWork.CommitAsync();

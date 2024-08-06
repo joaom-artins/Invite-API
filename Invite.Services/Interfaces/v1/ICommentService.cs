@@ -11,7 +11,6 @@ public interface ICommentService
     Task<CommentModel> GetByIdAndBuffetAsync(Guid id, Guid buffetId);
     Task<bool> CreateForHallAsync(Guid hallId, CommentCreateRequest request);
     Task<bool> CreateForBuffetAsync(Guid buffetId, CommentCreateRequest request);
-    Task<bool> ReplyCommentAsync(Guid id, CommentCreateRequest request);
     Task<bool> UpdateAsync(Guid id, CommentUpdateRequest request);
     Task<bool> DeleteAsync(Guid id);
 }

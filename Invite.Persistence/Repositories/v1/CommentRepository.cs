@@ -26,6 +26,13 @@ public class CommentRepository(
         return records;
     }
 
+    public async Task<IEnumerable<CommentModel>> FindByCommentAsync(Guid id)
+    {
+        var records = await _context.Comments.Where(x => x.CommentId == id).ToListAsync();
+
+        return records;
+    }
+
     public async Task<CommentModel> GetByIdAndHallAsync(Guid id, Guid hallId)
     {
         var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.HallId == hallId);
