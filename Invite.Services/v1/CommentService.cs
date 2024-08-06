@@ -1,3 +1,4 @@
+using Invite.Commons.LoggedUsers.Interfaces;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
@@ -11,6 +12,7 @@ namespace Invite.Services.v1;
 
 public class CommentService(
     INotificationContext _notificationContext,
+    ILoggedUser _loggedUser,
     IUnitOfWork _unitOfWork,
     IHallRepository _hallRepository,
     ICommentRepository _commentRepository,
@@ -19,6 +21,52 @@ public class CommentService(
     IBuffetService _buffetService
 ) : ICommentService
 {
+    public async Task<IEnumerable<CommentModel>> FindByHallAsync(Guid hallId)
+    {
+        var records = await _commentRepository.FindByHallAsync(hallId);
+
+        return records;
+    }
+
+    public async Task<IEnumerable<CommentModel>> FindByBuffetAsync(Guid buffetId)
+    {
+        var records = await _commentRepository.FindByBuffetAsync(buffetId);
+
+        return records;
+    }
+
+    public async Task<CommentModel> GetByIdAndHallAsync(Guid id, Guid hallId)
+    {
+        var record = await _commentRepository.GetByIdAndHallAsync(id, hallId);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return default!;
+        }
+
+        return record;
+    }
+
+    public async Task<CommentModel> GetByIdAndBuffetAsync(Guid id, Guid buffetId)
+    {
+        var record = await _commentRepository.GetByIdAndBuffetAsync(id, buffetId);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<bool> CreateForHallAsync(Guid hallId, CommentCreateRequest request)
     {
         var hall = await _hallRepository.GetByIdAsync(hallId);
@@ -59,6 +107,70 @@ public class CommentService(
         _commentRepository.Update(comment);
 
         await _buffetService.UpdateRateAsync(buffet);
+
+        return true;
+    }
+
+    public async Task<bool> ReplyCommentAsync(Guid id, CommentCreateRequest request)
+    {
+        var record = await _commentRepository.GetByIdAsync(id);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return false;
+        }
+
+        var commentReply = await CreateAsync(request);
+        commentReply.CommentId = id;
+        commentReply.BuffetId = record.BuffetId;
+        commentReply.HallId = record.HallId;
+        _commentRepository.Update(commentReply);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateAsync(Guid id, CommentUpdateRequest request)
+    {
+        var record = await _commentRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return false;
+        }
+
+        record.Content = request.Content;
+        record.Stars = request.Stars;
+        record.UpdatedAt = DateTime.Now;
+        _commentRepository.Update(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> DeleteAsync(Guid id)
+    {
+        var record = await _commentRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return false;
+        }
+
+        _commentRepository.Remove(record);
+        await _unitOfWork.CommitAsync();
 
         return true;
     }

@@ -83,15 +83,15 @@ namespace Invite.Persistence.Migrations
                     b.Property<Guid?>("BuffetId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("CommentId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("EventId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("HallId")
                         .HasColumnType("uniqueidentifier");
@@ -109,7 +109,7 @@ namespace Invite.Persistence.Migrations
 
                     b.HasIndex("BuffetId");
 
-                    b.HasIndex("EventId");
+                    b.HasIndex("CommentId");
 
                     b.HasIndex("HallId");
 
@@ -155,9 +155,6 @@ namespace Invite.Persistence.Migrations
 
                     b.Property<Guid>("PlanId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("Rate")
-                        .HasColumnType("int");
 
                     b.Property<string>("State")
                         .HasMaxLength(30)
@@ -678,9 +675,9 @@ namespace Invite.Persistence.Migrations
                         .WithMany()
                         .HasForeignKey("BuffetId");
 
-                    b.HasOne("Invite.Entities.Models.EventModel", "Event")
+                    b.HasOne("Invite.Entities.Models.CommentModel", "Comment")
                         .WithMany()
-                        .HasForeignKey("EventId");
+                        .HasForeignKey("CommentId");
 
                     b.HasOne("Invite.Entities.Models.HallModel", "Hall")
                         .WithMany()
@@ -694,7 +691,7 @@ namespace Invite.Persistence.Migrations
 
                     b.Navigation("Buffet");
 
-                    b.Navigation("Event");
+                    b.Navigation("Comment");
 
                     b.Navigation("Hall");
 

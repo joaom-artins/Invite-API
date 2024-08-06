@@ -20,13 +20,6 @@ namespace Invite.Persistence.Migrations
 
             migrationBuilder.AddColumn<int>(
                 name: "Rate",
-                table: "Events",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.AddColumn<int>(
-                name: "Rate",
                 table: "Buffets",
                 type: "int",
                 nullable: false,
@@ -40,11 +33,11 @@ namespace Invite.Persistence.Migrations
                     UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     HallId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    EventId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     BuffetId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Stars = table.Column<int>(type: "int", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CommentId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -55,9 +48,9 @@ namespace Invite.Persistence.Migrations
                         principalTable: "Buffets",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Comments_Events_EventId",
-                        column: x => x.EventId,
-                        principalTable: "Events",
+                        name: "FK_Comments_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
                         principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Comments_Halls_HallId",
@@ -78,9 +71,9 @@ namespace Invite.Persistence.Migrations
                 column: "BuffetId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Comments_EventId",
+                name: "IX_Comments_CommentId",
                 table: "Comments",
-                column: "EventId");
+                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Comments_HallId",
@@ -102,10 +95,6 @@ namespace Invite.Persistence.Migrations
             migrationBuilder.DropColumn(
                 name: "Rate",
                 table: "Halls");
-
-            migrationBuilder.DropColumn(
-                name: "Rate",
-                table: "Events");
 
             migrationBuilder.DropColumn(
                 name: "Rate",

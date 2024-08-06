@@ -82,6 +82,10 @@ public class NotificationMessage
     public static class InvoiceItemized
     {
         public static readonly string NotFound = "Item da fatura não encontrada!";
+    }
 
+    public static class Comment
+    {
+        public static readonly string NotFound = "Comentário não encontrado!";
     }
 }

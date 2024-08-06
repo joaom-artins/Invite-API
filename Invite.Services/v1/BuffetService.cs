@@ -81,7 +81,7 @@ public class BuffetService(
 
     public async Task<bool> UpdateRateAsync(BuffetModel buffet)
     {
-        var comments = await _commentRepository.FindByHallIdAsync(buffet.Id);
+        var comments = await _commentRepository.FindByBuffetAsync(buffet.Id);
         var sum = 0;
         foreach (var comment in comments)
         {
