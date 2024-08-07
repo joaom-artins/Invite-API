@@ -13,6 +13,7 @@ public class CommentUpdateRequestValidator : AbstractValidator<CommentUpdateRequ
 
         RuleFor(x => x.Stars)
             .NotEmpty().WithMessage("Seu comentário deve ter algo!")
+            .Must(x => x < 0 || x > 5).WithMessage("Número de estrelas devem estar entre 0 e 5")
             .When(x => x.Content.Length == 0);
     }
 }

@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace Invite.Entities.Models;
 
@@ -20,5 +21,6 @@ public class BuffetModel
     [MaxLength(4)]
     public string ServeInRadius { get; set; } = default!;
     public bool Paid { get; set; } = false;
-    public int Rate { get; set; } = 0;
+    [Precision(1,1)]
+    public double Rate { get; set; } = 0;
 }
