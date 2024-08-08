@@ -1,3 +1,4 @@
+using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
@@ -5,6 +6,7 @@ using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Entities.Responses;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
@@ -15,6 +17,7 @@ namespace Invite.Services.v1;
 public class HallService(
     INotificationContext _notificationContext,
     IUnitOfWork _unitOfWork,
+    IMapper _mapper,
     ILoggedUser _loggedUser,
     IInvoiceService _invoiceService,
     IHallRepository _hallRepository,
@@ -22,14 +25,14 @@ public class HallService(
     IHallBusiness _hallBusiness
 ) : IHallService
 {
-    public async Task<IEnumerable<HallModel>> GetAllAsync()
+    public async Task<IEnumerable<HallResponse>> GetAllAsync()
     {
         var records = await _hallRepository.GetAllAsync();
 
-        return records;
+        return _mapper.Map<IEnumerable<HallResponse>>(records);
     }
 
-    public async Task<HallModel> GetByIdAsync(Guid id)
+    public async Task<HallResponse> GetByIdAsync(Guid id)
     {
         var record = await _hallRepository.GetByIdAsync(id);
         if (record is null)
@@ -42,7 +45,7 @@ public class HallService(
             return default!;
         }
 
-        return record;
+        return _mapper.Map<HallResponse>(record);
     }
 
     public async Task<bool> CreateAsync(HallCreateRequest request)
