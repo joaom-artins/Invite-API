@@ -1,3 +1,4 @@
+using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
@@ -5,6 +6,7 @@ using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Entities.Responses;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
@@ -15,6 +17,7 @@ namespace Invite.Services.v1;
 public class BuffetService(
     INotificationContext _notificationContext,
     ILoggedUser _loggedUser,
+    IMapper _mapper,
     IUnitOfWork _unitOfWork,
     IBuffetBusiness _buffetBusiness,
     IInvoiceService _invoiceService,
@@ -22,14 +25,14 @@ public class BuffetService(
     ICommentRepository _commentRepository
 ) : IBuffetService
 {
-    public async Task<IEnumerable<BuffetModel>> GetAllAsync()
+    public async Task<IEnumerable<BuffetResponse>> GetAllAsync()
     {
         var records = await _buffetRepository.GetAllAsync();
 
-        return records;
+        return _mapper.Map<IEnumerable<BuffetResponse>>(records);
     }
 
-    public async Task<BuffetModel> GetByIdAsync(Guid id)
+    public async Task<BuffetResponse> GetByIdAsync(Guid id)
     {
         var record = await _buffetRepository.GetByIdAsync(id);
         if (record is null)
@@ -42,7 +45,7 @@ public class BuffetService(
             return default!;
         }
 
-        return record;
+        return _mapper.Map<BuffetResponse>(record);
     }
 
     public async Task<bool> CreateAsync(BuffetCreateRequest request)

@@ -1,3 +1,4 @@
+using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
@@ -5,6 +6,7 @@ using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Entities.Responses;
 using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
@@ -15,6 +17,7 @@ namespace Invite.Services.v1;
 public class EventService(
     INotificationContext _notificationContext,
     IUnitOfWork _unitOfWork,
+    IMapper _mapper,
     ILoggedUser _loggedUser,
     IEventBusiness _eventBusiness,
     IInvoiceService _invoiceService,
@@ -22,14 +25,14 @@ public class EventService(
     IHallRepository _hallRepository
 ) : IEventService
 {
-    public async Task<IEnumerable<EventModel>> GetAllAsync()
+    public async Task<IEnumerable<EventResponse>> GetAllAsync()
     {
         var records = await _eventRepository.FindByUserAsync(_loggedUser.GetId());
 
-        return records;
+        return _mapper.Map<IEnumerable<EventResponse>>(records);
     }
 
-    public async Task<EventModel> GetByIdAsync(Guid id)
+    public async Task<EventResponse> GetByIdAsync(Guid id)
     {
         var record = await _eventRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
         if (record is null)
@@ -42,7 +45,7 @@ public class EventService(
             return default!;
         }
 
-        return record;
+        return _mapper.Map<EventResponse>(record);
     }
 
     public async Task<bool> CreateAsync(Guid planId, EventCreateRequest request)
