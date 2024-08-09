@@ -1,3 +1,4 @@
+using Invite.Entities.Requests;
 using Invite.Persistence.Context;
 using Invite.Persistence.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;

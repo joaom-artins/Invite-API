@@ -1,3 +1,5 @@
+using Invite.Entities.Requests;
+
 namespace Invite.Persistence.Repositories.Interfaces;
 
 public interface IGenericRepository<T> where T : class
