@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invite.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240810143433_Create-Lead")]
+    [Migration("20240810145941_Create-Lead")]
     partial class CreateLead
     {
         /// <inheritdoc />
@@ -403,7 +403,8 @@ namespace Invite.Persistence.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(40)
+                        .HasColumnType("nvarchar(40)");
 
                     b.Property<string>("FullName")
                         .IsRequired()
