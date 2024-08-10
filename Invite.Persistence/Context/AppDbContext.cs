@@ -14,6 +14,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<InviteModel> Invites { get; set; } = default!;
     public DbSet<InvoiceModel> Invoices { get; set; } = default!;
     public DbSet<InvoiceItemizedModel> InvoiceItemizeds { get; set; } = default!;
+    public DbSet<LeadModel> Leads { get; set; } = default!;
     public override DbSet<UserModel> Users { get; set; } = default!;
     public DbSet<ResponsibleModel> Responsibles { get; set; } = default!;
     public DbSet<PlanModel> Plans { get; set; } = default!;

@@ -19,10 +19,11 @@ public class RegisterPersistence
         builder.Services.AddScoped<IBuffetRepository, BuffetRepository>();
         builder.Services.AddScoped<ICommentRepository, CommentRepository>();
         builder.Services.AddScoped<IEventRepository, EventRepository>();
+        builder.Services.AddScoped<IHallRepository, HallRepository>();
         builder.Services.AddScoped<IInviteRepository, InviteRepository>();
         builder.Services.AddScoped<IInvoiceRepository, InvoiceRepository>();
         builder.Services.AddScoped<IInvoiceItemizedRepository, InvoiceItemizedRepository>();
-        builder.Services.AddScoped<IHallRepository, HallRepository>();
+        builder.Services.AddScoped<ILeadRepository, LeadRepository>();
         builder.Services.AddScoped<IPlanRepository, PlanRepository>();
         builder.Services.AddScoped<IResponsibleRepository, ResponsibleRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
