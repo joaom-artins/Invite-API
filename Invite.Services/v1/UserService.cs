@@ -16,10 +16,11 @@ namespace Invite.Services.v1;
 
 public class UserService(
     INotificationContext _notificationContext,
+    UserManager<UserModel> _userManager,
     IUnitOfWork _unitOfWork,
     AppSettings _appSettings,
     IUserBusiness _userBusiness,
-    UserManager<UserModel> _userManager
+    ILeadService _leadService
 ) : IUserService
 {
     public async Task<bool> CreateAsync(UserCreateRequest request)
@@ -73,13 +74,15 @@ public class UserService(
             return false;
         }
 
-        await CreateInPaymentService(user);
-        if (_notificationContext.HasNotifications)
-        {
-            return false;
-        }
+        // await CreateInPaymentService(user);
+        // if (_notificationContext.HasNotifications)
+        // {
+        //     return false;
+        // }
 
         await _unitOfWork.CommitAsync(true);
+
+        await _leadService.RemoveRange(request.Email);
 
         return true;
     }
