@@ -27,7 +27,7 @@ public class HallService(
 {
     public async Task<IEnumerable<HallResponse>> GetAllAsync()
     {
-        var records = await _hallRepository.GetAllAsync();
+        var records = await _hallRepository.GetAllAndPaidAsync();
 
         return _mapper.Map<IEnumerable<HallResponse>>(records);
     }

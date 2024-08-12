@@ -15,15 +15,25 @@ public class InviteBusiness(
     IInviteRepository _inviteRepository
 ) : IInviteBusiness
 {
-    public async Task<bool> ValidateDateAsync(Guid eventId, DateOnly limitDate)
+    public async Task<bool> ValidateForCreateAsync(Guid eventId, DateOnly limitDate)
     {
         var eventRecord = await _eventRepository.GetByIdAndUserAsync(eventId, _loggedUser.GetId());
         if (eventRecord is null)
         {
             _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Invite.NotFound
+            );
+            return false;
+        }
+
+        if (eventRecord.Paid is false)
+        {
+            _notificationContext.SetDetails(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Invite.NotFound
+                detail: NotificationMessage.Event.NotPaid
             );
             return false;
         }

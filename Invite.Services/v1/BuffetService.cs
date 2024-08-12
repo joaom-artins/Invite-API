@@ -27,14 +27,14 @@ public class BuffetService(
 {
     public async Task<IEnumerable<BuffetResponse>> GetAllAsync()
     {
-        var records = await _buffetRepository.GetAllAsync();
+        var records = await _buffetRepository.GetAllAndPaidAsync();
 
         return _mapper.Map<IEnumerable<BuffetResponse>>(records);
     }
 
     public async Task<BuffetResponse> GetByIdAsync(Guid id)
     {
-        var record = await _buffetRepository.GetByIdAsync(id);
+        var record = await _buffetRepository.GetByIdAndPaiAsync(id);
         if (record is null)
         {
             _notificationContext.SetDetails(
