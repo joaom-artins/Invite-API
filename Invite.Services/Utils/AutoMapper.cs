@@ -8,9 +8,10 @@ public class MappingProfile : Profile
 {
     public MappingProfile()
     {
-        CreateMap<HallModel, HallResponse>();
         CreateMap<BuffetModel, BuffetResponse>();
         CreateMap<EventModel, EventResponse>();
+        CreateMap<HallModel, HallResponse>();
+        CreateMap<InvoiceModel, InvoiceResponse>();
     }
 }
 
