@@ -3,7 +3,7 @@ namespace Invite.Commons;
 public class References
 {
     private static readonly Random random = new();
-    private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-+/<>";
+    private const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 
     public static string Generate()
     {

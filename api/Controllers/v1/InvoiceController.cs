@@ -10,6 +10,22 @@ public class InvoiceController(
     IInvoiceService _invoiceService
 ) : ControllerBase
 {
+    [HttpGet]
+    public async Task<IActionResult> GetAll()
+    {
+        var result = await _invoiceService.FindByUserAsync();
+
+        return Ok(result);
+    }
+
+    [HttpGet("{reference}")]
+    public async Task<IActionResult> GetByReference([FromRoute] string reference)
+    {
+        var result = await _invoiceService.GetByReferenceAsync(reference);
+
+        return Ok(result);
+    }
+
     [HttpPost("pay/{id}")]
     public async Task<IActionResult> Pay([FromRoute] Guid id, [FromBody] InvoicePayRequest request)
     {

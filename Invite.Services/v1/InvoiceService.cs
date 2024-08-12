@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using AutoMapper;
 using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
 using Invite.Commons.Notifications;
@@ -19,6 +20,7 @@ public class InvoiceService(
     AppSettings _appSettings,
     IUnitOfWork _unitOfWork,
     ILoggedUser _loggedUser,
+    IMapper _mapper,
     INotificationContext _notificationContext,
     IPlanRepository _planRepository,
     IHallRepository _hallRepository,
@@ -29,6 +31,29 @@ public class InvoiceService(
     IInvoiceRepository _invoiceRepository
 ) : IInvoiceService
 {
+    public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
+    {
+        var records = await _invoiceRepository.FindByUserAsync(_loggedUser.GetId());
+
+        return _mapper.Map<IEnumerable<InvoiceResponse>>(records);
+    }
+
+    public async Task<InvoiceResponse> GetByReferenceAsync(string reference)
+    {
+        var record = await _invoiceRepository.GetByUserAndReferenceAsync(_loggedUser.GetId(), reference);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Invoice.NotFound
+            );
+            return default!;
+        }
+
+        return _mapper.Map<InvoiceResponse>(record);
+    }
+
     public async Task<bool> CreateAsync(EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
     {
         var user = await _userRepository.GetByIdAsync(_loggedUser.GetId());
