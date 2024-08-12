@@ -74,11 +74,11 @@ public class UserService(
             return false;
         }
 
-        // await CreateInPaymentService(user);
-        // if (_notificationContext.HasNotifications)
-        // {
-        //     return false;
-        // }
+        await CreateInPaymentService(user);
+        if (_notificationContext.HasNotifications)
+        {
+            return false;
+        }
 
         await _unitOfWork.CommitAsync(true);
 

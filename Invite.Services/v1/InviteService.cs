@@ -45,7 +45,7 @@ public class InviteService(
 
     public async Task<bool> CreateAsync(Guid eventId, InviteCreateRequest request)
     {
-        await _inviteBusiness.ValidateDateAsync(eventId, request.LimitDate);
+        await _inviteBusiness.ValidateForCreateAsync(eventId, request.LimitDate);
         if (_notificationContext.HasNotifications)
         {
             return false;

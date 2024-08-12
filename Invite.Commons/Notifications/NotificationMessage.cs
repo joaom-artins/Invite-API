@@ -49,6 +49,7 @@ public class NotificationMessage
         public static readonly string GuestIsMoreThanPlan = "Event0 não pode conter mais convidados que o limíte máximo do plano!";
         public static readonly string ExistsName = "Já existe outro evento com esse nome!";
         public static readonly string NotFound = "Evento não encontrado!";
+        public static readonly string NotPaid = "Evento ainda não foi pago!";
     }
 
     public static class Invite
