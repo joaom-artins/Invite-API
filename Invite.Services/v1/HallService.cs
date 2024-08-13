@@ -122,9 +122,9 @@ public class HallService(
     public async Task<bool> UpdateRateAsync(HallModel hall)
     {
         var comments = await _commentRepository.FindByHallAsync(hall.Id);
-        var sum = comments.Sum(comment => comment.Stars);
+        var avg = comments.Average(comment => comment.Stars);
 
-        hall.Rate = sum / comments.Count();
+        hall.Rate = avg;
         _hallRepository.Update(hall);
         await _unitOfWork.CommitAsync();
 
