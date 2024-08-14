@@ -54,19 +54,8 @@ public class InvoiceService(
         return _mapper.Map<InvoiceResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
+    public async Task<bool> CreateAsync(Guid userId, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
     {
-        var user = await _userRepository.GetByIdAsync(_loggedUser.GetId());
-        if (user is null)
-        {
-            _notificationContext.SetDetails(
-                statusCode: StatusCodes.Status404NotFound,
-                title: NotificationTitle.NotFound,
-                detail: NotificationMessage.User.NotFound
-            );
-            return false!;
-        }
-
         string reference;
         bool exists;
         do
@@ -77,7 +66,7 @@ public class InvoiceService(
 
         var invoice = new InvoiceModel
         {
-            UserId = user.Id,
+            UserId = userId,
             Reference = reference,
             Status = InvoiceStatusEnum.Unpaid
         };
@@ -158,7 +147,7 @@ public class InvoiceService(
             invoice.Total = invoiceItemized.Price - 0;
         }
 
-        var externalId = await CreateInExternalServiceAsync(user, invoice);
+        var externalId = await CreateInExternalServiceAsync(userId, invoice);
         invoice.ExternalId = externalId;
         _invoiceRepository.Update(invoice);
         await _unitOfWork.CommitAsync();
@@ -230,8 +219,19 @@ public class InvoiceService(
         return true;
     }
 
-    private async Task<string> CreateInExternalServiceAsync(UserModel user, InvoiceModel invoice)
+    private async Task<string> CreateInExternalServiceAsync(Guid userId, InvoiceModel invoice)
     {
+        var user = await _userRepository.GetByIdAsync(userId);
+        if (user is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return default!;
+        }
+
         var body = new
         {
             customer = user.ExternalId,
