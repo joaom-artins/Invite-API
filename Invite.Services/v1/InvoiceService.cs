@@ -168,7 +168,7 @@ public class InvoiceService(
 
     public async Task<bool> PayAsync(Guid id, InvoicePayRequest request)
     {
-        var invoice = await _invoiceRepository.GetByIdAsync(id);
+        var invoice = await _invoiceRepository.GetByIdWithUserAsync(id);
         if (invoice is null)
         {
             _notificationContext.SetDetails(
@@ -189,6 +189,10 @@ public class InvoiceService(
         invoice.PaymentMethod = request.PaymentMethod;
         invoice.Status = InvoiceStatusEnum.Paid;
         _invoiceRepository.Update(invoice);
+        await _unitOfWork.CommitAsync();
+
+        invoice.User.DueDay = DateTime.Now.Day;
+        _userRepository.Update(invoice.User);
         await _unitOfWork.CommitAsync();
 
         var invoiceItemized = await _invoiceItemizedRepository.GetByInvoiceWithIncludesAsync(id);

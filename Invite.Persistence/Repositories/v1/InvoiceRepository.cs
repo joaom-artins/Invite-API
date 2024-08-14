@@ -19,9 +19,20 @@ public class InvoiceRepository(
         return records;
     }
 
+    public async Task<InvoiceModel> GetByIdWithUserAsync(Guid id)
+    {
+        var record = await _context.Invoices.Include(x => x.User).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
+        if(record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<InvoiceModel> GetByUserAndReferenceAsync(Guid userId, string reference)
     {
-        var record = await _context.Invoices.SingleOrDefaultAsync(x => x.UserId == userId && x.Reference == reference);
+        var record = await _context.Invoices.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId && x.Reference == reference);
         if (record is null)
         {
             return default!;

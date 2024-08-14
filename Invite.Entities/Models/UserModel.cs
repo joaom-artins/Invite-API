@@ -12,4 +12,5 @@ public class UserModel : IdentityUser<Guid>
     public string CPF { get; set; } = default!;
     public string? ExternalId { get; set; }
     public PaymentMethodEnum? PaymentMethod { get; set; }
+    public int? DueDay { get; set; }
 }
