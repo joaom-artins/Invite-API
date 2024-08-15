@@ -27,7 +27,8 @@ public class SystemService(
             try
             {
                 _unitOfWork.BeginTransaction();
-                await _invoiceService.CreateAsync(user.Id);
+
+                await _invoiceService.CreateAsync(user.Id, true);
                 if (_notificationContext.HasNotifications)
                 {
                     continue;
@@ -36,6 +37,7 @@ public class SystemService(
             catch (Exception)
             {
                 _unitOfWork.Rollback();
+                continue;
             }
         }
 

@@ -54,7 +54,7 @@ public class InvoiceService(
         return _mapper.Map<InvoiceResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(Guid userId, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
+    public async Task<bool> CreateAsync(Guid userId, bool isAutomated, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
     {
         string reference;
         bool exists;
@@ -72,6 +72,56 @@ public class InvoiceService(
         };
         await _invoiceRepository.AddAsync(invoice);
         await _unitOfWork.CommitAsync();
+
+        if (isAutomated)
+        {
+            var halls = await _hallRepository.FindByUserAsync(userId);
+            if (halls.Any())
+            {
+                foreach (var hallUser in halls)
+                {
+                    var invoiceItemized = new InvoiceItemizedModel
+                    {
+                        InvoiceId = invoice.Id,
+                        Price = _appSettings.Tax.Hall,
+                        StarDate = DateOnly.FromDateTime(DateTime.Now),
+                        FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate)),
+                        Title = hallUser.Name,
+                        Description = hallUser.Name,
+                        HallId = hallUser.Id
+                    };
+                    await _invoiceItemizedRepository.AddAsync(invoiceItemized);
+                    await _unitOfWork.CommitAsync();
+                }
+            }
+
+            var buffets = await _buffetRepository.FindByUserAsync(userId);
+            if (buffets.Any())
+            {
+                foreach (var buffetUser in buffets)
+                {
+                    var invoiceItemized = new InvoiceItemizedModel
+                    {
+                        InvoiceId = invoice.Id,
+                        Price = _appSettings.Tax.Buffet,
+                        StarDate = DateOnly.FromDateTime(DateTime.Now),
+                        FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate)),
+                        Title = buffetUser.Name,
+                        Description = buffetUser.Name,
+                        BuffetId = buffetUser.Id
+                    };
+                    await _invoiceItemizedRepository.AddAsync(invoiceItemized);
+                    await _unitOfWork.CommitAsync();
+                }
+            }
+
+            var value = (halls.Count() * _appSettings.Tax.Hall) + (buffets.Count() * _appSettings.Tax.Buffet);
+
+            invoice.Price = value;
+            invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
+            invoice.Discount = 0;
+            invoice.Total = value - 0;
+        }
 
         if (eventModel is not null)
         {
