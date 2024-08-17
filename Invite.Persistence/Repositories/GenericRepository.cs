@@ -23,6 +23,11 @@ public class GenericRepository<T>(
         return await context.Set<T>().Where(e => EF.Property<bool>(e, "Paid") == true).ToListAsync();
     }
 
+    public async Task<IEnumerable<T>> GetByNameAsync(string name)
+    {
+        return await context.Set<T>().Where(e => EF.Property<string>(e, "Name").Contains(name)).ToListAsync();
+    }
+
     public async Task<T?> GetByIdAsync(Guid id)
     {
         return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id);

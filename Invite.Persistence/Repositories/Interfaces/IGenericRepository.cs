@@ -5,6 +5,7 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> GetAllAsync();
     Task<IEnumerable<T>> FindByUserAsync(Guid userId);
     Task<IEnumerable<T>> GetAllAndPaidAsync();
+    Task<IEnumerable<T>> GetByNameAsync(string name);
     Task<T?> GetByIdAsync(Guid id);
     Task<T?> GetByIdAndPaiAsync(Guid id);
     Task<T?> GetByIdAndUserAsync(Guid id, Guid userId);
