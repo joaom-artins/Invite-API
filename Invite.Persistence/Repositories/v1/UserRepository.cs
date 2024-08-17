@@ -13,6 +13,24 @@ public class UserRepository(
 {
     private readonly AppDbContext _context = context;
 
+    public async Task<IEnumerable<UserModel>> FindByDueDayAsync(int dueDay)
+    {
+        var records = await _context.Users.Where(x => x.DueDay == dueDay).ToListAsync();
+
+        return records;
+    }
+
+    public async Task<UserModel> GetByEmail(string email)
+    {
+        var record = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<bool> ExistsByCPFAsync(string cpf)
     {
         var record = await _context.Users.SingleOrDefaultAsync(x => x.CPF == cpf);
@@ -33,16 +51,5 @@ public class UserRepository(
         }
 
         return true;
-    }
-
-    public async Task<UserModel> GetByEmail(string email)
-    {
-        var record = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
     }
 }

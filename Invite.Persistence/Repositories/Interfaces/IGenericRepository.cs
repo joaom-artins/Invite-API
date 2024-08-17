@@ -3,6 +3,7 @@ namespace Invite.Persistence.Repositories.Interfaces;
 public interface IGenericRepository<T> where T : class
 {
     Task<IEnumerable<T>> GetAllAsync();
+    Task<IEnumerable<T>> FindByUserAsync(Guid userId);
     Task<IEnumerable<T>> GetAllAndPaidAsync();
     Task<T?> GetByIdAsync(Guid id);
     Task<T?> GetByIdAndPaiAsync(Guid id);

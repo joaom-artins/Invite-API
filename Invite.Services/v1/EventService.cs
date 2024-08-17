@@ -100,7 +100,7 @@ public class EventService(
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(eventModel: record);
+        await _invoiceService.CreateAsync(record.UserId,false, eventModel: record);
         if (_notificationContext.HasNotifications)
         {
             return false;
