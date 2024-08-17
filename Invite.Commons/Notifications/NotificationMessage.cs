@@ -89,4 +89,10 @@ public class NotificationMessage
     {
         public static readonly string NotFound = "Comentário não encontrado!";
     }
+
+    public static class Cerimonialist
+    {
+        public static readonly string NotFound = "Cerimonialista não encontrado!";
+        public static readonly string ExistsByUser = "Já existe um cerimonialista cadastrado para esse usuário!";
+    }
 }
