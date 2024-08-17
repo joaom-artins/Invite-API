@@ -230,9 +230,12 @@ public class InvoiceService(
         _invoiceRepository.Update(invoice);
         await _unitOfWork.CommitAsync();
 
-        invoice.User.DueDay = DateTime.Now.Day;
-        _userRepository.Update(invoice.User);
-        await _unitOfWork.CommitAsync();
+        if (invoice.User.DueDay is null)
+        {
+            invoice.User.DueDay = DateTime.Now.Day;
+            _userRepository.Update(invoice.User);
+            await _unitOfWork.CommitAsync();
+        }
 
         var invoiceItemized = await _invoiceItemizedRepository.GetByInvoiceWithIncludesAsync(id);
         if (invoiceItemized is null)
