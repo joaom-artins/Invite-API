@@ -1,3 +1,4 @@
+using Invite.Business.Interfaces.v1;
 using Invite.Commons.LoggedUsers.Interfaces;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
@@ -14,7 +15,8 @@ public class CerimonialistService(
     IUnitOfWork _unitOfWork,
     INotificationContext _notificationContext,
     ILoggedUser _loggedUser,
-    ICerimonialistRepository _cerimonialistRepository
+    ICerimonialistRepository _cerimonialistRepository,
+    ICerimonialistBusiness _cerimonialistBusiness
 ) : ICerimonialistService
 {
     public async Task<IEnumerable<CerimonialistModel>> GetAllAsync()
@@ -24,7 +26,7 @@ public class CerimonialistService(
         return records;
     }
 
-    public async Task<IEnumerable<CerimonialistModel>> GetByNameAsync(string name)
+    public async Task<IEnumerable<CerimonialistModel>> SearchByNameAsync(string name)
     {
         var records = await _cerimonialistRepository.GetByNameAsync(name);
 
@@ -49,6 +51,12 @@ public class CerimonialistService(
 
     public async Task<bool> CreateAsync(CerimonialistCreateRequest request)
     {
+        await _cerimonialistBusiness.CheckExistsByUserAsync(_loggedUser.GetId());
+        if (_notificationContext.HasNotifications)
+        {
+            return false;
+        }
+
         var record = new CerimonialistModel
         {
             Name = request.Name,
