@@ -29,6 +29,15 @@ public class CommentController(
         return Ok(result);
     }
 
+    [HttpGet("cerimonialist/{cerimonialistId}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> FindByCerimonialist([FromRoute] Guid cerimonialistId)
+    {
+        var result = await _commentService.FindByCerimonialistAsync(cerimonialistId);
+
+        return Ok(result);
+    }
+
     [HttpGet("hall/{hallId}/{id}")]
     [AllowAnonymous]
     public async Task<IActionResult> GetByIdAndHall([FromRoute] Guid hallId, [FromRoute] Guid id)
@@ -47,6 +56,15 @@ public class CommentController(
         return Ok(result);
     }
 
+    [HttpGet("cerimonialist/{cerimonialistId}/{id}")]
+    [AllowAnonymous]
+    public async Task<IActionResult> GetByIdAndCerimonialist([FromRoute] Guid cerimonialistId, [FromRoute] Guid id)
+    {
+        var result = await _commentService.GetByIdAndCerimonialistAsync(id, cerimonialistId);
+
+        return Ok(result);
+    }
+
     [HttpPost("hall/{hallId}")]
     public async Task<IActionResult> CreateForHall([FromRoute] Guid hallId, [FromBody] CommentCreateRequest request)
     {
@@ -59,6 +77,14 @@ public class CommentController(
     public async Task<IActionResult> CreateForBuffet([FromRoute] Guid buffetId, [FromBody] CommentCreateRequest request)
     {
         await _commentService.CreateForBuffetAsync(buffetId, request);
+
+        return NoContent();
+    }
+
+    [HttpPost("cerimonialist/{cerimonialistId}")]
+    public async Task<IActionResult> CreateForCerimonialist([FromRoute] Guid cerimonialistId, [FromBody] CommentCreateRequest request)
+    {
+        await _commentService.CreateForCerimonialistAsync(cerimonialistId, request);
 
         return NoContent();
     }

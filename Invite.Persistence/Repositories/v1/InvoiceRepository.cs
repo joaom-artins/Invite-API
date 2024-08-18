@@ -12,13 +12,6 @@ public class InvoiceRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<IEnumerable<InvoiceModel>> FindByUserAsync(Guid userId)
-    {
-        var records = await _context.Invoices.Where(x => x.UserId == userId).ToListAsync();
-
-        return records;
-    }
-
     public async Task<InvoiceModel> GetByIdWithUserAsync(Guid id)
     {
         var record = await _context.Invoices.Include(x => x.User).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
