@@ -10,12 +10,4 @@ public class EventRepository(
 ) : GenericRepository<EventModel>(context),
     IEventRepository
 {
-    private readonly AppDbContext _context = context;
-
-    public async Task<IEnumerable<EventModel>> FindByUserAsync(Guid userId)
-    {
-        var records = await _context.Events.Where(x => x.UserId == userId).ToListAsync();
-
-        return records;
-    }
 }

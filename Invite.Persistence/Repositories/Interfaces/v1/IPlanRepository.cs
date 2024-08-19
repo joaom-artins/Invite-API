@@ -4,6 +4,5 @@ namespace Invite.Persistence.Repositories.Interfaces.v1;
 
 public interface IPlanRepository : IGenericRepository<PlanModel>
 {
-    Task<IEnumerable<PlanModel>> GetByNameAsync(string name);
     Task<bool> ExistsByNameAsync(string name);
 }

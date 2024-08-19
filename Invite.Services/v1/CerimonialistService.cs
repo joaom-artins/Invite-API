@@ -16,6 +16,7 @@ public class CerimonialistService(
     INotificationContext _notificationContext,
     ILoggedUser _loggedUser,
     ICerimonialistRepository _cerimonialistRepository,
+    ICommentRepository _commentRepository,
     ICerimonialistBusiness _cerimonialistBusiness
 ) : ICerimonialistService
 {
@@ -66,6 +67,18 @@ public class CerimonialistService(
             UserId = _loggedUser.GetId()
         };
         await _cerimonialistRepository.AddAsync(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdateRateAsync(CerimonialistModel cerimonialist)
+    {
+        var comments = await _commentRepository.FindByCerimonialistAsync(cerimonialist.Id);
+        var avg = comments.Average(comment => comment.Stars);
+
+        cerimonialist.Rate = avg;
+        _cerimonialistRepository.Update(cerimonialist);
         await _unitOfWork.CommitAsync();
 
         return true;

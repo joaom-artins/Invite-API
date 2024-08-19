@@ -17,6 +17,8 @@ public class CommentService(
     IHallRepository _hallRepository,
     ICommentRepository _commentRepository,
     IBuffetRepository _buffetRepository,
+    ICerimonialistRepository _cerimonialistRepository,
+    ICerimonialistService _cerimonialistService,
     IHallService _hallService,
     IBuffetService _buffetService
 ) : ICommentService
@@ -31,6 +33,13 @@ public class CommentService(
     public async Task<IEnumerable<CommentModel>> FindByBuffetAsync(Guid buffetId)
     {
         var records = await _commentRepository.FindByBuffetAsync(buffetId);
+
+        return records;
+    }
+
+    public async Task<IEnumerable<CommentModel>> FindByCerimonialistAsync(Guid cerimonialistId)
+    {
+        var records = await _commentRepository.FindByCerimonialistAsync(cerimonialistId);
 
         return records;
     }
@@ -54,6 +63,22 @@ public class CommentService(
     public async Task<CommentModel> GetByIdAndBuffetAsync(Guid id, Guid buffetId)
     {
         var record = await _commentRepository.GetByIdAndBuffetAsync(id, buffetId);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Comment.NotFound
+            );
+            return default!;
+        }
+
+        return record;
+    }
+
+    public async Task<CommentModel> GetByIdAndCerimonialistAsync(Guid id, Guid cerimonialistId)
+    {
+        var record = await _commentRepository.GetByIdAndCerimonialistAsync(id, cerimonialistId);
         if (record is null)
         {
             _notificationContext.SetDetails(
@@ -109,6 +134,29 @@ public class CommentService(
         await _unitOfWork.CommitAsync();
 
         await _buffetService.UpdateRateAsync(buffet);
+
+        return true;
+    }
+
+    public async Task<bool> CreateForCerimonialistAsync(Guid cerimonialistId, CommentCreateRequest request)
+    {
+        var cerimonialist = await _cerimonialistRepository.GetByIdAsync(cerimonialistId);
+        if (cerimonialist is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Hall.NotFound
+            );
+            return false;
+        }
+
+        var comment = await CreateAsync(request);
+        comment.CerimonialistId = cerimonialistId;
+        _commentRepository.Update(comment);
+        await _unitOfWork.CommitAsync();
+
+        await _cerimonialistService.UpdateRateAsync(cerimonialist);
 
         return true;
     }

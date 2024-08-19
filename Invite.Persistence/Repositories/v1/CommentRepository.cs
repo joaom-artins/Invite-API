@@ -26,9 +26,9 @@ public class CommentRepository(
         return records;
     }
 
-    public async Task<IEnumerable<CommentModel>> FindByCommentAsync(Guid id)
+    public async Task<IEnumerable<CommentModel>> FindByCerimonialistAsync(Guid cerimonialistId)
     {
-        var records = await _context.Comments.Where(x => x.CommentId == id).ToListAsync();
+        var records = await _context.Comments.Where(x => x.CerimonialistId == cerimonialistId).ToListAsync();
 
         return records;
     }
@@ -47,6 +47,17 @@ public class CommentRepository(
      public async Task<CommentModel> GetByIdAndBuffetAsync(Guid id, Guid buffetId)
     {
         var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.BuffetId == buffetId);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
+    public async Task<CommentModel> GetByIdAndCerimonialistAsync(Guid id, Guid cerimonialistId)
+    {
+        var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.CerimonialistId == cerimonialistId);
         if (record is null)
         {
             return default!;
