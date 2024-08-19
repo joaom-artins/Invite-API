@@ -13,9 +13,17 @@ public class UserController(
 {
     [HttpPost]
     [AllowAnonymous]
-    public async Task<IActionResult> Post([FromBody] UserCreateRequest request)
+    public async Task<IActionResult> Create([FromBody] UserCreateRequest request)
     {
         await _userService.CreateAsync(request);
+
+        return NoContent();
+    }
+
+    [HttpPatch("update-password")]
+    public async Task<IActionResult> UpdatePassword([FromBody] UserUpdatePasswordRequest request)
+    {
+        await _userService.UpdatePasswordAsync(request);
 
         return NoContent();
     }

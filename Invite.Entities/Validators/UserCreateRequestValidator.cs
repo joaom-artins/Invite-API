@@ -24,6 +24,6 @@ public class UserCreateRequestValidator : AbstractValidator<UserCreateRequest>
 
         RuleFor(x => x.Password)
             .NotEmpty().WithMessage("Senha é umcampo obrigatório!")
-             .Matches(ValidateStrings.Password).WithMessage("Senha deve ter pelo menos 1 caractere maiúsculo, 1 minúsculo e 1 especial");
+            .Matches(ValidateStrings.Password).WithMessage("Senha deve ter pelo menos 1 caractere maiúsculo, 1 minúsculo e 1 especial");
     }
 }
