@@ -28,7 +28,8 @@ public class InvoiceService(
     IEventRepository _eventRepository,
     IUserRepository _userRepository,
     IInvoiceItemizedRepository _invoiceItemizedRepository,
-    IInvoiceRepository _invoiceRepository
+    IInvoiceRepository _invoiceRepository,
+    ICerimonialistRepository _cerimonialistRepository
 ) : IInvoiceService
 {
     public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
@@ -54,7 +55,11 @@ public class InvoiceService(
         return _mapper.Map<InvoiceResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(Guid userId, bool isAutomated, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null)
+    public async Task<bool> CreateAsync(Guid userId, bool isAutomated,
+        EventModel? eventModel = null,
+        BuffetModel? buffet = null,
+        HallModel? hall = null,
+        CerimonialistModel? cerimonialist = null)
     {
         string reference;
         bool exists;
@@ -115,7 +120,27 @@ public class InvoiceService(
                 }
             }
 
-            var value = (halls.Count() * _appSettings.Tax.Hall) + (buffets.Count() * _appSettings.Tax.Buffet);
+            var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
+            if (cerimonialists.Any())
+            {
+                foreach (var cerimonialistUser in buffets)
+                {
+                    var invoiceItemized = new InvoiceItemizedModel
+                    {
+                        InvoiceId = invoice.Id,
+                        Price = _appSettings.Tax.Cerimonialist,
+                        StarDate = DateOnly.FromDateTime(DateTime.Now),
+                        FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate)),
+                        Title = cerimonialistUser.Name,
+                        Description = cerimonialistUser.Name,
+                        BuffetId = cerimonialistUser.Id
+                    };
+                    await _invoiceItemizedRepository.AddAsync(invoiceItemized);
+                    await _unitOfWork.CommitAsync();
+                }
+            }
+
+            var value = (halls.Count() * _appSettings.Tax.Hall) + (buffets.Count() * _appSettings.Tax.Buffet) + (cerimonialists.Count() * _appSettings.Tax.Cerimonialist);
 
             invoice.Price = value;
             invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
@@ -187,6 +212,27 @@ public class InvoiceService(
                 Title = hall.Name,
                 Description = hall.Name,
                 HallId = hall.Id
+            };
+            await _invoiceItemizedRepository.AddAsync(invoiceItemized);
+            await _unitOfWork.CommitAsync();
+
+            invoice.DueDate = invoiceItemized.FinishDate;
+            invoice.Price = invoiceItemized.Price;
+            invoice.Discount = 0;
+            invoice.Total = invoiceItemized.Price - 0;
+        }
+
+        if (cerimonialist is not null)
+        {
+            var invoiceItemized = new InvoiceItemizedModel
+            {
+                InvoiceId = invoice.Id,
+                Price = _appSettings.Tax.Cerimonialist,
+                StarDate = DateOnly.FromDateTime(DateTime.Now),
+                FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
+                Title = cerimonialist.Name,
+                Description = cerimonialist.Name,
+                CerimonialisId = cerimonialist.Id
             };
             await _invoiceItemizedRepository.AddAsync(invoiceItemized);
             await _unitOfWork.CommitAsync();

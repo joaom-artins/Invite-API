@@ -22,4 +22,6 @@ public class InvoiceItemizedModel
     public Guid? BuffetId { get; set; }
     public EventModel? Event { get; set; }
     public Guid? EventId { get; set; }
+    public CerimonialistModel? Cerimonialist { get; set; }
+    public Guid? CerimonialisId { get; set; }
 }

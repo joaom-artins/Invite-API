@@ -26,6 +26,7 @@ public class AppSettingsTax
 {
     public decimal Hall { get; set; }
     public decimal Buffet { get; set; }
+    public decimal Cerimonialist { get; set; }
 }
 
 public class AppSettingsInvoice
