@@ -17,7 +17,8 @@ public class CerimonialistService(
     ILoggedUser _loggedUser,
     ICerimonialistRepository _cerimonialistRepository,
     ICommentRepository _commentRepository,
-    ICerimonialistBusiness _cerimonialistBusiness
+    ICerimonialistBusiness _cerimonialistBusiness,
+    IInvoiceService _invoiceService
 ) : ICerimonialistService
 {
     public async Task<IEnumerable<CerimonialistModel>> GetAllAsync()
@@ -69,6 +70,8 @@ public class CerimonialistService(
         await _cerimonialistRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
+        await _invoiceService.CreateAsync(_loggedUser.GetId(), false, cerimonialist: record);
+
         return true;
     }
 
@@ -118,6 +121,13 @@ public class CerimonialistService(
                 detail: NotificationMessage.Cerimonialist.NotFound
             );
             return false;
+        }
+
+        var comments = await _commentRepository.FindByCerimonialistAsync(id);
+        if(comments.Any())
+        {
+            _commentRepository.RemoveRange(comments);
+            await _unitOfWork.CommitAsync();
         }
 
         _cerimonialistRepository.Remove(record);
