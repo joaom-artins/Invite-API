@@ -5,4 +5,5 @@ namespace Invite.Services.Interfaces.v1;
 public interface IUserService
 {
     Task<bool> CreateAsync(UserCreateRequest request);
+    Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request);
 }

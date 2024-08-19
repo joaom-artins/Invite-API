@@ -1,12 +1,12 @@
 using System.Net.Http.Json;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
+using Invite.Commons.LoggedUsers.Interfaces;
 using Invite.Commons.Notifications;
 using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Dtos;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
-using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Http;
@@ -16,6 +16,7 @@ namespace Invite.Services.v1;
 
 public class UserService(
     INotificationContext _notificationContext,
+    ILoggedUser _loggedUser,
     UserManager<UserModel> _userManager,
     IUnitOfWork _unitOfWork,
     AppSettings _appSettings,
@@ -129,6 +130,43 @@ public class UserService(
         user.ExternalId = response!.Id;
         await _userManager.UpdateAsync(user);
         await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
+    public async Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request)
+    {
+        if (request.NewPassword != request.ConfirmNewPassword)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.User.DifferentPasswords
+            );
+            return false;
+        }
+
+        var user = await _userManager.FindByIdAsync(_loggedUser.GetId().ToString());
+        if (user is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.User.NotFound
+            );
+            return false;
+        }
+
+        var result = await _userManager.ChangePasswordAsync(user, request.CurrentPassword, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.User.FailInChangePassword
+            );
+            return false;
+        }
 
         return true;
     }
