@@ -28,7 +28,7 @@ public class UserController(
         return NoContent();
     }
 
-    [HttpPut("update-profile")]
+    [HttpPatch("update-profile")]
     public async Task<IActionResult> Update([FromBody] UserUpdateProfileRequest request)
     {
         await _userService.UpdateProfileAsync(request);
