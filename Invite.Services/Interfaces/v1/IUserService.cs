@@ -8,5 +8,6 @@ public interface IUserService
 {
     Task<UserRespose> GetLoggedUserAsync();
     Task<bool> CreateAsync(UserCreateRequest request);
+    Task<bool> UpdateProfileAsync(UserUpdateProfileRequest request);
     Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request);
 }
