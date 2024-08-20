@@ -7,6 +7,7 @@ using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Dtos;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Http;
@@ -19,11 +20,28 @@ public class UserService(
     ILoggedUser _loggedUser,
     UserManager<UserModel> _userManager,
     IUnitOfWork _unitOfWork,
+    IUserRepository _userRepository,
     AppSettings _appSettings,
     IUserBusiness _userBusiness,
     ILeadService _leadService
 ) : IUserService
 {
+    public async Task<UserModel> GetLoggedUserAsync()
+    {
+        var record = await _userRepository.GetByIdAsync(_loggedUser.GetId());
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return default!;
+        }
+
+        return record;
+    }
+
     public async Task<bool> CreateAsync(UserCreateRequest request)
     {
         await _userBusiness.ValidateForCreate(request);
