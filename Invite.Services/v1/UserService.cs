@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
 using Invite.Commons.LoggedUsers.Interfaces;
@@ -7,6 +8,8 @@ using Invite.Commons.Notifications.Interfaces;
 using Invite.Entities.Dtos;
 using Invite.Entities.Models;
 using Invite.Entities.Requests;
+using Invite.Entities.Responses;
+using Invite.Persistence.Repositories.Interfaces.v1;
 using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Http;
@@ -17,13 +20,31 @@ namespace Invite.Services.v1;
 public class UserService(
     INotificationContext _notificationContext,
     ILoggedUser _loggedUser,
+    IMapper _mapper,
     UserManager<UserModel> _userManager,
     IUnitOfWork _unitOfWork,
+    IUserRepository _userRepository,
     AppSettings _appSettings,
     IUserBusiness _userBusiness,
     ILeadService _leadService
 ) : IUserService
 {
+    public async Task<UserRespose> GetLoggedUserAsync()
+    {
+        var record = await _userRepository.GetByIdAsync(_loggedUser.GetId());
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return default!;
+        }
+
+        return _mapper.Map<UserRespose>(record);
+    }
+
     public async Task<bool> CreateAsync(UserCreateRequest request)
     {
         await _userBusiness.ValidateForCreate(request);

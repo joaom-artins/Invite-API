@@ -12,6 +12,7 @@ public class MappingProfile : Profile
         CreateMap<EventModel, EventResponse>();
         CreateMap<HallModel, HallResponse>();
         CreateMap<InvoiceModel, InvoiceResponse>();
+        CreateMap<UserModel, UserRespose>();
     }
 }
 

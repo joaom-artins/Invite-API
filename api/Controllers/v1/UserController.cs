@@ -11,6 +11,14 @@ public class UserController(
     IUserService _userService
 ) : ControllerBase
 {
+    [HttpGet("me")]
+    public async Task<IActionResult> GetForLoggedUser()
+    {
+        var result = await _userService.GetLoggedUserAsync();
+
+        return Ok(result);
+    }
+
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Create([FromBody] UserCreateRequest request)
