@@ -212,5 +212,14 @@ public class UserService(
 
         return true;
     }
+
+    public async Task<bool> ResetPasswordStep1Async(UserResetPasswordStep1Request request)
+    {
+        var record = await _userRepository.GetByEmailAsync(request.Email);
+
+        //TODO: Envia email
+
+        return true;
+    }
 }
 

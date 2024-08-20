@@ -9,6 +9,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
 {
     public DbSet<BuffetModel> Buffets { get; set; } = default!;
     public DbSet<CerimonialistModel> Cerimonialists { get; set; } = default!;
+    public DbSet<CodeModel> Codes { get; set; } = default!;
     public DbSet<CommentModel> Comments { get; set; } = default!;
     public DbSet<HallModel> Halls { get; set; } = default!;
     public DbSet<EventModel> Events { get; set; } = default!;

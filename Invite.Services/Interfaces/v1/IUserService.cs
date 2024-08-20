@@ -10,4 +10,5 @@ public interface IUserService
     Task<bool> CreateAsync(UserCreateRequest request);
     Task<bool> UpdateProfileAsync(UserUpdateProfileRequest request);
     Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request);
+    Task<bool> ResetPasswordStep1Async(UserResetPasswordStep1Request request);
 }
