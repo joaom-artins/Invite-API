@@ -28,6 +28,14 @@ public class UserController(
         return NoContent();
     }
 
+    [HttpPut("update-profile")]
+    public async Task<IActionResult> Update([FromBody] UserUpdateProfileRequest request)
+    {
+        await _userService.UpdateProfileAsync(request);
+
+        return NoContent();
+    }
+
     [HttpPatch("update-password")]
     public async Task<IActionResult> UpdatePassword([FromBody] UserUpdatePasswordRequest request)
     {

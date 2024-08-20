@@ -155,6 +155,27 @@ public class UserService(
         return true;
     }
 
+    public async Task<bool> UpdateProfileAsync(UserUpdateProfileRequest request)
+    {
+        var record = await _userRepository.GetByIdAsync(_loggedUser.GetId());
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return false;
+        }
+
+        record.FullName = request.FullName;
+        record.Email = request.Email;
+        _userRepository.Update(record);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
+
     public async Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request)
     {
         if (request.NewPassword != request.ConfirmNewPassword)
