@@ -6,6 +6,7 @@ public class AppSettings
     public AppSettingsAsaas Asaas { get; set; } = default!;
     public AppSettingsTax Tax { get; set; } = default!;
     public AppSettingsInvoice Invoice { get; set; } = default!;
+    public AppSettingsCode Code { get; set; } = default!;
 }
 
 public class AppSettingsJwt
@@ -32,4 +33,10 @@ public class AppSettingsTax
 public class AppSettingsInvoice
 {
     public int DaysBeforeCreate { get; set; }
+}
+
+public class AppSettingsCode
+{
+    public int ExpirationInMinutes { get; set; }
+    public int ResendInMinutes { get; set; }
 }

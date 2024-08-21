@@ -65,7 +65,7 @@ public class InvoiceService(
         bool exists;
         do
         {
-            reference = References.Generate();
+            reference = References.Generate(8);
             exists = await _invoiceRepository.ExistsByReference(reference);
         } while (exists);
 

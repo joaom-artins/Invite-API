@@ -96,4 +96,9 @@ public class NotificationMessage
         public static readonly string NotFound = "Cerimonialista não encontrado!";
         public static readonly string ExistsByUser = "Já existe um cerimonialista cadastrado para esse usuário!";
     }
+
+    public static class Code
+    {
+        public static readonly string Valid = "Você ainda possui um código válido!";
+    }
 }

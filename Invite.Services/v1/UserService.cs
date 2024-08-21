@@ -26,6 +26,7 @@ public class UserService(
     IUserRepository _userRepository,
     AppSettings _appSettings,
     IUserBusiness _userBusiness,
+    ICodeService _codeService,
     ILeadService _leadService
 ) : IUserService
 {
@@ -216,6 +217,21 @@ public class UserService(
     public async Task<bool> ResetPasswordStep1Async(UserResetPasswordStep1Request request)
     {
         var record = await _userRepository.GetByEmailAsync(request.Email);
+        if (record is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return false;
+        }
+
+        var code = await _codeService.CreateAsync(record.Id);
+        if (_notificationContext.HasNotifications)
+        {
+            return false;
+        }
 
         //TODO: Envia email
 
