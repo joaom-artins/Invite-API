@@ -9,4 +9,5 @@ public class CodeModel
     public string Code { get; set; } = default!;
     public Guid UserId { get; set; }
     public UserModel User { get; set; } = default!;
+    public DateTime CreatedAt { get; set; } = DateTime.Now;
 }
