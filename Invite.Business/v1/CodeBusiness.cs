@@ -17,7 +17,7 @@ public class CodeBusiness(
 {
     public async Task<bool> ValidateForCreateAsync(Guid userId)
     {
-        var record = await _codeRepository.GetByUserIdAsync(userId);
+        var record = await _codeRepository.GetByUserAsync(userId);
         if (record is not null)
         {
             var difference = DateTime.Now - record.CreatedAt;

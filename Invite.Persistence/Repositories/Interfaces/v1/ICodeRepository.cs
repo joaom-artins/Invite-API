@@ -4,5 +4,6 @@ namespace Invite.Persistence.Repositories.Interfaces.v1;
 
 public interface ICodeRepository : IGenericRepository<CodeModel>
 {
-    Task<CodeModel> GetByUserIdAsync(Guid userId);
+    Task<CodeModel> GetByUserAsync(Guid userId);
+    Task<CodeModel> GetByCodeAndEmailWithUserAsync(string code, string email);
 }

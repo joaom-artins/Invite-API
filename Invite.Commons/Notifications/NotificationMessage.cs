@@ -100,5 +100,6 @@ public class NotificationMessage
     public static class Code
     {
         public static readonly string Valid = "Você ainda possui um código válido!";
+        public static readonly string Invalid = "Código inválido!";
     }
 }

@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text;
 using AutoMapper;
 using Invite.Business.Interfaces.v1;
 using Invite.Commons;
@@ -27,6 +28,7 @@ public class UserService(
     AppSettings _appSettings,
     IUserBusiness _userBusiness,
     ICodeService _codeService,
+    ICodeRepository _codeRepository,
     ILeadService _leadService
 ) : IUserService
 {
@@ -214,7 +216,7 @@ public class UserService(
         return true;
     }
 
-    public async Task<bool> ResetPasswordStep1Async(UserResetPasswordStep1Request request)
+    public async Task<UserResetPasswordStep1Response> ResetPasswordStep1Async(UserResetPasswordStep1Request request)
     {
         var record = await _userRepository.GetByEmailAsync(request.Email);
         if (record is null)
@@ -224,18 +226,55 @@ public class UserService(
                 title: NotificationTitle.NotFound,
                 detail: NotificationMessage.User.NotFound
             );
-            return false;
+            return default!;
         }
 
         var code = await _codeService.CreateAsync(record.Id);
         if (_notificationContext.HasNotifications)
         {
-            return false;
+            return default!;
         }
 
         //TODO: Envia email
 
-        return true;
+        return new UserResetPasswordStep1Response
+        {
+            Email = record.Email!
+        };
+    }
+
+    public async Task<UserResetPasswordStep2Response> ResetPasswordStep2Async(UserResetPasswordStep2Request request)
+    {
+        var codeRecord = await _codeRepository.GetByCodeAndEmailWithUserAsync(request.Code, request.Email);
+        if (codeRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.Code.Invalid
+            );
+            return default!;
+        }
+
+        var difference = DateTime.Now - codeRecord.CreatedAt;
+        if (difference.Minutes < _appSettings.Code.ResendInMinutes)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.Code.Valid
+            );
+            return default!;
+        }
+
+        var generatedToken = await _userManager.GeneratePasswordResetTokenAsync(codeRecord.User);
+        var encodedToken = Encoding.UTF8.GetBytes($"{codeRecord.UserId}.{generatedToken}");
+        var token = Convert.ToBase64String(encodedToken);
+
+        return new UserResetPasswordStep2Response
+        {
+            Hash = token
+        };
     }
 }
 

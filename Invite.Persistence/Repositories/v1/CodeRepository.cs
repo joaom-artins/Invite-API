@@ -12,9 +12,20 @@ public class CodeRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<CodeModel> GetByUserIdAsync(Guid userId)
+    public async Task<CodeModel> GetByUserAsync(Guid userId)
     {
         var record = await _context.Codes.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId);
+        if (record is null)
+        {
+            return default!;
+        }
+
+        return record;
+    }
+
+    public async Task<CodeModel> GetByCodeAndEmailWithUserAsync(string code, string email)
+    {
+        var record = await _context.Codes.AsNoTracking().Include(x => x.User).SingleOrDefaultAsync(x => x.Code == code && x.User.Email == email);
         if (record is null)
         {
             return default!;
