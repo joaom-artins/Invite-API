@@ -12,4 +12,5 @@ public interface IUserService
     Task<bool> UpdatePasswordAsync(UserUpdatePasswordRequest request);
     Task<UserResetPasswordStep1Response> ResetPasswordStep1Async(UserResetPasswordStep1Request request);
     Task<UserResetPasswordStep2Response> ResetPasswordStep2Async(UserResetPasswordStep2Request request);
+    Task<bool> ResetPasswordStep3Async(UserResetPasswordStep3Request request);
 }

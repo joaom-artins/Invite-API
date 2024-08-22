@@ -276,5 +276,59 @@ public class UserService(
             Hash = token
         };
     }
+
+    public async Task<bool> ResetPasswordStep3Async(UserResetPasswordStep3Request request)
+    {
+        if (request.NewPassword != request.ConfirmNewPassword)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.User.DifferentPasswords
+            );
+            return false;
+        }
+
+        var encodedHash = Convert.FromBase64String(request.Hash);
+        var decodedHash = Encoding.UTF8.GetString(encodedHash);
+        var splitedHash = decodedHash.Split(".");
+        var userId = splitedHash[0];
+        var token = splitedHash[1];
+
+        var user = await _userManager.FindByIdAsync(userId);
+        if (user is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.User.NotFound
+            );
+            return false;
+        }
+
+        var isValidToken = await _userManager.VerifyUserTokenAsync(user, _userManager.Options.Tokens.PasswordResetTokenProvider, "ResetPassword", token);
+        if (!isValidToken)
+        {
+            _notificationContext.SetDetails(
+               statusCode: StatusCodes.Status400BadRequest,
+               title: NotificationTitle.BadRequest,
+               detail: NotificationMessage.User.InvalidResetToken
+            );
+            return false;
+        }
+
+        var result = await _userManager.ResetPasswordAsync(user, token, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status500InternalServerError,
+                title: NotificationTitle.InternalServerError,
+                detail: NotificationMessage.User.FailInResetPassword
+            );
+            return default!;
+        }
+
+        return true;
+    }
 }
 

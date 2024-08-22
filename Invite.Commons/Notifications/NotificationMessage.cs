@@ -42,7 +42,9 @@ public class NotificationMessage
         public static readonly string InvaliData = "Dados incorretos!";
         public static readonly string InvalidCpf = "CPF Inválido!";
         public static readonly string ErrorInCreateInPaymentService = "Ocorreu um erro durante a criação de usuário,tente novamente mais tarde!";
-        public static readonly string FailInChangePassword = "Falha ao altera senha!";
+        public static readonly string FailInChangePassword = "Falha ao alterar senha!";
+        public static readonly string InvalidResetToken = "Token inválido!";
+        public static readonly string FailInResetPassword = "Falha ao alterar senha!";
     }
 
     public static class Event
