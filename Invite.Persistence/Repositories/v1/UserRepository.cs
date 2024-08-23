@@ -20,7 +20,7 @@ public class UserRepository(
         return records;
     }
 
-    public async Task<UserModel> GetByEmail(string email)
+    public async Task<UserModel> GetByEmailAsync(string email)
     {
         var record = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
         if (record is null)

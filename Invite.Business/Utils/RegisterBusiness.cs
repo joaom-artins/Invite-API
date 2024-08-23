@@ -15,6 +15,7 @@ public class RegisterBusiness
 
         builder.Services.AddScoped<IBuffetBusiness, BuffetBusiness>();
         builder.Services.AddScoped<ICerimonialistBusiness, CerimonialistBusiness>();
+        builder.Services.AddScoped<ICodeBusiness, CodeBusiness>();
         builder.Services.AddScoped<IInviteBusiness, InviteBusiness>();
         builder.Services.AddScoped<IEventBusiness, EventBusiness>();
         builder.Services.AddScoped<IHallBusiness, HallBusiness>();

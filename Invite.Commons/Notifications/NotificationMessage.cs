@@ -42,7 +42,9 @@ public class NotificationMessage
         public static readonly string InvaliData = "Dados incorretos!";
         public static readonly string InvalidCpf = "CPF Inválido!";
         public static readonly string ErrorInCreateInPaymentService = "Ocorreu um erro durante a criação de usuário,tente novamente mais tarde!";
-        public static readonly string FailInChangePassword = "Falha ao altera senha!";
+        public static readonly string FailInChangePassword = "Falha ao alterar senha!";
+        public static readonly string InvalidResetToken = "Token inválido!";
+        public static readonly string FailInResetPassword = "Falha ao alterar senha!";
     }
 
     public static class Event
@@ -95,5 +97,11 @@ public class NotificationMessage
     {
         public static readonly string NotFound = "Cerimonialista não encontrado!";
         public static readonly string ExistsByUser = "Já existe um cerimonialista cadastrado para esse usuário!";
+    }
+
+    public static class Code
+    {
+        public static readonly string Valid = "Você ainda possui um código válido!";
+        public static readonly string Invalid = "Código inválido!";
     }
 }

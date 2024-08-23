@@ -55,7 +55,7 @@ public class InviteService(
         bool exists;
         do
         {
-            reference = References.Generate();
+            reference = References.Generate(8);
             exists = await _inviteRepository.ExistsByReferenceAsync(reference);
         } while (exists);
 

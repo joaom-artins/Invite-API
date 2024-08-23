@@ -25,7 +25,7 @@ public class LoginService(
 {
     public async Task<LoginResponse> Login(LoginRequest request)
     {
-        var userRecord = await _userRepository.GetByEmail(request.Email);
+        var userRecord = await _userRepository.GetByEmailAsync(request.Email);
         if (userRecord is null)
         {
             _notificationContext.SetDetails(

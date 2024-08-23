@@ -24,6 +24,7 @@ public class RegisterService
         builder.Services.AddSingleton(jsonSerializerOptions);
         builder.Services.AddScoped<IBuffetService, BuffetService>();
         builder.Services.AddScoped<ICerimonialistService, CerimonialistService>();
+        builder.Services.AddScoped<ICodeService, CodeService>();
         builder.Services.AddScoped<ICommentService, CommentService>();
         builder.Services.AddScoped<IEventService, EventService>();
         builder.Services.AddScoped<IHallService, HallService>();
