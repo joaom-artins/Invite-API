@@ -43,4 +43,31 @@ public class UserController(
 
         return NoContent();
     }
+
+    [HttpPost("reset-password/send-code")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPasswordStep1([FromBody] UserResetPasswordStep1Request request)
+    {
+        var result = await _userService.ResetPasswordStep1Async(request);
+
+        return Ok(result);
+    }
+
+    [HttpPost("reset-password/code")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPasswordStep2([FromBody] UserResetPasswordStep2Request request)
+    {
+        var result = await _userService.ResetPasswordStep2Async(request);
+
+        return Ok(result);
+    }
+
+    [HttpPatch("reset-password")]
+    [AllowAnonymous]
+    public async Task<IActionResult> ResetPasswordStep3([FromBody] UserResetPasswordStep3Request request)
+    {
+        await _userService.ResetPasswordStep3Async(request);
+
+        return NoContent();
+    }
 }

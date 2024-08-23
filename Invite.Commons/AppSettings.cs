@@ -37,6 +37,6 @@ public class AppSettingsInvoice
 
 public class AppSettingsCode
 {
-    public int ExpirationInMinutes { get; set; }
-    public int ResendInMinutes { get; set; }
+    public int ExpirationInSeconds { get; set; }
+    public int ResendInSeconds { get; set; }
 }

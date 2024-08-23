@@ -257,12 +257,12 @@ public class UserService(
         }
 
         var difference = DateTime.Now - codeRecord.CreatedAt;
-        if (difference.Minutes < _appSettings.Code.ResendInMinutes)
+        if (difference.TotalSeconds > _appSettings.Code.ExpirationInSeconds)
         {
             _notificationContext.SetDetails(
                 statusCode: StatusCodes.Status400BadRequest,
                 title: NotificationTitle.BadRequest,
-                detail: NotificationMessage.Code.Valid
+                detail: NotificationMessage.Code.Invalid
             );
             return default!;
         }

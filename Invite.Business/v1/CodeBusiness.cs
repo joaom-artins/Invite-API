@@ -21,7 +21,7 @@ public class CodeBusiness(
         if (record is not null)
         {
             var difference = DateTime.Now - record.CreatedAt;
-            if (difference.Minutes < _appSettings.Code.ResendInMinutes)
+            if (difference.TotalSeconds < _appSettings.Code.ResendInSeconds)
             {
                 _notificationContext.SetDetails(
                     statusCode: StatusCodes.Status400BadRequest,
