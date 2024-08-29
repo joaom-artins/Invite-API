@@ -28,8 +28,17 @@ public class LoginController(
                 SameSite = SameSiteMode.None,
                 Expires = DateTime.Now.AddDays(1)
             };
-            Response.Cookies.Append("AUTH_TOKEN", result.Token, cookieOptions);
+            Response.Cookies.Append("AUTH_TOKEN", result.AccessToken, cookieOptions);
         }
+
+        return Ok(result);
+    }
+
+    [HttpPost("refresh-token")]
+    [AllowAnonymous]
+    public async Task<IActionResult> RefreshToken([FromBody] UserRefreshTokenRequest request)
+    {
+        var result = await _loginService.LoginWithRefreshTokenAsync(request);
 
         return Ok(result);
     }

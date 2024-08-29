@@ -45,6 +45,7 @@ public class NotificationMessage
         public static readonly string FailInChangePassword = "Falha ao alterar senha!";
         public static readonly string InvalidResetToken = "Token inválido!";
         public static readonly string FailInResetPassword = "Falha ao alterar senha!";
+        public static readonly string InvalidToken = "Token inválido!";
     }
 
     public static class Event
