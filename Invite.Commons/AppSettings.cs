@@ -15,6 +15,9 @@ public class AppSettingsJwt
     public int Expiration { get; set; } = default!;
     public string Issuer { get; set; } = default!;
     public string Audience { get; set; } = default!;
+    public string SecurityKey { get; set; } = default!;
+    public int RefreshTokenExpiration { get; set; } = default!;
+
 }
 
 public class AppSettingsAsaas

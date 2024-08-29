@@ -1,5 +1,6 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Invite.Commons;
 using Invite.Commons.Notifications;
@@ -8,6 +9,7 @@ using Invite.Entities.Models;
 using Invite.Entities.Requests;
 using Invite.Entities.Responses;
 using Invite.Persistence.Repositories.Interfaces.v1;
+using Invite.Persistence.UnitOfWorks.Interfaces;
 using Invite.Services.Interfaces.v1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,9 +20,11 @@ namespace Invite.Services.v1;
 public class LoginService(
     INotificationContext _notificationContext,
     IUserRepository _userRepository,
+    IUnitOfWork _unitOfWork,
     SignInManager<UserModel> _signInManager,
     UserManager<UserModel> _userManager,
-    AppSettings _appSettings
+    AppSettings _appSettings,
+    IUserRefreshTokenRepository _userRefreshTokenRepository
 ) : ILoginService
 {
     public async Task<LoginResponse> Login(LoginRequest request)
@@ -47,19 +51,23 @@ public class LoginService(
             return default!;
         }
 
-        var accessToken = await GenerateTokenAsync(userRecord);
+        var accessToken = await GenerateAccessTokenAsync(userRecord);
         if (_notificationContext.HasNotifications)
         {
             return default!;
         }
 
+        var refreshToken = await GenerateRefreshTokenWithoutValidationAsync(userRecord.Id);
+
         return new LoginResponse
         {
-            Token = accessToken
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddSeconds(_appSettings.Jwt.Expiration),
         };
     }
 
-    public async Task<string> GenerateTokenAsync(UserModel user)
+    public async Task<string> GenerateAccessTokenAsync(UserModel user)
     {
         var role = await _userManager.GetRolesAsync(user);
         if (role is null)
@@ -90,5 +98,63 @@ public class LoginService(
         });
 
         return tokenHandle.WriteToken(token);
+    }
+
+    public async Task<string> GenerateRefreshTokenWithoutValidationAsync(Guid userId)
+    {
+        byte[] randomNumber = new byte[64];
+        var refreshToken = "";
+        using (var rng = RandomNumberGenerator.Create())
+        {
+            rng.GetBytes(randomNumber);
+            refreshToken = Convert.ToBase64String(randomNumber);
+        }
+
+        var record = await _userRefreshTokenRepository.GetByUserIdAsync(userId);
+        if (record is not null)
+        {
+            _userRefreshTokenRepository.Remove(record);
+        }
+
+        var userRefreshTokenModel = new UserRefreshTokenModel
+        {
+            UserId = userId,
+            Token = refreshToken,
+            ExpiresAt = DateTime.Now.AddSeconds(_appSettings.Jwt.RefreshTokenExpiration)
+        };
+
+        await _userRefreshTokenRepository.AddAsync(userRefreshTokenModel);
+        await _unitOfWork.CommitAsync();
+
+        return refreshToken;
+    }
+
+    public async Task<LoginResponse> LoginWithRefreshTokenAsync(UserRefreshTokenRequest request)
+    {
+        var record = await _userRefreshTokenRepository.GetByTokenAsync(request.Token);
+        if (record is null || record.ExpiresAt < DateTime.UtcNow)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status401Unauthorized,
+                title: NotificationTitle.Unauthorized,
+                detail: NotificationMessage.User.InvalidToken
+            );
+            return default!;
+        }
+
+        var refreshToken = await GenerateRefreshTokenWithoutValidationAsync(record.UserId);
+
+        var accessToken = await GenerateAccessTokenAsync(record.User);
+        if (_notificationContext.HasNotifications)
+        {
+            return default!;
+        }
+
+        return new LoginResponse
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken,
+            ExpiresAt = DateTime.UtcNow.AddSeconds(_appSettings.Jwt.RefreshTokenExpiration),
+        };
     }
 }

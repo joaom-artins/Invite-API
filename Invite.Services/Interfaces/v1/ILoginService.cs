@@ -6,4 +6,5 @@ namespace Invite.Services.Interfaces.v1;
 public interface ILoginService
 {
     Task<LoginResponse> Login(LoginRequest request);
+    Task<LoginResponse> LoginWithRefreshTokenAsync(UserRefreshTokenRequest request);
 }
