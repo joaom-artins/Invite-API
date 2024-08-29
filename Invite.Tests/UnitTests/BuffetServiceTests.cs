@@ -11,7 +11,7 @@ using Invite.Services.Interfaces.v1;
 using Invite.Services.v1;
 using Moq;
 
-namespace Invite.Tests;
+namespace Invite.Tests.UnitTests;
 
 public class BuffetServiceTests
 {
