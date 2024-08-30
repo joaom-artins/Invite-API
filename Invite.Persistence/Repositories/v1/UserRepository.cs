@@ -15,20 +15,12 @@ public class UserRepository(
 
     public async Task<IEnumerable<UserModel>> FindByDueDayAsync(int dueDay)
     {
-        var records = await _context.Users.Where(x => x.DueDay == dueDay).ToListAsync();
-
-        return records;
+        return await _context.Users.Where(x => x.DueDay == dueDay).ToListAsync();
     }
 
-    public async Task<UserModel> GetByEmailAsync(string email)
+    public async Task<UserModel?> GetByEmailAsync(string email)
     {
-        var record = await _context.Users.SingleOrDefaultAsync(x => x.Email == email);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Users.AsNoTracking().SingleOrDefaultAsync(x => x.Email == email);
     }
 
     public async Task<bool> ExistsByCPFAsync(string cpf)

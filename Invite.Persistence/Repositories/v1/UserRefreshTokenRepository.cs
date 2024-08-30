@@ -12,25 +12,13 @@ public class UserRefreshTokenRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<UserRefreshTokenModel> GetByUserIdAsync(Guid userId)
+    public async Task<UserRefreshTokenModel?> GetByUserIdAsync(Guid userId)
     {
-        var record = await _context.UserRefreshTokens.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.UserRefreshTokens.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId);
     }
 
-    public async Task<UserRefreshTokenModel> GetByTokenAsync(string token)
+    public async Task<UserRefreshTokenModel?> GetByTokenAsync(string token)
     {
-        var record = await _context.UserRefreshTokens.AsNoTracking().SingleOrDefaultAsync(x => x.Token == token);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.UserRefreshTokens.AsNoTracking().SingleOrDefaultAsync(x => x.Token == token);
     }
 }

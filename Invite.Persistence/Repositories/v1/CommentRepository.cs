@@ -14,55 +14,31 @@ public class CommentRepository(
 
     public async Task<IEnumerable<CommentModel>> FindByHallAsync(Guid hallId)
     {
-        var records = await _context.Comments.Where(x => x.HallId == hallId).ToListAsync();
-
-        return records;
+        return await _context.Comments.AsNoTracking().Where(x => x.HallId == hallId).ToListAsync();
     }
 
     public async Task<IEnumerable<CommentModel>> FindByBuffetAsync(Guid buffetId)
     {
-        var records = await _context.Comments.Where(x => x.BuffetId == buffetId).ToListAsync();
-
-        return records;
+        return await _context.Comments.AsNoTracking().Where(x => x.BuffetId == buffetId).ToListAsync();
     }
 
     public async Task<IEnumerable<CommentModel>> FindByCerimonialistAsync(Guid cerimonialistId)
     {
-        var records = await _context.Comments.Where(x => x.CerimonialistId == cerimonialistId).ToListAsync();
-
-        return records;
+        return await _context.Comments.AsNoTracking().Where(x => x.CerimonialistId == cerimonialistId).ToListAsync();
     }
 
-    public async Task<CommentModel> GetByIdAndHallAsync(Guid id, Guid hallId)
+    public async Task<CommentModel?> GetByIdAndHallAsync(Guid id, Guid hallId)
     {
-        var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.HallId == hallId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.HallId == hallId);
     }
 
-     public async Task<CommentModel> GetByIdAndBuffetAsync(Guid id, Guid buffetId)
+    public async Task<CommentModel?> GetByIdAndBuffetAsync(Guid id, Guid buffetId)
     {
-        var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.BuffetId == buffetId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.BuffetId == buffetId);
     }
 
-    public async Task<CommentModel> GetByIdAndCerimonialistAsync(Guid id, Guid cerimonialistId)
+    public async Task<CommentModel?> GetByIdAndCerimonialistAsync(Guid id, Guid cerimonialistId)
     {
-        var record = await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.CerimonialistId == cerimonialistId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Comments.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.CerimonialistId == cerimonialistId);
     }
 }
