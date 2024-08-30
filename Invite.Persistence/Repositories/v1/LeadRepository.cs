@@ -14,8 +14,6 @@ public class LeadRepository(
 
     public async Task<IEnumerable<LeadModel>> GetByEmailAsync(string email)
     {
-        var records = await _context.Leads.Where(x => x.Email == email).ToListAsync();
-
-        return records;
+        return await _context.Leads.Where(x => x.Email == email).ToListAsync();
     }
 }

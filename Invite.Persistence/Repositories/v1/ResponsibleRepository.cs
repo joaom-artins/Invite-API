@@ -14,19 +14,11 @@ public class ResponsibleRepository(
 
     public async Task<IEnumerable<ResponsibleModel>> FindByEventAsync(Guid eventId)
     {
-        var records = await _context.Responsibles.Where(x => x.Invite.EventId == eventId).ToListAsync();
-
-        return records;
+        return await _context.Responsibles.AsNoTracking().Where(x => x.Invite.EventId == eventId).ToListAsync();
     }
-    public async Task<ResponsibleModel> GetByIdAndEventAndInviteAsync(Guid id, Guid eventId, Guid inviteId)
+    public async Task<ResponsibleModel?> GetByIdAndEventAndInviteAsync(Guid id, Guid eventId, Guid inviteId)
     {
-        var record = await _context.Responsibles.SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Responsibles.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.Invite.EventId == eventId && x.InviteId == inviteId);
     }
 
     public async Task<bool> ExistsByCpfAsync(string cpf)

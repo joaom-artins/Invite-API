@@ -12,25 +12,13 @@ public class InvoiceRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<InvoiceModel> GetByIdWithUserAsync(Guid id)
+    public async Task<InvoiceModel?> GetByIdWithUserAsync(Guid id)
     {
-        var record = await _context.Invoices.Include(x => x.User).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
-        if(record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Invoices.Include(x => x.User).AsNoTracking().SingleOrDefaultAsync(x => x.Id == id);
     }
 
-    public async Task<InvoiceModel> GetByUserAndReferenceAsync(Guid userId, string reference)
+    public async Task<InvoiceModel?> GetByUserAndReferenceAsync(Guid userId, string reference)
     {
-        var record = await _context.Invoices.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId && x.Reference == reference);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Invoices.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId && x.Reference == reference);
     }
 }

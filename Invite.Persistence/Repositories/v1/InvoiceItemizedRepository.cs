@@ -12,14 +12,8 @@ public class InvoiceItemizedRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<InvoiceItemizedModel> GetByInvoiceWithIncludesAsync(Guid invoiceId)
+    public async Task<InvoiceItemizedModel?> GetByInvoiceWithIncludesAsync(Guid invoiceId)
     {
-        var record = await _context.InvoiceItemizeds.Include(x => x.Buffet).Include(x => x.Hall).Include(x => x.Event).SingleOrDefaultAsync(x => x.InvoiceId == invoiceId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.InvoiceItemizeds.Include(x => x.Buffet).Include(x => x.Hall).Include(x => x.Event).AsNoTracking().SingleOrDefaultAsync(x => x.InvoiceId == invoiceId);
     }
 }

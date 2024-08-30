@@ -14,31 +14,17 @@ public class InviteRepository(
 
     public async Task<IEnumerable<InviteModel>> FindByEventAndUserAsync(Guid eventId, Guid userId)
     {
-        var records = await _context.Invites.Where(x => x.EventId == eventId && x.Event.UserId == userId).ToListAsync();
-
-        return records;
+        return await _context.Invites.AsNoTracking().Where(x => x.EventId == eventId && x.Event.UserId == userId).ToListAsync();
     }
 
-    public async Task<InviteModel> GetByEventAndStatusAsync(Guid eventId)
+    public async Task<InviteModel?> GetByEventAndStatusAsync(Guid eventId)
     {
-        var record = await _context.Invites.FirstOrDefaultAsync(x => x.EventId == eventId && x.Acepted == false);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Invites.AsNoTracking().FirstOrDefaultAsync(x => x.EventId == eventId && x.Acepted == false);
     }
 
-    public async Task<InviteModel> GetByIdAndEventAndUserAsync(Guid id, Guid eventId, Guid userId)
+    public async Task<InviteModel?> GetByIdAndEventAndUserAsync(Guid id, Guid eventId, Guid userId)
     {
-        var record = await _context.Invites.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.EventId == eventId && x.Event.UserId == userId);
-        if (record is null)
-        {
-            return default!;
-        }
-
-        return record;
+        return await _context.Invites.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.EventId == eventId && x.Event.UserId == userId);
     }
 
     public async Task<bool> ExistsByReferenceAsync(string reference)
