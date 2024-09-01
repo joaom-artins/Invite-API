@@ -43,7 +43,6 @@ public class PlanService(
         {
             Name = request.Name,
             Price = request.Price,
-            Type = request.Type,
             MaxGuest = request.MaxGuest
         };
         await _planRepository.AddAsync(record);
