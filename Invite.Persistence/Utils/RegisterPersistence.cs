@@ -28,6 +28,7 @@ public class RegisterPersistence
         builder.Services.AddScoped<ILeadRepository, LeadRepository>();
         builder.Services.AddScoped<IPlanRepository, PlanRepository>();
         builder.Services.AddScoped<IResponsibleRepository, ResponsibleRepository>();
+        builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
         builder.Services.AddScoped<IUserRepository, UserRepository>();
         builder.Services.AddScoped<IUserRefreshTokenRepository, UserRefreshTokenRepository>();
 
