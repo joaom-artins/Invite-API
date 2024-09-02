@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invite.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240902200444_Create-Service")]
+    [Migration("20240902224748_Create-Service")]
     partial class CreateService
     {
         /// <inheritdoc />
@@ -544,6 +544,34 @@ namespace Invite.Persistence.Migrations
                     b.ToTable("Responsibles");
                 });
 
+            modelBuilder.Entity("Invite.Entities.Models.ServiceModel", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Buffets")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Cerimonialist")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Halls")
+                        .HasColumnType("int");
+
+                    b.Property<DateOnly?>("NextDueDate")
+                        .HasColumnType("date");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Services");
+                });
+
             modelBuilder.Entity("Invite.Entities.Models.UserModel", b =>
                 {
                     b.Property<Guid>("Id")
@@ -950,6 +978,17 @@ namespace Invite.Persistence.Migrations
                         .IsRequired();
 
                     b.Navigation("Invite");
+                });
+
+            modelBuilder.Entity("Invite.Entities.Models.ServiceModel", b =>
+                {
+                    b.HasOne("Invite.Entities.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Invite.Entities.Models.UserRefreshTokenModel", b =>

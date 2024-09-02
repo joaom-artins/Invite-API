@@ -7,6 +7,7 @@ public interface IGenericRepository<T> where T : class
     Task<IEnumerable<T>> GetAllAndPaidAsync();
     Task<IEnumerable<T>> GetByNameAsync(string name);
     Task<T?> GetByIdAsync(Guid id);
+    Task<T?> GetByUserAsync(Guid userId);
     Task<T?> GetByIdAndPaiAsync(Guid id);
     Task<T?> GetByIdAndUserAsync(Guid id, Guid userId);
     Task<bool> ExistsByReference(string reference);
