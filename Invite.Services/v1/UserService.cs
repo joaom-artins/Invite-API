@@ -29,7 +29,8 @@ public class UserService(
     IUserBusiness _userBusiness,
     ICodeService _codeService,
     ICodeRepository _codeRepository,
-    ILeadService _leadService
+    ILeadService _leadService,
+    IServiceService _serviceService
 ) : IUserService
 {
     public async Task<UserRespose> GetLoggedUserAsync()
@@ -104,6 +105,8 @@ public class UserService(
         {
             return false;
         }
+
+        await _serviceService.CreateAsync(user.Id);
 
         await _unitOfWork.CommitAsync(true);
 

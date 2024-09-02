@@ -21,6 +21,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
     public DbSet<UserRefreshTokenModel> UserRefreshTokens { get; set; } = default!;
     public DbSet<ResponsibleModel> Responsibles { get; set; } = default!;
     public DbSet<PlanModel> Plans { get; set; } = default!;
+    public DbSet<ServiceModel> Services { get; set; } = default!;
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

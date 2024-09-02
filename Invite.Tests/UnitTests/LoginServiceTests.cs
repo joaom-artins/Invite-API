@@ -25,7 +25,9 @@ namespace Invite.Tests.UnitTests
 
             var expectedResponse = new LoginResponse
             {
-                Token = "fake-jwt-token"
+                AccessToken = "fake-jwt-token",
+                RefreshToken = "fake-jwt-token",
+                ExpiresAt = DateTime.Now
             };
 
             _loginServiceMock
@@ -33,7 +35,7 @@ namespace Invite.Tests.UnitTests
                 .ReturnsAsync(expectedResponse);
             var result = await _loginServiceMock.Object.Login(request);
 
-            Assert.Equal(expectedResponse.Token, result.Token);
+            Assert.Equal(expectedResponse.AccessToken, result.AccessToken);
         }
 
         [Fact]
