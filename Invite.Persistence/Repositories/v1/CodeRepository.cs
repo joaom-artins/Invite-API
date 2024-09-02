@@ -12,11 +12,6 @@ public class CodeRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<CodeModel?> GetByUserAsync(Guid userId)
-    {
-        return await _context.Codes.AsNoTracking().SingleOrDefaultAsync(x => x.UserId == userId);
-    }
-
     public async Task<CodeModel?> GetByCodeAndEmailWithUserAsync(string code, string email)
     {
         return await _context.Codes.AsNoTracking().Include(x => x.User).SingleOrDefaultAsync(x => x.Code == code && x.User.Email == email);
