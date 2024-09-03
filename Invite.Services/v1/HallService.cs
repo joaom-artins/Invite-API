@@ -22,6 +22,7 @@ public class HallService(
     IInvoiceService _invoiceService,
     IHallRepository _hallRepository,
     ICommentRepository _commentRepository,
+    IServiceRepository _serviceRepository,
     IHallBusiness _hallBusiness
 ) : IHallService
 {
@@ -78,6 +79,14 @@ public class HallService(
         if (_notificationContext.HasNotifications)
         {
             return false;
+        }
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Halls++;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
         }
 
         await _unitOfWork.CommitAsync(true);
@@ -143,8 +152,21 @@ public class HallService(
             );
             return false;
         }
+
+        _unitOfWork.BeginTransaction();
+
         _hallRepository.Remove(record);
         await _unitOfWork.CommitAsync();
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Halls--;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
