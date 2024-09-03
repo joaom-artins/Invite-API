@@ -29,7 +29,8 @@ public class InvoiceService(
     IUserRepository _userRepository,
     IInvoiceItemizedRepository _invoiceItemizedRepository,
     IInvoiceRepository _invoiceRepository,
-    ICerimonialistRepository _cerimonialistRepository
+    ICerimonialistRepository _cerimonialistRepository,
+    IServiceRepository _serviceRepository
 ) : IInvoiceService
 {
     public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
@@ -80,9 +81,10 @@ public class InvoiceService(
 
         if (isAutomated)
         {
-            var halls = await _hallRepository.FindByUserAsync(userId);
-            if (halls.Any())
+            var serviceRecord = await _serviceRepository.GetByUserAsync(userId);
+            if (serviceRecord!.Halls != 0)
             {
+                var halls = await _hallRepository.FindByUserAsync(userId);
                 foreach (var hallUser in halls)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
@@ -100,9 +102,9 @@ public class InvoiceService(
                 }
             }
 
-            var buffets = await _buffetRepository.FindByUserAsync(userId);
-            if (buffets.Any())
+            if (serviceRecord.Buffets != 0)
             {
+                var buffets = await _buffetRepository.FindByUserAsync(userId);
                 foreach (var buffetUser in buffets)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
@@ -120,10 +122,10 @@ public class InvoiceService(
                 }
             }
 
-            var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
-            if (cerimonialists.Any())
+            if (serviceRecord.Cerimonialist != 0)
             {
-                foreach (var cerimonialistUser in buffets)
+                var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
+                foreach (var cerimonialistUser in cerimonialists)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
                     {
@@ -140,7 +142,9 @@ public class InvoiceService(
                 }
             }
 
-            var value = (halls.Count() * _appSettings.Tax.Hall) + (buffets.Count() * _appSettings.Tax.Buffet) + (cerimonialists.Count() * _appSettings.Tax.Cerimonialist);
+            var value = (serviceRecord.Halls * _appSettings.Tax.Hall) + 
+            (serviceRecord.Buffets * _appSettings.Tax.Buffet) + 
+            (serviceRecord.Cerimonialist * _appSettings.Tax.Cerimonialist);
 
             invoice.Price = value;
             invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
