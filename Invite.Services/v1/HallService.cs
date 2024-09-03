@@ -155,6 +155,13 @@ public class HallService(
 
         _unitOfWork.BeginTransaction();
 
+        var comments = await _commentRepository.FindByHallAsync(record.Id);
+        if (comments.Any())
+        {
+            _commentRepository.RemoveRange(comments);
+            await _unitOfWork.CommitAsync();
+        }
+
         _hallRepository.Remove(record);
         await _unitOfWork.CommitAsync();
 
