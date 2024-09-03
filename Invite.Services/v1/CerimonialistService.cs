@@ -21,7 +21,8 @@ public class CerimonialistService(
     ICerimonialistRepository _cerimonialistRepository,
     ICommentRepository _commentRepository,
     ICerimonialistBusiness _cerimonialistBusiness,
-    IInvoiceService _invoiceService
+    IInvoiceService _invoiceService,
+    IServiceRepository _serviceRepository
 ) : ICerimonialistService
 {
     public async Task<IEnumerable<CerimonialistReponse>> GetAllAsync()
@@ -35,7 +36,7 @@ public class CerimonialistService(
     {
         var records = await _cerimonialistRepository.GetByNameAsync(name);
 
-        return _mapper.Map<IEnumerable<CerimonialistReponse>>(records);;
+        return _mapper.Map<IEnumerable<CerimonialistReponse>>(records); ;
     }
 
     public async Task<CerimonialistReponse> GetByIdAsync(Guid id)
@@ -62,6 +63,8 @@ public class CerimonialistService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         var record = new CerimonialistModel
         {
             Name = request.Name,
@@ -74,6 +77,16 @@ public class CerimonialistService(
         await _unitOfWork.CommitAsync();
 
         await _invoiceService.CreateAsync(_loggedUser.GetId(), false, cerimonialist: record);
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Cerimonialist++;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
@@ -126,8 +139,10 @@ public class CerimonialistService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         var comments = await _commentRepository.FindByCerimonialistAsync(id);
-        if(comments.Any())
+        if (comments.Any())
         {
             _commentRepository.RemoveRange(comments);
             await _unitOfWork.CommitAsync();
@@ -135,6 +150,16 @@ public class CerimonialistService(
 
         _cerimonialistRepository.Remove(record);
         await _unitOfWork.CommitAsync();
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Cerimonialist--;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }

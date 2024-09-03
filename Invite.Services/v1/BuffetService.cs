@@ -149,6 +149,13 @@ public class BuffetService(
 
         _unitOfWork.BeginTransaction();
 
+        var comments = await _commentRepository.FindByBuffetAsync(record.Id);
+        if (comments.Any())
+        {
+            _commentRepository.RemoveRange(comments);
+            await _unitOfWork.CommitAsync();
+        }
+
         _buffetRepository.Remove(record);
         await _unitOfWork.CommitAsync();
 
