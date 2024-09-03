@@ -22,7 +22,8 @@ public class BuffetService(
     IBuffetBusiness _buffetBusiness,
     IInvoiceService _invoiceService,
     IBuffetRepository _buffetRepository,
-    ICommentRepository _commentRepository
+    ICommentRepository _commentRepository,
+    IServiceRepository _serviceRepository
 ) : IBuffetService
 {
     public async Task<IEnumerable<BuffetResponse>> GetAllAsync()
@@ -75,6 +76,14 @@ public class BuffetService(
         if (_notificationContext.HasNotifications)
         {
             return false;
+        }
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Buffets++;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
         }
 
         await _unitOfWork.CommitAsync(true);
@@ -138,8 +147,20 @@ public class BuffetService(
             return false;
         }
 
+        _unitOfWork.BeginTransaction();
+
         _buffetRepository.Remove(record);
         await _unitOfWork.CommitAsync();
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
+        if (serviceRecord is not null)
+        {
+            serviceRecord.Buffets--;
+            _serviceRepository.Update(serviceRecord);
+            await _unitOfWork.CommitAsync();
+        }
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
