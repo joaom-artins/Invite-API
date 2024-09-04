@@ -79,9 +79,9 @@ public class InvoiceService(
         await _invoiceRepository.AddAsync(invoice);
         await _unitOfWork.CommitAsync();
 
+        var serviceRecord = await _serviceRepository.GetByUserAsync(userId);
         if (isAutomated)
         {
-            var serviceRecord = await _serviceRepository.GetByUserAsync(userId);
             if (serviceRecord!.Halls != 0)
             {
                 var halls = await _hallRepository.FindByUserAsync(userId);
@@ -142,14 +142,21 @@ public class InvoiceService(
                 }
             }
 
-            var value = (serviceRecord.Halls * _appSettings.Tax.Hall) + 
-            (serviceRecord.Buffets * _appSettings.Tax.Buffet) + 
+            var value = (serviceRecord.Halls * _appSettings.Tax.Hall) +
+            (serviceRecord.Buffets * _appSettings.Tax.Buffet) +
             (serviceRecord.Cerimonialist * _appSettings.Tax.Cerimonialist);
 
             invoice.Price = value;
             invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
             invoice.Discount = 0;
             invoice.Total = value - 0;
+
+            var externalIdAutomated = await CreateInExternalServiceAsync(userId, invoice);
+            invoice.ExternalId = externalIdAutomated;
+            _invoiceRepository.Update(invoice);
+            await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         if (eventModel is not null)
@@ -250,6 +257,10 @@ public class InvoiceService(
         var externalId = await CreateInExternalServiceAsync(userId, invoice);
         invoice.ExternalId = externalId;
         _invoiceRepository.Update(invoice);
+        await _unitOfWork.CommitAsync();
+
+        serviceRecord!.NextDueDate = invoice.DueDate;
+        _serviceRepository.Update(serviceRecord);
         await _unitOfWork.CommitAsync();
 
         return true;
