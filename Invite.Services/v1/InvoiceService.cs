@@ -196,7 +196,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Buffet,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Buffet),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = buffet.Name,
@@ -217,7 +217,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Hall,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Hall),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = hall.Name,
@@ -238,7 +238,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Cerimonialist,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Cerimonialist),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = cerimonialist.Name,
@@ -254,13 +254,13 @@ public class InvoiceService(
             invoice.Total = invoiceItemized.Price - 0;
         }
 
+        serviceRecord!.NextDueDate = invoice.DueDate;
+        _serviceRepository.Update(serviceRecord);
+        await _unitOfWork.CommitAsync();
+
         var externalId = await CreateInExternalServiceAsync(userId, invoice);
         invoice.ExternalId = externalId;
         _invoiceRepository.Update(invoice);
-        await _unitOfWork.CommitAsync();
-
-        serviceRecord!.NextDueDate = invoice.DueDate;
-        _serviceRepository.Update(serviceRecord);
         await _unitOfWork.CommitAsync();
 
         return true;
@@ -416,5 +416,21 @@ public class InvoiceService(
         }
 
         return true;
+    }
+
+    private decimal CalculatePrice(ServiceModel service, decimal price)
+    {
+        if (service.NextDueDate is not null)
+        {
+            var difference = service.NextDueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber;
+            decimal newPrice = price / difference;
+            if (newPrice < 5)
+            {
+                newPrice = 5;
+            }
+            return newPrice;
+        }
+
+        return price;
     }
 }
