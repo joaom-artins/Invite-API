@@ -29,7 +29,8 @@ public class InvoiceService(
     IUserRepository _userRepository,
     IInvoiceItemizedRepository _invoiceItemizedRepository,
     IInvoiceRepository _invoiceRepository,
-    ICerimonialistRepository _cerimonialistRepository
+    ICerimonialistRepository _cerimonialistRepository,
+    IServiceRepository _serviceRepository
 ) : IInvoiceService
 {
     public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
@@ -78,11 +79,12 @@ public class InvoiceService(
         await _invoiceRepository.AddAsync(invoice);
         await _unitOfWork.CommitAsync();
 
+        var serviceRecord = await _serviceRepository.GetByUserAsync(userId);
         if (isAutomated)
         {
-            var halls = await _hallRepository.FindByUserAsync(userId);
-            if (halls.Any())
+            if (serviceRecord!.Halls != 0)
             {
+                var halls = await _hallRepository.FindByUserAsync(userId);
                 foreach (var hallUser in halls)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
@@ -100,9 +102,9 @@ public class InvoiceService(
                 }
             }
 
-            var buffets = await _buffetRepository.FindByUserAsync(userId);
-            if (buffets.Any())
+            if (serviceRecord.Buffets != 0)
             {
+                var buffets = await _buffetRepository.FindByUserAsync(userId);
                 foreach (var buffetUser in buffets)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
@@ -120,10 +122,10 @@ public class InvoiceService(
                 }
             }
 
-            var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
-            if (cerimonialists.Any())
+            if (serviceRecord.Cerimonialist != 0)
             {
-                foreach (var cerimonialistUser in buffets)
+                var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
+                foreach (var cerimonialistUser in cerimonialists)
                 {
                     var invoiceItemized = new InvoiceItemizedModel
                     {
@@ -140,12 +142,21 @@ public class InvoiceService(
                 }
             }
 
-            var value = (halls.Count() * _appSettings.Tax.Hall) + (buffets.Count() * _appSettings.Tax.Buffet) + (cerimonialists.Count() * _appSettings.Tax.Cerimonialist);
+            var value = (serviceRecord.Halls * _appSettings.Tax.Hall) +
+            (serviceRecord.Buffets * _appSettings.Tax.Buffet) +
+            (serviceRecord.Cerimonialist * _appSettings.Tax.Cerimonialist);
 
             invoice.Price = value;
             invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
             invoice.Discount = 0;
             invoice.Total = value - 0;
+
+            var externalIdAutomated = await CreateInExternalServiceAsync(userId, invoice);
+            invoice.ExternalId = externalIdAutomated;
+            _invoiceRepository.Update(invoice);
+            await _unitOfWork.CommitAsync();
+
+            return true;
         }
 
         if (eventModel is not null)
@@ -185,7 +196,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Buffet,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Buffet),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = buffet.Name,
@@ -206,7 +217,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Hall,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Hall),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = hall.Name,
@@ -227,7 +238,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = _appSettings.Tax.Cerimonialist,
+                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Cerimonialist),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = cerimonialist.Name,
@@ -242,6 +253,10 @@ public class InvoiceService(
             invoice.Discount = 0;
             invoice.Total = invoiceItemized.Price - 0;
         }
+
+        serviceRecord!.NextDueDate = invoice.DueDate;
+        _serviceRepository.Update(serviceRecord);
+        await _unitOfWork.CommitAsync();
 
         var externalId = await CreateInExternalServiceAsync(userId, invoice);
         invoice.ExternalId = externalId;
@@ -401,5 +416,21 @@ public class InvoiceService(
         }
 
         return true;
+    }
+
+    private decimal CalculatePrice(ServiceModel service, decimal price)
+    {
+        if (service.NextDueDate is not null)
+        {
+            var difference = service.NextDueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber;
+            decimal newPrice = price / difference;
+            if (newPrice < 5)
+            {
+                newPrice = 5;
+            }
+            return newPrice;
+        }
+
+        return price;
     }
 }
