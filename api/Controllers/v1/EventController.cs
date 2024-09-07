@@ -26,10 +26,10 @@ public class EventController(
         return Ok(result);
     }
 
-    [HttpPost("plans/{planId}")]
-    public async Task<IActionResult> Create([FromRoute] Guid planId, [FromBody] EventCreateRequest request)
+    [HttpPost("services/{serviceId}/plans/{planId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromRoute] Guid planId, [FromBody] EventCreateRequest request)
     {
-        await _eventService.CreateAsync(planId, request);
+        await _eventService.CreateAsync(serviceId, planId, request);
 
         return NoContent();
     }

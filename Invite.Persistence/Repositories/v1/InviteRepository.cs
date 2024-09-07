@@ -14,7 +14,7 @@ public class InviteRepository(
 
     public async Task<IEnumerable<InviteModel>> FindByEventAndUserAsync(Guid eventId, Guid userId)
     {
-        return await _context.Invites.AsNoTracking().Where(x => x.EventId == eventId && x.Event.UserId == userId).ToListAsync();
+        return await _context.Invites.AsNoTracking().Where(x => x.EventId == eventId && x.Event.Service.UserId == userId).ToListAsync();
     }
 
     public async Task<InviteModel?> GetByEventAndStatusAsync(Guid eventId)
@@ -24,7 +24,7 @@ public class InviteRepository(
 
     public async Task<InviteModel?> GetByIdAndEventAndUserAsync(Guid id, Guid eventId, Guid userId)
     {
-        return await _context.Invites.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.EventId == eventId && x.Event.UserId == userId);
+        return await _context.Invites.AsNoTracking().SingleOrDefaultAsync(x => x.Id == id && x.EventId == eventId && x.Event.Service.UserId == userId);
     }
 
     public async Task<bool> ExistsByReferenceAsync(string reference)
