@@ -49,9 +49,20 @@ public class HallService(
         return _mapper.Map<HallResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(HallCreateRequest request)
+    public async Task<bool> CreateAsync(Guid serviceId, HallCreateRequest request)
     {
-        await _hallBusiness.ExistsByName(_loggedUser.GetId(), request.Name);
+        var serviceRecord = await _serviceRepository.GetByIdAndUserAsync(serviceId, _loggedUser.GetId());
+        if (serviceRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Service.NotFound
+            );
+            return false;
+        }
+
+        await _hallBusiness.ExistsByNameAsync(serviceId, request.Name);
         if (_notificationContext.HasNotifications)
         {
             return false;
@@ -70,24 +81,20 @@ public class HallService(
             Number = request.Number,
             PriceInWeek = request.PriceInWeek,
             PriceInWeekend = request.PriceInWeekend,
-            UserId = _loggedUser.GetId()
+            ServiceId = serviceId
         };
         await _hallRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(record.UserId, false, hall: record);
+        await _invoiceService.CreateAsync(record.ServiceId, false, hall: record);
         if (_notificationContext.HasNotifications)
         {
             return false;
         }
 
-        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
-        if (serviceRecord is not null)
-        {
-            serviceRecord.Halls++;
-            _serviceRepository.Update(serviceRecord);
-            await _unitOfWork.CommitAsync();
-        }
+        serviceRecord.Halls++;
+        _serviceRepository.Update(serviceRecord);
+        await _unitOfWork.CommitAsync();
 
         await _unitOfWork.CommitAsync(true);
 
@@ -96,7 +103,7 @@ public class HallService(
 
     public async Task<bool> UpdateAsync(Guid id, HallUpdateRequest request)
     {
-        await _hallBusiness.ExistsByName(_loggedUser.GetId(), request.Name);
+        await _hallBusiness.ExistsByNameAsync(_loggedUser.GetId(), request.Name);
         if (_notificationContext.HasNotifications)
         {
             return false;

@@ -12,9 +12,9 @@ public class HallRepository(
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<bool> ExistsByNameAndUserAsync(Guid userId, string name)
+    public async Task<bool> ExistsByNameAndServiceAsync(Guid serviceId, string name)
     {
-        var record = await _context.Halls.SingleOrDefaultAsync(x => x.Name == name && x.UserId == userId);
+        var record = await _context.Halls.SingleOrDefaultAsync(x => x.Name == name && x.ServiceId == serviceId);
         if (record is null)
         {
             return false;

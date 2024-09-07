@@ -29,10 +29,10 @@ public class HallController(
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] HallCreateRequest request)
+    [HttpPost("services/{serviceId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] HallCreateRequest request)
     {
-        await _hallService.CreateAsync(request);
+        await _hallService.CreateAsync(serviceId, request);
 
         return NoContent();
     }

@@ -11,9 +11,9 @@ public class HallBusiness(
     IHallRepository _hallRepository
 ) : IHallBusiness
 {
-    public async Task<bool> ExistsByName(Guid userId, string name)
+    public async Task<bool> ExistsByNameAsync(Guid serviceId, string name)
     {
-        var exists = await _hallRepository.ExistsByNameAndUserAsync(userId, name);
+        var exists = await _hallRepository.ExistsByNameAndServiceAsync(serviceId, name);
         if (exists)
         {
             _notificationContext.SetDetails(

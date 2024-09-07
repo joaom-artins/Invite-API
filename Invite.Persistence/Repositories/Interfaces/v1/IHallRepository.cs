@@ -4,5 +4,5 @@ namespace Invite.Persistence.Repositories.Interfaces.v1;
 
 public interface IHallRepository : IGenericRepository<HallModel>
 {
-    Task<bool> ExistsByNameAndUserAsync(Guid userId, string name);
+    Task<bool> ExistsByNameAndServiceAsync(Guid serviceId, string name);
 }

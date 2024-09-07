@@ -309,13 +309,6 @@ public class InvoiceService(
             return false;
         }
 
-        if (invoiceItemized.Hall is not null)
-        {
-            invoiceItemized.Hall.Paid = true;
-            _hallRepository.Update(invoiceItemized.Hall);
-            await _unitOfWork.CommitAsync();
-        }
-
         if (invoiceItemized.Event is not null)
         {
             invoiceItemized.Event.Paid = true;
