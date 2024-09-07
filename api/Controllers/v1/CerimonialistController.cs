@@ -46,10 +46,10 @@ public class CerimonialistController(
         return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CerimonialistUpdateRequest request)
+    [HttpPut("{id}/services/{serviceId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromRoute] Guid serviceId, [FromBody] CerimonialistUpdateRequest request)
     {
-        await _cerimonialistService.UpdateAsync(id, request);
+        await _cerimonialistService.UpdateAsync(id, serviceId, request);
 
         return NoContent();
     }

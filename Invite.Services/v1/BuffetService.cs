@@ -110,9 +110,9 @@ public class BuffetService(
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, BuffetUpdateRequest request)
+    public async Task<bool> UpdateAsync(Guid id, Guid serviceId, BuffetUpdateRequest request)
     {
-        var record = await _buffetRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
+        var record = await _buffetRepository.GetByIdAndServiceAndUserAsync(id, serviceId, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(

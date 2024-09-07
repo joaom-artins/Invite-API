@@ -37,10 +37,10 @@ public class HallController(
         return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, HallUpdateRequest request)
+    [HttpPut("{id}/services/{serviceId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, Guid serviceId, [FromBody] HallUpdateRequest request)
     {
-        await _hallService.UpdateAsync(id, request);
+        await _hallService.UpdateAsync(id, serviceId, request);
 
         return NoContent();
     }

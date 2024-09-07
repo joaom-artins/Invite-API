@@ -37,10 +37,10 @@ public class BuffetController(
         return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, BuffetUpdateRequest request)
+    [HttpPut("{id}/service /{serviceId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromRoute] Guid serviceId, [FromBody] BuffetUpdateRequest request)
     {
-        await _buffetService.UpdateAsync(id, request);
+        await _buffetService.UpdateAsync(id, serviceId, request);
 
         return NoContent();
     }

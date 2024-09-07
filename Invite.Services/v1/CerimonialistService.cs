@@ -110,9 +110,9 @@ public class CerimonialistService(
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, CerimonialistUpdateRequest request)
+    public async Task<bool> UpdateAsync(Guid id, Guid serviceId, CerimonialistUpdateRequest request)
     {
-        var record = await _cerimonialistRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
+        var record = await _cerimonialistRepository.GetByIdAndServiceAndUserAsync(id, serviceId, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(

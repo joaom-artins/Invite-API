@@ -11,6 +11,6 @@ public interface ICerimonialistService
     Task<CerimonialistReponse> GetByIdAsync(Guid id);
     Task<bool> CreateAsync(Guid serviceId, CerimonialistCreateRequest request);
     Task<bool> UpdateRateAsync(CerimonialistModel cerimonialist);
-    Task<bool> UpdateAsync(Guid id, CerimonialistUpdateRequest request);
+    Task<bool> UpdateAsync(Guid id, Guid serviceId, CerimonialistUpdateRequest request);
     Task<bool> RemoveAsync(Guid id);
 }

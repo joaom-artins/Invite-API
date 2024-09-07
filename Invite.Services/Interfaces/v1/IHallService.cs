@@ -10,6 +10,6 @@ public interface IHallService
     Task<HallResponse> GetByIdAsync(Guid id);
     Task<bool> CreateAsync(Guid serviceId, HallCreateRequest request);
     Task<bool> UpdateRateAsync(HallModel hall);
-    Task<bool> UpdateAsync(Guid id, HallUpdateRequest request);
+    Task<bool> UpdateAsync(Guid id, Guid serviceId, HallUpdateRequest request);
     Task<bool> DeleteAsync(Guid id);
 }

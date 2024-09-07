@@ -10,6 +10,6 @@ public interface IBuffetService
     Task<BuffetResponse> GetByIdAsync(Guid id);
     Task<bool> CreateAsync(Guid serviceId, BuffetCreateRequest request);
     Task<bool> UpdateRateAsync(BuffetModel buffet);
-    Task<bool> UpdateAsync(Guid id, BuffetUpdateRequest request);
+    Task<bool> UpdateAsync(Guid id, Guid serviceId, BuffetUpdateRequest request);
     Task<bool> DeleteAsync(Guid id);
 }

@@ -101,7 +101,7 @@ public class HallService(
         return true;
     }
 
-    public async Task<bool> UpdateAsync(Guid id, HallUpdateRequest request)
+    public async Task<bool> UpdateAsync(Guid id, Guid serviceId, HallUpdateRequest request)
     {
         await _hallBusiness.ExistsByNameAsync(_loggedUser.GetId(), request.Name);
         if (_notificationContext.HasNotifications)
@@ -109,7 +109,7 @@ public class HallService(
             return false;
         }
 
-        var record = await _hallRepository.GetByIdAndUserAsync(id, _loggedUser.GetId());
+        var record = await _hallRepository.GetByIdAndServiceAndUserAsync(id, serviceId, _loggedUser.GetId());
         if (record is null)
         {
             _notificationContext.SetDetails(
