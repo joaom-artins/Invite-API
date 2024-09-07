@@ -16,6 +16,6 @@ public class CerimonialistModel
     public string City { get; set; } = default!;
     [MaxLength(30)]
     public string State { get; set; } = default!;
-    public Guid UserId { get; set; }
-    public UserModel User { get; set; } = default!;
+    public Guid ServiceId { get; set; }
+    public ServiceModel Service { get; set; } = default!;
 }

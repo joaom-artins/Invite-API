@@ -55,8 +55,19 @@ public class CerimonialistService(
         return _mapper.Map<CerimonialistReponse>(record);
     }
 
-    public async Task<bool> CreateAsync(CerimonialistCreateRequest request)
+    public async Task<bool> CreateAsync(Guid serviceId, CerimonialistCreateRequest request)
     {
+        var serviceRecord = await _serviceRepository.GetByIdAndUserAsync(serviceId, _loggedUser.GetId());
+        if (serviceRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Service.NotFound
+            );
+            return false;
+        }
+
         await _cerimonialistBusiness.CheckExistsByUserAsync(_loggedUser.GetId());
         if (_notificationContext.HasNotifications)
         {
@@ -71,20 +82,16 @@ public class CerimonialistService(
             StartPrice = request.StartPrice,
             City = request.City,
             State = request.State,
-            UserId = _loggedUser.GetId()
+            ServiceId = serviceId
         };
         await _cerimonialistRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
         await _invoiceService.CreateAsync(_loggedUser.GetId(), false, cerimonialist: record);
 
-        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
-        if (serviceRecord is not null)
-        {
-            serviceRecord.Cerimonialist++;
-            _serviceRepository.Update(serviceRecord);
-            await _unitOfWork.CommitAsync();
-        }
+        serviceRecord.Cerimonialist++;
+        _serviceRepository.Update(serviceRecord);
+        await _unitOfWork.CommitAsync();
 
         await _unitOfWork.CommitAsync(true);
 

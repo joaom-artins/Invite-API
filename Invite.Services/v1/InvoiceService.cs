@@ -316,13 +316,6 @@ public class InvoiceService(
             await _unitOfWork.CommitAsync();
         }
 
-        if (invoiceItemized.Buffet is not null)
-        {
-            invoiceItemized.Buffet.Paid = true;
-            _buffetRepository.Update(invoiceItemized.Buffet);
-            await _unitOfWork.CommitAsync();
-        }
-
         if (invoiceItemized.Event is not null)
         {
             invoiceItemized.Event.Paid = true;

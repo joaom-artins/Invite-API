@@ -38,10 +38,10 @@ public class CerimonialistController(
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CerimonialistCreateRequest request)
+    [HttpPost("services/{serviceId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] CerimonialistCreateRequest request)
     {
-        await _cerimonialistService.CreateAsync(request);
+        await _cerimonialistService.CreateAsync(serviceId, request);
 
         return NoContent();
     }
