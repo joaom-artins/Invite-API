@@ -49,8 +49,19 @@ public class BuffetService(
         return _mapper.Map<BuffetResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(BuffetCreateRequest request)
+    public async Task<bool> CreateAsync(Guid serviceId, BuffetCreateRequest request)
     {
+        var serviceRecord = await _serviceRepository.GetByIdAndUserAsync(serviceId, _loggedUser.GetId());
+        if (serviceRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Service.NotFound
+            );
+            return false;
+        }
+
         await _buffetBusiness.ValidateForCreateAndUpdateAsync(request.Name, request.CNPJ, request.PhoneNumber);
         if (_notificationContext.HasNotifications)
         {
@@ -61,7 +72,7 @@ public class BuffetService(
 
         var record = new BuffetModel
         {
-            UserId = _loggedUser.GetId(),
+            ServiceId = serviceRecord.Id,
             Name = request.Name,
             PhoneNumber = CleanString.OnlyNumber(request.PhoneNumber),
             CNPJ = CleanString.OnlyNumber(request.CNPJ),
@@ -72,15 +83,11 @@ public class BuffetService(
         await _buffetRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        var serviceRecord = await _serviceRepository.GetByUserAsync(_loggedUser.GetId());
-        if (serviceRecord is not null)
-        {
-            serviceRecord.Buffets++;
-            _serviceRepository.Update(serviceRecord);
-            await _unitOfWork.CommitAsync();
-        }
+        serviceRecord.Buffets++;
+        _serviceRepository.Update(serviceRecord);
+        await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(record.UserId, false, buffet: record);
+        await _invoiceService.CreateAsync(record.ServiceId, false, buffet: record);
         if (_notificationContext.HasNotifications)
         {
             return false;

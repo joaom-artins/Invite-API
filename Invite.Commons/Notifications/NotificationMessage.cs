@@ -105,4 +105,9 @@ public class NotificationMessage
         public static readonly string Valid = "Você ainda possui um código válido!";
         public static readonly string Invalid = "Código inválido!";
     }
+
+    public static class Service
+    {
+        public static readonly string NotFound = "Serviço não encontrado!";
+    }
 }

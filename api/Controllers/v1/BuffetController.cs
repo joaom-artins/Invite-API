@@ -29,10 +29,10 @@ public class BuffetController(
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] BuffetCreateRequest request)
+    [HttpPost("service/{serviceId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] BuffetCreateRequest request)
     {
-        await _buffetService.CreateAsync(request);
+        await _buffetService.CreateAsync(serviceId, request);
 
         return NoContent();
     }
