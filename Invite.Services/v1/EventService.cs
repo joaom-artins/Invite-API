@@ -112,7 +112,7 @@ public class EventService(
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(serviceRecord.UserId, false, eventModel: record);
+        await _invoiceService.CreateAsync(serviceRecord.UserId, false, serviceRecord, eventModel: record);
         if (_notificationContext.HasNotifications)
         {
             return false;

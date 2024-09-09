@@ -87,7 +87,7 @@ public class CerimonialistService(
         await _cerimonialistRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(_loggedUser.GetId(), false, cerimonialist: record);
+        await _invoiceService.CreateAsync(_loggedUser.GetId(), false, serviceRecord,cerimonialist: record);
 
         serviceRecord.Cerimonialist++;
         _serviceRepository.Update(serviceRecord);

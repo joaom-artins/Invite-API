@@ -1,12 +1,11 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace Invite.Persistence.Migrations
 {
     /// <inheritdoc />
-    public partial class AdjustModels : Migration
+    public partial class AdjustRelations : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -27,10 +26,6 @@ namespace Invite.Persistence.Migrations
                 name: "FK_Halls_Users_UserId",
                 table: "Halls");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Halls_UserId",
-                table: "Halls");
-
             migrationBuilder.DropColumn(
                 name: "Paid",
                 table: "Halls");
@@ -43,6 +38,11 @@ namespace Invite.Persistence.Migrations
                 name: "UserId",
                 table: "Halls",
                 newName: "ServiceId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Halls_UserId",
+                table: "Halls",
+                newName: "IX_Halls_ServiceId");
 
             migrationBuilder.RenameColumn(
                 name: "UserId",
@@ -64,29 +64,20 @@ namespace Invite.Persistence.Migrations
                 table: "Cerimonialists",
                 newName: "IX_Cerimonialists_ServiceId");
 
-            migrationBuilder.AddColumn<Guid>(
-                name: "ServoceId",
-                table: "Halls",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
-
-            migrationBuilder.AddColumn<Guid>(
-                name: "ServiceId",
+            migrationBuilder.RenameColumn(
+                name: "UserId",
                 table: "Buffets",
-                type: "uniqueidentifier",
-                nullable: false,
-                defaultValue: new Guid("00000000-0000-0000-0000-000000000000"));
+                newName: "ServiceId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_Halls_ServoceId",
-                table: "Halls",
-                column: "ServoceId");
+            migrationBuilder.RenameIndex(
+                name: "IX_Buffets_UserId",
+                table: "Buffets",
+                newName: "IX_Buffets_ServiceId");
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Buffets_Services_UserId",
+                name: "FK_Buffets_Services_ServiceId",
                 table: "Buffets",
-                column: "UserId",
+                column: "ServiceId",
                 principalTable: "Services",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -108,9 +99,9 @@ namespace Invite.Persistence.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Halls_Services_ServoceId",
+                name: "FK_Halls_Services_ServiceId",
                 table: "Halls",
-                column: "ServoceId",
+                column: "ServiceId",
                 principalTable: "Services",
                 principalColumn: "Id",
                 onDelete: ReferentialAction.Cascade);
@@ -120,7 +111,7 @@ namespace Invite.Persistence.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Buffets_Services_UserId",
+                name: "FK_Buffets_Services_ServiceId",
                 table: "Buffets");
 
             migrationBuilder.DropForeignKey(
@@ -132,25 +123,18 @@ namespace Invite.Persistence.Migrations
                 table: "Events");
 
             migrationBuilder.DropForeignKey(
-                name: "FK_Halls_Services_ServoceId",
+                name: "FK_Halls_Services_ServiceId",
                 table: "Halls");
-
-            migrationBuilder.DropIndex(
-                name: "IX_Halls_ServoceId",
-                table: "Halls");
-
-            migrationBuilder.DropColumn(
-                name: "ServoceId",
-                table: "Halls");
-
-            migrationBuilder.DropColumn(
-                name: "ServiceId",
-                table: "Buffets");
 
             migrationBuilder.RenameColumn(
                 name: "ServiceId",
                 table: "Halls",
                 newName: "UserId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Halls_ServiceId",
+                table: "Halls",
+                newName: "IX_Halls_UserId");
 
             migrationBuilder.RenameColumn(
                 name: "ServiceId",
@@ -172,6 +156,16 @@ namespace Invite.Persistence.Migrations
                 table: "Cerimonialists",
                 newName: "IX_Cerimonialists_UserId");
 
+            migrationBuilder.RenameColumn(
+                name: "ServiceId",
+                table: "Buffets",
+                newName: "UserId");
+
+            migrationBuilder.RenameIndex(
+                name: "IX_Buffets_ServiceId",
+                table: "Buffets",
+                newName: "IX_Buffets_UserId");
+
             migrationBuilder.AddColumn<bool>(
                 name: "Paid",
                 table: "Halls",
@@ -185,11 +179,6 @@ namespace Invite.Persistence.Migrations
                 type: "bit",
                 nullable: false,
                 defaultValue: false);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Halls_UserId",
-                table: "Halls",
-                column: "UserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Buffets_Users_UserId",

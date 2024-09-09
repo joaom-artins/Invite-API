@@ -87,7 +87,7 @@ public class BuffetService(
         _serviceRepository.Update(serviceRecord);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(serviceRecord.UserId, false, buffet: record);
+        await _invoiceService.CreateAsync(serviceRecord.UserId, false, serviceRecord, buffet: record);
         if (_notificationContext.HasNotifications)
         {
             return false;

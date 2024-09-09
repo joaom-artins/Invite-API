@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Invite.Persistence.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240907155859_Adjust-Models")]
-    partial class AdjustModels
+    [Migration("20240909140415_Adjust-Relations")]
+    partial class AdjustRelations
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -68,12 +68,9 @@ namespace Invite.Persistence.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("nvarchar(30)");
 
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Buffets");
                 });
@@ -298,9 +295,6 @@ namespace Invite.Persistence.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("ServoceId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("State")
                         .IsRequired()
                         .HasMaxLength(30)
@@ -313,7 +307,7 @@ namespace Invite.Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ServoceId");
+                    b.HasIndex("ServiceId");
 
                     b.ToTable("Halls");
                 });
@@ -816,13 +810,13 @@ namespace Invite.Persistence.Migrations
 
             modelBuilder.Entity("Invite.Entities.Models.BuffetModel", b =>
                 {
-                    b.HasOne("Invite.Entities.Models.ServiceModel", "User")
+                    b.HasOne("Invite.Entities.Models.ServiceModel", "Service")
                         .WithMany()
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("User");
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("Invite.Entities.Models.CerimonialistModel", b =>
@@ -903,13 +897,13 @@ namespace Invite.Persistence.Migrations
 
             modelBuilder.Entity("Invite.Entities.Models.HallModel", b =>
                 {
-                    b.HasOne("Invite.Entities.Models.ServiceModel", "Servoce")
+                    b.HasOne("Invite.Entities.Models.ServiceModel", "Service")
                         .WithMany()
-                        .HasForeignKey("ServoceId")
+                        .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Servoce");
+                    b.Navigation("Service");
                 });
 
             modelBuilder.Entity("Invite.Entities.Models.InviteModel", b =>

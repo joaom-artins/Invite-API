@@ -7,7 +7,7 @@ public class BuffetModel
 {
     public Guid Id { get; set; }
     public Guid ServiceId { get; set; }
-    public ServiceModel User { get; set; } = default!;
+    public ServiceModel Service { get; set; } = default!;
     [MaxLength(50)]
     public string Name { get; set; } = default!;
     [MaxLength(11)]

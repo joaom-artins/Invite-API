@@ -10,7 +10,7 @@ public class HallModel
     public string Name { get; set; } = default!;
     [MaxLength(11)]
     public Guid ServiceId { get; set; }
-    public ServiceModel Servoce { get; set; } = default!;
+    public ServiceModel Service { get; set; } = default!;
     [MaxLength(11)]
     public string OwnerNumber { get; set; } = default!;
     [MaxLength(40)]

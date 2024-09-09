@@ -29,7 +29,7 @@ public class BuffetController(
         return Ok(result);
     }
 
-    [HttpPost("service/{serviceId}")]
+    [HttpPost("services/{serviceId}")]
     public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] BuffetCreateRequest request)
     {
         await _buffetService.CreateAsync(serviceId, request);
@@ -37,7 +37,7 @@ public class BuffetController(
         return NoContent();
     }
 
-    [HttpPut("{id}/service /{serviceId}")]
+    [HttpPut("{id}/services/{serviceId}")]
     public async Task<IActionResult> Update([FromRoute] Guid id, [FromRoute] Guid serviceId, [FromBody] BuffetUpdateRequest request)
     {
         await _buffetService.UpdateAsync(id, serviceId, request);
