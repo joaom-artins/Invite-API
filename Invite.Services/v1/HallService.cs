@@ -86,7 +86,7 @@ public class HallService(
         await _hallRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(record.ServiceId, false, serviceRecord,hall: record);
+        await _invoiceService.CreateAsync(_loggedUser.GetId(), false, serviceRecord, hall: record);
         if (_notificationContext.HasNotifications)
         {
             return false;

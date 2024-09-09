@@ -30,7 +30,8 @@ public class InvoiceService(
     IInvoiceItemizedRepository _invoiceItemizedRepository,
     IInvoiceRepository _invoiceRepository,
     ICerimonialistRepository _cerimonialistRepository,
-    IServiceRepository _serviceRepository
+    IServiceRepository _serviceRepository,
+    IServiceService _serviceService
 ) : IInvoiceService
 {
     public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
@@ -279,6 +280,20 @@ public class InvoiceService(
             return false;
         }
 
+        if (invoice.Status == InvoiceStatusEnum.Paid)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.Invoice.NotFound
+            );
+            return false;
+        }
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(invoice.UserId);
+
+        _unitOfWork.BeginTransaction();
+
         await PayWithCreditCardAsync(invoice.ExternalId!, request);
         if (_notificationContext.HasNotifications)
         {
@@ -315,6 +330,10 @@ public class InvoiceService(
             _eventRepository.Update(invoiceItemized.Event);
             await _unitOfWork.CommitAsync();
         }
+
+        await _serviceService.UpdateNextDueDateAsync(serviceRecord!, invoice.User.DueDay.Value);
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
@@ -409,6 +428,10 @@ public class InvoiceService(
         if (service.NextDueDate is not null)
         {
             var difference = service.NextDueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber;
+            if (difference == 0)
+            {
+                difference = 1;
+            }
             decimal newPrice = price / difference;
             if (newPrice < 5)
             {
