@@ -8,6 +8,6 @@ public interface IEventService
 {
     Task<IEnumerable<EventResponse>> GetAllAsync();
     Task<EventResponse> GetByIdAsync(Guid id);
-    Task<bool> CreateAsync(Guid planId, EventCreateRequest request);
+    Task<bool> CreateAsync(Guid serviceId, Guid planId, EventCreateRequest request);
     Task<bool> DeleteAsync(Guid id);
 }

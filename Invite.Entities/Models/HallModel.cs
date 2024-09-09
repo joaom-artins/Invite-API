@@ -9,8 +9,8 @@ public class HallModel
     [MaxLength(60)]
     public string Name { get; set; } = default!;
     [MaxLength(11)]
-    public Guid UserId { get; set; }
-    public UserModel User { get; set; } = default!;
+    public Guid ServiceId { get; set; }
+    public ServiceModel Service { get; set; } = default!;
     [MaxLength(11)]
     public string OwnerNumber { get; set; } = default!;
     [MaxLength(40)]
@@ -27,7 +27,6 @@ public class HallModel
     public decimal PriceInWeek { get; set; }
     [Precision(6, 2)]
     public decimal PriceInWeekend { get; set; }
-    public bool Paid { get; set; } = false;
     [Precision(1, 1)]
     public double Rate { get; set; } = 0;
 }

@@ -28,7 +28,7 @@ public class SystemService(
             {
                 _unitOfWork.BeginTransaction();
 
-                await _invoiceService.CreateAsync(user.Id, true);
+                //await _invoiceService.CreateAsync(user.Id, true);
                 if (_notificationContext.HasNotifications)
                 {
                     continue;

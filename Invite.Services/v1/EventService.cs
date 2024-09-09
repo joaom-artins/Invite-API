@@ -22,7 +22,8 @@ public class EventService(
     IEventBusiness _eventBusiness,
     IInvoiceService _invoiceService,
     IEventRepository _eventRepository,
-    IHallRepository _hallRepository
+    IHallRepository _hallRepository,
+    IServiceRepository _serviceRepository
 ) : IEventService
 {
     public async Task<IEnumerable<EventResponse>> GetAllAsync()
@@ -48,8 +49,19 @@ public class EventService(
         return _mapper.Map<EventResponse>(record);
     }
 
-    public async Task<bool> CreateAsync(Guid planId, EventCreateRequest request)
+    public async Task<bool> CreateAsync(Guid serviceId, Guid planId, EventCreateRequest request)
     {
+        var serviceRecord = await _serviceRepository.GetByIdAndUserAsync(serviceId, _loggedUser.GetId());
+        if (serviceRecord is null)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status404NotFound,
+                title: NotificationTitle.NotFound,
+                detail: NotificationMessage.Service.NotFound
+            );
+            return false;
+        }
+
         await _eventBusiness.ValidatePlanAsync(planId, _loggedUser.GetId(), request.Guests);
         if (_notificationContext.HasNotifications)
         {
@@ -87,7 +99,7 @@ public class EventService(
             Name = request.Name,
             Type = request.Type,
             PlanId = planId,
-            UserId = _loggedUser.GetId(),
+            ServiceId = serviceId,
             Guests = request.Guests,
             Date = request.Date,
             City = request.City is null ? null : request.City,
@@ -100,7 +112,7 @@ public class EventService(
         await _eventRepository.AddAsync(record);
         await _unitOfWork.CommitAsync();
 
-        await _invoiceService.CreateAsync(record.UserId,false, eventModel: record);
+        await _invoiceService.CreateAsync(serviceRecord.UserId, false, serviceRecord, eventModel: record);
         if (_notificationContext.HasNotifications)
         {
             return false;

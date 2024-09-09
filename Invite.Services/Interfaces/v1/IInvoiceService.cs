@@ -8,6 +8,6 @@ public interface IInvoiceService
 {
     Task<IEnumerable<InvoiceResponse>> FindByUserAsync();
     Task<InvoiceResponse> GetByReferenceAsync(string reference);
-    Task<bool> CreateAsync(Guid userId, bool isAutomated, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null, CerimonialistModel? cerimonialist = null);
+    Task<bool> CreateAsync(Guid userId, bool isAutomated, ServiceModel serviceRecord, EventModel? eventModel = null, BuffetModel? buffet = null, HallModel? hall = null, CerimonialistModel? cerimonialist = null);
     Task<bool> PayAsync(Guid id, InvoicePayRequest request);
 }

@@ -6,8 +6,8 @@ namespace Invite.Entities.Models;
 public class BuffetModel
 {
     public Guid Id { get; set; }
-    public Guid UserId { get; set; }
-    public UserModel User { get; set; } = default!;
+    public Guid ServiceId { get; set; }
+    public ServiceModel Service { get; set; } = default!;
     [MaxLength(50)]
     public string Name { get; set; } = default!;
     [MaxLength(11)]
@@ -20,7 +20,6 @@ public class BuffetModel
     public string State { get; set; } = default!;
     [MaxLength(4)]
     public string ServeInRadius { get; set; } = default!;
-    public bool Paid { get; set; } = false;
-    [Precision(1,1)]
+    [Precision(1, 1)]
     public double Rate { get; set; } = 0;
 }

@@ -25,4 +25,25 @@ public class ServiceService(
 
         return true;
     }
+
+    public async Task<bool> UpdateNextDueDateAsync(ServiceModel service, int userDueDay)
+    {
+        var nextDueDate = service.NextDueDate;
+        if (nextDueDate!.Value.Day > 28)
+        {
+            nextDueDate = nextDueDate.Value.AddMonths(2);
+        }
+        else
+        {
+            nextDueDate = nextDueDate.Value.AddMonths(1);
+        }
+
+        nextDueDate = new DateOnly(nextDueDate!.Value.Year, nextDueDate.Value.Month, Convert.ToInt16(userDueDay));
+
+        service.NextDueDate = nextDueDate;
+        _serviceRepository.Update(service);
+        await _unitOfWork.CommitAsync();
+
+        return true;
+    }
 }

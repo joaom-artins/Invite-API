@@ -38,18 +38,18 @@ public class CerimonialistController(
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] CerimonialistCreateRequest request)
+    [HttpPost("services/{serviceId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] CerimonialistCreateRequest request)
     {
-        await _cerimonialistService.CreateAsync(request);
+        await _cerimonialistService.CreateAsync(serviceId, request);
 
         return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] CerimonialistUpdateRequest request)
+    [HttpPut("{id}/services/{serviceId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromRoute] Guid serviceId, [FromBody] CerimonialistUpdateRequest request)
     {
-        await _cerimonialistService.UpdateAsync(id, request);
+        await _cerimonialistService.UpdateAsync(id, serviceId, request);
 
         return NoContent();
     }

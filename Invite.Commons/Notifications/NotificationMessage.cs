@@ -81,6 +81,7 @@ public class NotificationMessage
         public static readonly string FailOnCreateInExternalService = "Ocorreu um erro durante a criação da fatura,tente novamente mais tarde!";
         public static readonly string UnablePay = "Não foi possível pagar tente novamente mais tarde!";
         public static readonly string NotFound = "Fatura não encontrada!";
+        public static readonly string AlreadyIsPaid = "Fatura já foi paga!";
 
     }
 
@@ -104,5 +105,10 @@ public class NotificationMessage
     {
         public static readonly string Valid = "Você ainda possui um código válido!";
         public static readonly string Invalid = "Código inválido!";
+    }
+
+    public static class Service
+    {
+        public static readonly string NotFound = "Serviço não encontrado!";
     }
 }

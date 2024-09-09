@@ -13,8 +13,8 @@ public class EventModel
     public Guid PlanId { get; set; }
     public PlanModel Plan { get; set; } = default!;
     public int Guests { get; set; }
-    public Guid UserId { get; set; }
-    public UserModel User { get; set; } = default!;
+    public Guid ServiceId { get; set; }
+    public ServiceModel Service { get; set; } = default!;
     public DateOnly Date { get; set; }
     [MaxLength(40)]
     public string? City { get; set; }

@@ -10,6 +10,7 @@ public interface IGenericRepository<T> where T : class
     Task<T?> GetByUserAsync(Guid userId);
     Task<T?> GetByIdAndPaiAsync(Guid id);
     Task<T?> GetByIdAndUserAsync(Guid id, Guid userId);
+    Task<T?> GetByIdAndServiceAndUserAsync(Guid id, Guid serviceId, Guid userId);
     Task<bool> ExistsByReference(string reference);
     Task<bool> AddAsync(T t);
     bool Update(T t);

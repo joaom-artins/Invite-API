@@ -48,6 +48,11 @@ public class GenericRepository<T>(
         return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id && EF.Property<Guid>(e, "UserId") == userId);
     }
 
+    public async Task<T?> GetByIdAndServiceAndUserAsync(Guid id, Guid serviceId, Guid userId)
+    {
+        return await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<Guid>(e, "Id") == id && EF.Property<Guid>(e, "ServiceId") == serviceId && EF.Property<Guid>(e, "UserId") == userId);
+    }
+
     public async Task<bool> ExistsByReference(string reference)
     {
         var exists = await context.Set<T>().AsNoTracking().SingleOrDefaultAsync(e => EF.Property<string>(e, "Reference") == reference);

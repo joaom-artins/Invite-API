@@ -29,18 +29,18 @@ public class BuffetController(
         return Ok(result);
     }
 
-    [HttpPost]
-    public async Task<IActionResult> Create([FromBody] BuffetCreateRequest request)
+    [HttpPost("services/{serviceId}")]
+    public async Task<IActionResult> Create([FromRoute] Guid serviceId, [FromBody] BuffetCreateRequest request)
     {
-        await _buffetService.CreateAsync(request);
+        await _buffetService.CreateAsync(serviceId, request);
 
         return NoContent();
     }
 
-    [HttpPut("{id}")]
-    public async Task<IActionResult> Update([FromRoute] Guid id, BuffetUpdateRequest request)
+    [HttpPut("{id}/services/{serviceId}")]
+    public async Task<IActionResult> Update([FromRoute] Guid id, [FromRoute] Guid serviceId, [FromBody] BuffetUpdateRequest request)
     {
-        await _buffetService.UpdateAsync(id, request);
+        await _buffetService.UpdateAsync(id, serviceId, request);
 
         return NoContent();
     }

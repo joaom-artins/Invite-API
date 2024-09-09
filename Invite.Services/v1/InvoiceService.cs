@@ -30,7 +30,8 @@ public class InvoiceService(
     IInvoiceItemizedRepository _invoiceItemizedRepository,
     IInvoiceRepository _invoiceRepository,
     ICerimonialistRepository _cerimonialistRepository,
-    IServiceRepository _serviceRepository
+    IServiceRepository _serviceRepository,
+    IServiceService _serviceService
 ) : IInvoiceService
 {
     public async Task<IEnumerable<InvoiceResponse>> FindByUserAsync()
@@ -57,6 +58,7 @@ public class InvoiceService(
     }
 
     public async Task<bool> CreateAsync(Guid userId, bool isAutomated,
+        ServiceModel serviceModel,
         EventModel? eventModel = null,
         BuffetModel? buffet = null,
         HallModel? hall = null,
@@ -79,10 +81,9 @@ public class InvoiceService(
         await _invoiceRepository.AddAsync(invoice);
         await _unitOfWork.CommitAsync();
 
-        var serviceRecord = await _serviceRepository.GetByUserAsync(userId);
         if (isAutomated)
         {
-            if (serviceRecord!.Halls != 0)
+            if (serviceModel!.Halls != 0)
             {
                 var halls = await _hallRepository.FindByUserAsync(userId);
                 foreach (var hallUser in halls)
@@ -102,7 +103,7 @@ public class InvoiceService(
                 }
             }
 
-            if (serviceRecord.Buffets != 0)
+            if (serviceModel.Buffets != 0)
             {
                 var buffets = await _buffetRepository.FindByUserAsync(userId);
                 foreach (var buffetUser in buffets)
@@ -122,7 +123,7 @@ public class InvoiceService(
                 }
             }
 
-            if (serviceRecord.Cerimonialist != 0)
+            if (serviceModel.Cerimonialist != 0)
             {
                 var cerimonialists = await _cerimonialistRepository.FindByUserAsync(userId);
                 foreach (var cerimonialistUser in cerimonialists)
@@ -142,9 +143,9 @@ public class InvoiceService(
                 }
             }
 
-            var value = (serviceRecord.Halls * _appSettings.Tax.Hall) +
-            (serviceRecord.Buffets * _appSettings.Tax.Buffet) +
-            (serviceRecord.Cerimonialist * _appSettings.Tax.Cerimonialist);
+            var value = (serviceModel.Halls * _appSettings.Tax.Hall) +
+            (serviceModel.Buffets * _appSettings.Tax.Buffet) +
+            (serviceModel.Cerimonialist * _appSettings.Tax.Cerimonialist);
 
             invoice.Price = value;
             invoice.DueDate = DateOnly.FromDateTime(DateTime.Now.AddDays(_appSettings.Invoice.DaysBeforeCreate));
@@ -196,7 +197,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Buffet),
+                Price = CalculatePrice(serviceModel!, _appSettings.Tax.Buffet),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = buffet.Name,
@@ -217,7 +218,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Hall),
+                Price = CalculatePrice(serviceModel!, _appSettings.Tax.Hall),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = hall.Name,
@@ -238,7 +239,7 @@ public class InvoiceService(
             var invoiceItemized = new InvoiceItemizedModel
             {
                 InvoiceId = invoice.Id,
-                Price = CalculatePrice(serviceRecord!, _appSettings.Tax.Cerimonialist),
+                Price = CalculatePrice(serviceModel!, _appSettings.Tax.Cerimonialist),
                 StarDate = DateOnly.FromDateTime(DateTime.Now),
                 FinishDate = DateOnly.FromDateTime(DateTime.Now.AddDays(1)),
                 Title = cerimonialist.Name,
@@ -254,8 +255,8 @@ public class InvoiceService(
             invoice.Total = invoiceItemized.Price - 0;
         }
 
-        serviceRecord!.NextDueDate = invoice.DueDate;
-        _serviceRepository.Update(serviceRecord);
+        serviceModel!.NextDueDate = invoice.DueDate;
+        _serviceRepository.Update(serviceModel);
         await _unitOfWork.CommitAsync();
 
         var externalId = await CreateInExternalServiceAsync(userId, invoice);
@@ -278,6 +279,20 @@ public class InvoiceService(
            );
             return false;
         }
+
+        if (invoice.Status == InvoiceStatusEnum.Paid)
+        {
+            _notificationContext.SetDetails(
+                statusCode: StatusCodes.Status400BadRequest,
+                title: NotificationTitle.BadRequest,
+                detail: NotificationMessage.Invoice.NotFound
+            );
+            return false;
+        }
+
+        var serviceRecord = await _serviceRepository.GetByUserAsync(invoice.UserId);
+
+        _unitOfWork.BeginTransaction();
 
         await PayWithCreditCardAsync(invoice.ExternalId!, request);
         if (_notificationContext.HasNotifications)
@@ -309,26 +324,16 @@ public class InvoiceService(
             return false;
         }
 
-        if (invoiceItemized.Hall is not null)
-        {
-            invoiceItemized.Hall.Paid = true;
-            _hallRepository.Update(invoiceItemized.Hall);
-            await _unitOfWork.CommitAsync();
-        }
-
-        if (invoiceItemized.Buffet is not null)
-        {
-            invoiceItemized.Buffet.Paid = true;
-            _buffetRepository.Update(invoiceItemized.Buffet);
-            await _unitOfWork.CommitAsync();
-        }
-
         if (invoiceItemized.Event is not null)
         {
             invoiceItemized.Event.Paid = true;
             _eventRepository.Update(invoiceItemized.Event);
             await _unitOfWork.CommitAsync();
         }
+
+        await _serviceService.UpdateNextDueDateAsync(serviceRecord!, invoice.User.DueDay.Value);
+
+        await _unitOfWork.CommitAsync(true);
 
         return true;
     }
@@ -423,6 +428,10 @@ public class InvoiceService(
         if (service.NextDueDate is not null)
         {
             var difference = service.NextDueDate.Value.DayNumber - DateOnly.FromDateTime(DateTime.Now).DayNumber;
+            if (difference == 0)
+            {
+                difference = 1;
+            }
             decimal newPrice = price / difference;
             if (newPrice < 5)
             {
